@@ -1,0 +1,810 @@
+{
+ "title": "AWS OIDC flow",
+ "subtitle": "Azure DevOps to AWS with no stored secret. Everything you need to audit ACN-2026-31070 and then any AWS authentication case.",
+ "slug": "aws_oidc_flow",
+ "mode": "zero",
+ "sources": {
+  "oidc": {
+   "t": "AWS: OIDC federation",
+   "u": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_oidc.html"
+  },
+  "create": {
+   "t": "AWS: Create an OIDC identity provider",
+   "u": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html"
+  },
+  "blog": {
+   "t": "AWS blog: Federate into AWS from Azure DevOps",
+   "u": "https://aws.amazon.com/blogs/modernizing-with-aws/how-to-federate-into-aws-from-azure-devops-using-openid-connect/"
+  },
+  "sts": {
+   "t": "AWS: AssumeRoleWithWebIdentity",
+   "u": "https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html"
+  },
+  "eval": {
+   "t": "AWS: Policy evaluation logic",
+   "u": "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html"
+  },
+  "ct": {
+   "t": "AWS: Logging IAM and STS calls with CloudTrail",
+   "u": "https://docs.aws.amazon.com/IAM/latest/UserGuide/cloudtrail-integration.html"
+  },
+  "keys": {
+   "t": "AWS: IAM and STS condition keys",
+   "u": "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#condition-keys-wif"
+  },
+  "ops": {
+   "t": "AWS: Condition operators",
+   "u": "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_condition_operators.html"
+  },
+  "bp": {
+   "t": "AWS: IAM security best practices",
+   "u": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html"
+  },
+  "roles": {
+   "t": "AWS: IAM roles",
+   "u": "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html"
+  },
+  "ado": {
+   "t": "Microsoft: Azure DevOps service connections",
+   "u": "https://learn.microsoft.com/en-us/azure/devops/pipelines/library/connect-to-azure?view=azure-devops"
+  }
+ },
+ "controls": {
+  "A1": "Provider is configured with the org-specific Azure DevOps issuer URL. No generic, test, personal or non-ADO orgs.",
+  "A2": "Provider and every role trust policy check the audience api://AzureADTokenExchange with StringEquals. No wildcards.",
+  "A3": "Federated trust allows only sts:AssumeRoleWithWebIdentity for the Azure DevOps provider. Nothing broader.",
+  "A4": "Each role trust restricts the sub claim to the approved service connection, WBG format, no wildcards.",
+  "A5": "Each role has only the actions and resource ARNs its pipelines need (least privilege).",
+  "A6": "Production role is not assumable by dev, test or unrelated service connections. Separate roles and subs.",
+  "P1": "Only an approved admin path can change the provider, trust policies, permissions and session settings. Pipeline roles cannot edit themselves.",
+  "S1": "Old access keys are removed and revoked. No static-key fallback anywhere (service connections, variable groups, YAML, scripts, repos, agents).",
+  "S2": "OIDC tokens and STS temporary credentials never appear in logs, traces, artifacts, outputs, caches or error messages.",
+  "C1": "Inventory of the provider ARN and all roles that trust it. Remove obsolete ones.",
+  "D1": "Change control and independent review for role ARN, service connection, OIDC enablement, duration and auth scripts.",
+  "D2": "Pre-production test shows success for the right connection and denial for wrong audience, wrong subject, unauthorised connection, removed trust.",
+  "L1": "AssumeRoleWithWebIdentity is logged for every in-scope role, success and failure, with enough context to match a pipeline run.",
+  "L2": "Create, change and delete of the provider, roles, trust policies and permission policies are logged.",
+  "M1": "Alerts for repeated failures, unapproved sub or aud, unexpected assumptions, unauthorised changes.",
+  "R1": "Documented and tested way to disable a compromised federation and revoke leftover keys."
+ },
+ "tree": {
+  "id": "root",
+  "t": "AWS OIDC flow",
+  "s": "A pipeline proves who it is with a signed token, and AWS swaps that token for short-lived credentials. No key is stored anywhere.",
+  "lv": "core",
+  "k": [
+   {
+    "id": "d1",
+    "t": "Identity and credentials",
+    "s": "Who can talk to AWS, and with what proof. The base layer under everything else.",
+    "lv": "foundation",
+    "k": [
+     {
+      "id": "d1a",
+      "t": "AWS account",
+      "lv": "foundation",
+      "s": "The container that holds your AWS resources and identities. Every role ARN carries a 12 digit account ID (the case uses 706569143085).",
+      "w": "You must read ARNs fast: arn:aws:iam::ACCOUNT:role/NAME. Wrong account in a trust policy is a finding.",
+      "src": [
+       "roles"
+      ]
+     },
+     {
+      "id": "d1b",
+      "t": "IAM user and access keys",
+      "lv": "foundation",
+      "s": "An IAM user holds long-term credentials: an access key ID and a secret access key. They stay valid until deleted. Whoever copies them becomes that user.",
+      "w": "This is what the project removes. You audit that none remain.",
+      "c": [
+       "S1"
+      ],
+      "src": [
+       "bp",
+       "oidc"
+      ]
+     },
+     {
+      "id": "d1c",
+      "t": "IAM role",
+      "lv": "foundation",
+      "s": "An identity with permissions but no password and no keys. Anyone allowed to assume it borrows it for a session.",
+      "w": "The whole design is a role that the pipeline assumes. Two policies sit on it: trust and permission.",
+      "c": [
+       "A3",
+       "A5"
+      ],
+      "src": [
+       "roles"
+      ]
+     },
+     {
+      "id": "d1d",
+      "t": "STS and temporary credentials",
+      "lv": "core",
+      "s": "STS (Security Token Service) hands out temporary credentials: access key ID, secret key, session token. They expire (default 1 hour for web identity, 15 minutes to the role maximum of 1 to 12 hours).",
+      "w": "Explains why a leaked pipeline credential is far less dangerous, and what duration setting to review.",
+      "c": [
+       "D1",
+       "S2"
+      ],
+      "src": [
+       "sts",
+       "oidc"
+      ]
+     },
+     {
+      "id": "d1e",
+      "t": "Static vs temporary: the why",
+      "lv": "core",
+      "s": "AWS recommends workloads use temporary credentials from roles, and keep long-term keys only where nothing else works.",
+      "w": "The justification you quote when writing a finding about a stored key.",
+      "c": [
+       "S1"
+      ],
+      "src": [
+       "bp"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d2",
+    "t": "OIDC and tokens",
+    "s": "The language the pipeline and AWS use to trust each other.",
+    "lv": "foundation",
+    "k": [
+     {
+      "id": "d2a",
+      "t": "Identity provider (IdP)",
+      "lv": "foundation",
+      "s": "A system that vouches for identities. Here: Azure DevOps vouches for a pipeline's service connection.",
+      "w": "You need to know which IdP a provider in AWS points at, and who runs it.",
+      "c": [
+       "A1"
+      ],
+      "src": [
+       "oidc"
+      ]
+     },
+     {
+      "id": "d2b",
+      "t": "OIDC",
+      "lv": "foundation",
+      "s": "OpenID Connect: a standard way for an IdP to prove identity to another system by issuing a signed token.",
+      "w": "Names the protocol in the audit documents. Not something you configure, something you recognise.",
+      "src": [
+       "oidc"
+      ]
+     },
+     {
+      "id": "d2c",
+      "t": "JWT and claims",
+      "lv": "foundation",
+      "s": "A JSON Web Token is the signed token. It carries claims: named facts such as who issued it, who it is for, who it is about.",
+      "w": "Every trust-policy condition is a test on a claim.",
+      "src": [
+       "oidc",
+       "create"
+      ]
+     },
+     {
+      "id": "d2d",
+      "t": "iss, aud, sub",
+      "lv": "core",
+      "s": "iss = issuer URL (https://vstoken.dev.azure.com/{OrgGUID}). aud = intended recipient (api://AzureADTokenExchange, fixed for Azure DevOps). sub = subject (sc://{Org}/{Project}/{ServiceConnection}).",
+      "w": "These three strings are the lock. Five of the sixteen controls test them.",
+      "c": [
+       "A1",
+       "A2",
+       "A4"
+      ],
+      "src": [
+       "blog",
+       "create"
+      ]
+     },
+     {
+      "id": "d2e",
+      "t": "Discovery document and keys",
+      "lv": "dive",
+      "s": "The IdP publishes /.well-known/openid-configuration and a jwks_uri with public keys. AWS uses them to verify the token signature.",
+      "w": "Explains how AWS trusts a token without a shared secret. Useful when a provider fails to create.",
+      "src": [
+       "create"
+      ]
+     },
+     {
+      "id": "d2f",
+      "t": "Token expiry and clock window",
+      "lv": "dive",
+      "s": "IAM accepts a token up to five minutes after its exp time to allow for clock skew.",
+      "w": "Context for replay and timing questions.",
+      "src": [
+       "oidc"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d3",
+    "t": "The flow",
+    "s": "Four steps from pipeline to AWS resource. Learn this picture and the rest hangs off it.",
+    "lv": "foundation",
+    "k": [
+     {
+      "id": "d3a",
+      "t": "ADO service connection",
+      "lv": "foundation",
+      "s": "A saved, authenticated link from Azure Pipelines to an outside service. For AWS it stores the role ARN and the use OIDC option, and no keys.",
+      "w": "Its name is inside sub. Whoever can use or edit it controls who reaches AWS.",
+      "c": [
+       "A4",
+       "D1"
+      ],
+      "src": [
+       "blog",
+       "ado"
+      ]
+     },
+     {
+      "id": "d3b",
+      "t": "Token request",
+      "lv": "core",
+      "s": "Azure DevOps mints the OIDC token for the running pipeline. The AWS toolkit logs it as 'OIDC Token generated'.",
+      "w": "The log line is the easiest place to read the real iss, aud and sub.",
+      "src": [
+       "blog"
+      ]
+     },
+     {
+      "id": "d3c",
+      "t": "AssumeRoleWithWebIdentity",
+      "lv": "core",
+      "s": "The STS call that swaps the token plus a role ARN for temporary credentials. It needs no AWS credentials to make.",
+      "w": "This exact name appears in trust policies (A3) and in CloudTrail (L1).",
+      "c": [
+       "A3",
+       "L1"
+      ],
+      "src": [
+       "sts"
+      ]
+     },
+     {
+      "id": "d3d",
+      "t": "Read the pipeline log",
+      "lv": "core",
+      "s": "Evidence lines: 'Getting OIDC Token', 'Assuming role via OIDC Token', an assumed-role ARN, 'aws sts get-caller-identity', a successful 'aws s3 ls'.",
+      "w": "Your case's captured evidence is this. Know what it proves and what it cannot prove.",
+      "c": [
+       "S1"
+      ],
+      "src": [
+       "blog"
+      ]
+     },
+     {
+      "id": "d3e",
+      "t": "assumed-role ARN",
+      "lv": "core",
+      "s": "arn:aws:sts::ACCOUNT:assumed-role/ROLE/SESSION means a role is in use, not a user. SESSION is aws-vsts-tools by default.",
+      "w": "One glance tells you whether a static user key could have been used.",
+      "src": [
+       "blog"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d4",
+    "t": "IAM OIDC provider",
+    "s": "The first lock: AWS is told which issuer to believe.",
+    "lv": "core",
+    "k": [
+     {
+      "id": "d4a",
+      "t": "Provider URL (issuer)",
+      "lv": "core",
+      "s": "Must be https and match the token's iss. For Azure DevOps it ends with that organisation's GUID.",
+      "w": "A provider for any other org, test org or personal org is a finding.",
+      "c": [
+       "A1"
+      ],
+      "src": [
+       "blog",
+       "create"
+      ]
+     },
+     {
+      "id": "d4b",
+      "t": "Audience on the provider",
+      "lv": "core",
+      "s": "api://AzureADTokenExchange is the audience registered on the provider.",
+      "w": "Must be exact and must also be checked again in each role.",
+      "c": [
+       "A2"
+      ],
+      "src": [
+       "blog"
+      ]
+     },
+     {
+      "id": "d4c",
+      "t": "Provider inventory",
+      "lv": "core",
+      "s": "List the provider ARNs and which roles trust each. Remove obsolete ones when the org or connection is retired.",
+      "w": "Control C1. Stale trust is quiet risk.",
+      "c": [
+       "C1"
+      ],
+      "src": [
+       "create"
+      ]
+     },
+     {
+      "id": "d4d",
+      "t": "Thumbprint",
+      "lv": "dive",
+      "s": "The template mentions a thumbprint. This map has not opened the source on it, so treat it as unverified.",
+      "w": "Ask the architect whether this check still applies before you test it.",
+      "src": [],
+      "ungrounded": true
+     }
+    ]
+   },
+   {
+    "id": "d5",
+    "t": "Role trust policy",
+    "s": "The second lock, and the heart of the audit: exactly who may become this role.",
+    "lv": "core",
+    "k": [
+     {
+      "id": "d5a",
+      "t": "Trust vs permission policy",
+      "lv": "foundation",
+      "s": "Trust policy says who may assume the role. Permission policy says what the role may do. Different documents, different questions.",
+      "w": "Mixing these up is the most common reviewer mistake.",
+      "c": [
+       "A3",
+       "A5"
+      ],
+      "src": [
+       "roles",
+       "blog"
+      ]
+     },
+     {
+      "id": "d5b",
+      "t": "Principal: Federated",
+      "lv": "core",
+      "s": "Names the one OIDC provider ARN allowed to vouch.",
+      "w": "Should list only the Azure DevOps provider, no other principals.",
+      "c": [
+       "A3"
+      ],
+      "src": [
+       "blog"
+      ]
+     },
+     {
+      "id": "d5c",
+      "t": "Action",
+      "lv": "core",
+      "s": "Only sts:AssumeRoleWithWebIdentity. Anything broader widens who can get in.",
+      "w": "Control A3 in one line.",
+      "c": [
+       "A3"
+      ],
+      "src": [
+       "blog"
+      ]
+     },
+     {
+      "id": "d5d",
+      "t": "Condition keys carry the provider URL",
+      "lv": "core",
+      "s": "Keys look like vstoken.dev.azure.com/{OrgGUID}:aud and :sub. The prefix tells AWS which provider's claim to test.",
+      "w": "Explains why the key names differ per provider and why a wrong prefix silently never matches.",
+      "c": [
+       "A2",
+       "A4"
+      ],
+      "src": [
+       "blog",
+       "keys"
+      ]
+     },
+     {
+      "id": "d5e",
+      "t": "StringEquals vs StringLike",
+      "lv": "core",
+      "s": "StringEquals is exact. The Like operators accept wildcards, so StringLike on sub with sc://Org/* lets every service connection in the org in.",
+      "w": "The classic fail. Learn to spot a * in aud or sub in seconds.",
+      "c": [
+       "A2",
+       "A4"
+      ],
+      "src": [
+       "ops"
+      ]
+     },
+     {
+      "id": "d5f",
+      "t": "Missing key behaviour",
+      "lv": "dive",
+      "s": "If a condition key is absent from the request, the match is false. For NotLike style operators it is true instead.",
+      "w": "Why one operator choice can fail open.",
+      "src": [
+       "ops"
+      ]
+     },
+     {
+      "id": "d5g",
+      "t": "Separate role per environment",
+      "lv": "core",
+      "s": "Production uses its own role with its own sub. A dev or test connection must not match it.",
+      "w": "Control A6. Compare the sub of the prod role with the dev connection names.",
+      "c": [
+       "A6"
+      ],
+      "src": [
+       "blog"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d6",
+    "t": "Permissions and least privilege",
+    "s": "What the pipeline can do once it is in.",
+    "lv": "core",
+    "k": [
+     {
+      "id": "d6a",
+      "t": "Policy JSON anatomy",
+      "lv": "foundation",
+      "s": "Effect, Action, Resource, Condition. Read any AWS policy by finding these four.",
+      "w": "You will read many policies. This is the grammar.",
+      "src": [
+       "eval",
+       "ops"
+      ]
+     },
+     {
+      "id": "d6b",
+      "t": "Least privilege",
+      "lv": "core",
+      "s": "List only the actions and resource ARNs the pipeline needs. A * on Action or Resource is the red flag.",
+      "w": "Control A5. Compare the policy to what the pipeline actually does.",
+      "c": [
+       "A5"
+      ],
+      "src": [
+       "bp"
+      ]
+     },
+     {
+      "id": "d6c",
+      "t": "Evaluation and explicit deny",
+      "lv": "core",
+      "s": "A request is allowed only if a policy allows it, and an explicit deny always wins.",
+      "w": "Authentication passing but AccessDenied appearing is this step, not a trust problem.",
+      "src": [
+       "eval"
+      ]
+     },
+     {
+      "id": "d6d",
+      "t": "Boundaries, SCPs, session policies",
+      "lv": "dive",
+      "s": "Extra layers that can only narrow what a role may do. Allowed means allowed by all of them.",
+      "w": "Why a policy that looks wide may still be harmless, or may be blocked by something you did not read.",
+      "src": [
+       "eval",
+       "sts"
+      ]
+     },
+     {
+      "id": "d6e",
+      "t": "Who can edit IAM",
+      "lv": "core",
+      "s": "The right to change the provider, trust policies and permissions must sit with an approved admin path, not with the pipeline role itself.",
+      "w": "Control P1. A role that can edit its own trust policy can widen its own access.",
+      "c": [
+       "P1"
+      ],
+      "src": [
+       "bp"
+      ]
+     },
+     {
+      "id": "d6f",
+      "t": "IAM Access Analyzer",
+      "lv": "dive",
+      "s": "An AWS tool that can generate least-privilege policies from real activity and validate policies.",
+      "w": "A practical way to back an A5 finding with data.",
+      "c": [
+       "A5"
+      ],
+      "src": [
+       "bp"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d7",
+    "t": "Pipeline side and secrets",
+    "s": "Where the old keys hide and where new secrets can leak.",
+    "lv": "core",
+    "k": [
+     {
+      "id": "d7a",
+      "t": "Remove and revoke old keys",
+      "lv": "core",
+      "s": "Switch the service connection to OIDC, then delete the stored keys and revoke them in AWS. No fallback copy left in variable groups, YAML, scripts, repos or agents.",
+      "w": "Control S1. Check both sides: the IAM user key status in AWS and the Azure DevOps places.",
+      "c": [
+       "S1"
+      ],
+      "src": [
+       "blog",
+       "bp"
+      ]
+     },
+     {
+      "id": "d7b",
+      "t": "No secrets in logs",
+      "lv": "core",
+      "s": "Tokens and temporary keys must not appear in logs, debug traces, artifacts, outputs, caches or error messages.",
+      "w": "Control S2. Look at failure output and debug runs, not only the green run.",
+      "c": [
+       "S2"
+      ],
+      "src": [
+       "blog"
+      ]
+     },
+     {
+      "id": "d7c",
+      "t": "Change control",
+      "lv": "core",
+      "s": "Changes to role ARN, service connection, OIDC enablement, duration and auth scripts need independent review.",
+      "w": "Control D1. Ask for pull request or change record evidence.",
+      "c": [
+       "D1"
+      ],
+      "src": [
+       "blog"
+      ]
+     },
+     {
+      "id": "d7d",
+      "t": "Credential duration setting",
+      "lv": "dive",
+      "s": "The pipeline variable aws.rolecredential.maxduration sets how long credentials last, 900 to 43200 seconds.",
+      "w": "Long duration widens the window if a credential leaks.",
+      "c": [
+       "D1"
+      ],
+      "src": [
+       "blog"
+      ]
+     },
+     {
+      "id": "d7e",
+      "t": "Negative testing",
+      "lv": "core",
+      "s": "Before production, show success for the right connection and denial for wrong audience, wrong subject, an unauthorised connection and a removed trust.",
+      "w": "Control D2. Success-only test records are a finding.",
+      "c": [
+       "D2"
+      ],
+      "src": [
+       "blog"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d8",
+    "t": "Logging, monitoring, response",
+    "s": "How you know who did what, and what happens when it goes wrong.",
+    "lv": "core",
+    "k": [
+     {
+      "id": "d8a",
+      "t": "CloudTrail basics",
+      "lv": "foundation",
+      "s": "AWS service that records IAM and STS API calls. Event history shows recent events. A trail stores them long term in S3.",
+      "w": "Your main AWS-side evidence source.",
+      "c": [
+       "L1",
+       "L2"
+      ],
+      "src": [
+       "ct"
+      ]
+     },
+     {
+      "id": "d8b",
+      "t": "Role assumption events",
+      "lv": "core",
+      "s": "Every AssumeRoleWithWebIdentity call, success and failure, should be recorded with enough context to link it to a pipeline run.",
+      "w": "Control L1. Ask for a sample event and check what identity fields it holds.",
+      "c": [
+       "L1"
+      ],
+      "src": [
+       "ct"
+      ]
+     },
+     {
+      "id": "d8c",
+      "t": "IAM change events",
+      "lv": "core",
+      "s": "Create, modify and delete of the provider, roles, trust policies and permission policies must be logged.",
+      "w": "Control L2.",
+      "c": [
+       "L2"
+      ],
+      "src": [
+       "ct"
+      ]
+     },
+     {
+      "id": "d8d",
+      "t": "Detection and alerting",
+      "lv": "core",
+      "s": "Alerts for repeated failures, unapproved sub or aud, unexpected assumptions, and unauthorised changes.",
+      "w": "Control M1. Ask to see the rule, not just a statement.",
+      "c": [
+       "M1"
+      ],
+      "src": [
+       "ct"
+      ]
+     },
+     {
+      "id": "d8e",
+      "t": "Incident response",
+      "lv": "core",
+      "s": "A tested way to cut off federation: narrow or remove the sub trust, disable the service connection, or disable the role. Then review STS events and revoke leftover keys.",
+      "w": "Control R1. Written but never exercised is a finding.",
+      "c": [
+       "R1"
+      ],
+      "src": [
+       "blog"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d9",
+    "t": "Audit method",
+    "s": "The skill that turns knowledge into findings.",
+    "lv": "core",
+    "k": [
+     {
+      "id": "d9a",
+      "t": "Control to evidence to verdict",
+      "lv": "core",
+      "s": "For each control: what does it protect, where is the evidence, what does pass look like, what is the finding if it fails.",
+      "w": "The loop you will repeat sixteen times.",
+      "src": [],
+      "from": "case"
+     },
+     {
+      "id": "d9b",
+      "t": "Strength of evidence",
+      "lv": "core",
+      "s": "A pipeline log shows the pipeline's view only. Trust policy, role permissions and CloudTrail must be opened in AWS. A statement is not evidence.",
+      "w": "Stops you passing a control on a screenshot that cannot prove it.",
+      "src": [],
+      "from": "case"
+     },
+     {
+      "id": "d9c",
+      "t": "Which list is in scope",
+      "lv": "core",
+      "s": "The final advisory lists 16 controls. The solution architect template adds 14 validation checks. You were told 20+.",
+      "w": "Confirm the list with the requester before you start.",
+      "src": [],
+      "from": "case"
+     },
+     {
+      "id": "d9d",
+      "t": "Template doubts to raise",
+      "lv": "dive",
+      "s": "Check 5 names AWS_WEB_IDENTITY_TOKEN_FILE, not seen in the Azure DevOps evidence. Check 3 allows only s3:ListBucket, but the evidence ran 'aws s3 ls'. Check 1 mentions a thumbprint. Unverified here.",
+      "w": "Questions for the architect, not conclusions.",
+      "src": [],
+      "ungrounded": true
+     },
+     {
+      "id": "d9e",
+      "t": "Writing a finding",
+      "lv": "core",
+      "s": "Control, what you saw, where you saw it, why it matters, what fixes it.",
+      "w": "The deliverable.",
+      "src": [],
+      "from": "case"
+     }
+    ]
+   },
+   {
+    "id": "d10",
+    "t": "Adjacent AWS authentication",
+    "s": "The same parts in other clothes. This is what makes the base reusable on harder cases.",
+    "lv": "dive",
+    "k": [
+     {
+      "id": "d10a",
+      "t": "People: federation and Identity Center",
+      "lv": "core",
+      "s": "Human users should reach AWS through an identity provider and temporary credentials. AWS recommends IAM Identity Center for central access.",
+      "w": "The human-user version of the same idea.",
+      "src": [
+       "bp"
+      ]
+     },
+     {
+      "id": "d10b",
+      "t": "SAML federation",
+      "lv": "dive",
+      "s": "Same trust idea with a different token format and different condition keys.",
+      "w": "You will see it on workforce cases.",
+      "src": [
+       "keys"
+      ]
+     },
+     {
+      "id": "d10c",
+      "t": "Amazon Cognito",
+      "lv": "dive",
+      "s": "A broker for sign-up and sign-in of app users, usable with OIDC.",
+      "w": "App-user cases rather than pipeline cases.",
+      "src": [
+       "oidc"
+      ]
+     },
+     {
+      "id": "d10d",
+      "t": "Other CI/CD (GitHub Actions)",
+      "lv": "core",
+      "s": "Same pattern: a different issuer, different sub format, same two locks and same permission policy.",
+      "w": "Transfers straight from this case.",
+      "src": [
+       "oidc"
+      ]
+     },
+     {
+      "id": "d10e",
+      "t": "Cross-account and service roles",
+      "lv": "dive",
+      "s": "A role assumed from another account or by an AWS service. Service-linked roles are owned by the service.",
+      "w": "Appears whenever one account reaches into another.",
+      "src": [
+       "roles"
+      ]
+     },
+     {
+      "id": "d10f",
+      "t": "Five questions for any new case",
+      "lv": "core",
+      "s": "Who is the IdP? What proves the caller? What restricts which caller? What can it do after? Where is it logged?",
+      "w": "The transferable checklist.",
+      "src": [],
+      "from": "case"
+     }
+    ]
+   }
+  ]
+ },
+ "ui": {
+  "learner": "I am a security auditor. I know basic computing and nothing about AWS.",
+  "context": "AWS OIDC federation from Azure DevOps (an audit of case ACN-2026-31070)"
+ },
+ "study_mode": "audit"
+}

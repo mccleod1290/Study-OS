@@ -1,0 +1,279 @@
+<!DOCTYPE html><html><head><meta charset='utf-8'><style>
+@page { margin: 1.5cm; size: A4; }
+body { font-family: DejaVu Sans, sans-serif; font-size: 10.5pt; line-height: 1.35; color: #111; }
+h1 { font-size: 16pt; border-bottom: 1px solid #333; padding-bottom: 0.3em; }
+h2 { font-size: 13pt; margin-top: 1.2em; }
+h3 { font-size: 11.5pt; }
+code, pre { font-family: DejaVu Sans Mono, monospace; font-size: 9pt; }
+pre { background: #f4f4f4; padding: 0.6em; overflow-wrap: break-word; white-space: pre-wrap; }
+table { border-collapse: collapse; width: 100%; margin: 0.8em 0; font-size: 9.5pt; }
+th, td { border: 1px solid #ccc; padding: 0.35em 0.45em; vertical-align: top; }
+th { background: #eee; }
+a { color: #0645ad; }
+</style></head><body><h1>AWS OIDC flow: how a pipeline gets into AWS with no stored secret</h1>
+<p>From zero to reading the ACN-2026-31070 advisory control by control. The same parts carry any AWS authentication case.</p>
+<h2>1. Identity and credentials</h2>
+<p>AWS is a set of services inside an <strong>account</strong>. Every request to it has to be signed by someone. That someone is an <strong>IAM identity</strong>.</p>
+<ul>
+<li>An <strong>IAM user</strong> has long-term credentials: an <strong>access key ID</strong> and a <strong>secret access key</strong>. They live until someone deletes them. Anyone who copies them <em>is</em> that user.</li>
+<li>An <strong>IAM role</strong> has no password and no keys. Anyone allowed to <strong>assume</strong> it borrows it for a while and gets <strong>temporary credentials</strong>. [1]</li>
+<li><strong>STS</strong> (Security Token Service) is the AWS service that hands out those temporary credentials. They are three values: access key ID, secret key, and a <strong>session token</strong>. They expire; the default for web identity is one hour, and it can be set from 15 minutes up to the role's maximum of 1 to 12 hours. [4]</li>
+</ul>
+<p>AWS advises against long-term credentials in applications outside AWS. [1] The old way here keeps a key in an Azure DevOps variable group. The new way keeps nothing.</p>
+<p><em>Does not apply when:</em> a workload truly cannot use a role. Then keys are the exception, and must be reviewed. [9]</p>
+<h2>2. OIDC and tokens</h2>
+<p><strong>OpenID Connect (OIDC)</strong> is a standard way for one system (the <strong>identity provider</strong>, IdP) to prove who someone is to another system. The proof is a <strong>JWT</strong>, a signed token with fields called <strong>claims</strong>. [1]</p>
+<p>The three claims you will audit:</p>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Meaning</th>
+<th>In this case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>iss</code></td>
+<td>who issued the token (the IdP URL)</td>
+<td><code>https://vstoken.dev.azure.com/{OrganizationGUID}</code> [3]</td>
+</tr>
+<tr>
+<td><code>aud</code></td>
+<td>who the token is meant for</td>
+<td><code>api://AzureADTokenExchange</code> (fixed for Azure DevOps) [3]</td>
+</tr>
+<tr>
+<td><code>sub</code></td>
+<td>who the token is about</td>
+<td><code>sc://{Org}/{Project}/{ServiceConnection}</code> [3]</td>
+</tr>
+</tbody>
+</table>
+<p>AWS checks the token's signature using public keys from the IdP's <code>jwks_uri</code>, found in the IdP's discovery document at <code>/.well-known/openid-configuration</code>. [2] A token past its <code>exp</code> time is still accepted for five minutes to allow for clock drift. [1]</p>
+<p>An example token body (values shortened):</p>
+<pre><code class="language-json">{ &quot;iss&quot;: &quot;https://vstoken.dev.azure.com/8b91...&quot;,
+  &quot;aud&quot;: &quot;api://AzureADTokenExchange&quot;,
+  &quot;sub&quot;: &quot;sc://WBG-ORG/ITSPL/&lt;service-connection-name&gt;&quot; }
+</code></pre>
+<p><code>iss</code> names the organisation; <code>sub</code> names the service connection inside it.</p>
+<h2>3. The flow</h2>
+<p>The pipeline never holds a secret. It asks Azure DevOps for a token, and swaps that token at AWS.</p>
+<div>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="165" viewBox="0 0 640 165" font-family="DejaVu Sans, sans-serif" font-size="10">
+<rect x="5" y="40" width="110" height="50" fill="#e8f0fe" stroke="#333"/><text x="60" y="62" text-anchor="middle">ADO pipeline</text><text x="60" y="76" text-anchor="middle">service connection</text>
+<rect x="175" y="5" width="110" height="40" fill="#fff3cd" stroke="#333"/><text x="230" y="29" text-anchor="middle">ADO token issuer</text>
+<rect x="335" y="40" width="130" height="50" fill="#fde2e2" stroke="#333"/><text x="400" y="62" text-anchor="middle">AWS STS</text><text x="400" y="76" text-anchor="middle">checks provider + role</text>
+<rect x="525" y="40" width="110" height="50" fill="#e2f5e2" stroke="#333"/><text x="580" y="62" text-anchor="middle">AWS resource</text><text x="580" y="76" text-anchor="middle">(e.g. S3)</text>
+<line x1="115" y1="55" x2="175" y2="30" stroke="#333"/><text x="105" y="25" font-size="9">1 get token</text>
+<line x1="285" y1="30" x2="335" y2="55" stroke="#333"/>
+<text x="130" y="115" font-size="9">2 call AssumeRoleWithWebIdentity (token + role ARN)</text><line x1="115" y1="85" x2="335" y2="85" stroke="#333"/>
+<text x="345" y="140" font-size="9">3 temporary credentials back to pipeline</text>
+<line x1="465" y1="65" x2="525" y2="65" stroke="#333"/><text x="470" y="58" font-size="9">4 use</text>
+</svg>
+</div>
+
+<ol>
+<li>The service connection gets an OIDC token from Azure DevOps.</li>
+<li>It calls STS <code>AssumeRoleWithWebIdentity</code> with that token and the <strong>role ARN</strong>. This call needs no AWS credentials. [4]</li>
+<li>STS checks the token against the <strong>IAM OIDC provider</strong> and the role's <strong>trust policy</strong>. If both pass, it returns temporary credentials.</li>
+<li>The pipeline signs its AWS calls with them.</li>
+</ol>
+<p>The captured evidence shows this: "Getting OIDC Token", then "Assuming role via OIDC Token", then a role ARN <code>arn:aws:sts::706569143085:assumed-role/WBG-ADO-ORG-SERVICE-CONNECTION-TEST/aws-vsts-tools</code>, then a successful <code>aws s3 ls</code>. <code>assumed-role</code> proves a role was used, not a user. <code>aws-vsts-tools</code> is the default session name. [3]</p>
+<h2>4. The IAM OIDC provider</h2>
+<p>This is an object in the AWS account that says "I trust tokens from this issuer." [2] You create it with the issuer URL as <strong>Provider URL</strong> and <code>api://AzureADTokenExchange</code> as <strong>Audience</strong>. [3]</p>
+<p><em>Audit view:</em> one provider per Azure DevOps organisation, URL ending in that organisation's GUID. A provider for a test, personal, or generic org is a finding (control A1). The provider ARN is the anchor for your inventory (control C1).</p>
+<h2>5. The role trust policy</h2>
+<p>A role has <strong>two</strong> policy kinds. Do not mix them.</p>
+<ul>
+<li><strong>Trust policy</strong>: who may assume the role. Authentication.</li>
+<li><strong>Permission policy</strong>: what the role may do once assumed. Authorization.</li>
+</ul>
+<p>This is a good trust policy. [3]</p>
+<pre><code class="language-json">{ &quot;Effect&quot;: &quot;Allow&quot;,
+  &quot;Principal&quot;: { &quot;Federated&quot;: &quot;arn:aws:iam::123456789012:oidc-provider/vstoken.dev.azure.com/&lt;OrgGUID&gt;&quot; },
+  &quot;Action&quot;: &quot;sts:AssumeRoleWithWebIdentity&quot;,
+  &quot;Condition&quot;: { &quot;StringEquals&quot;: {
+     &quot;vstoken.dev.azure.com/&lt;OrgGUID&gt;:aud&quot;: &quot;api://AzureADTokenExchange&quot;,
+     &quot;vstoken.dev.azure.com/&lt;OrgGUID&gt;:sub&quot;: &quot;sc://&lt;Org&gt;/&lt;Project&gt;/&lt;ServiceConnection&gt;&quot; } } }
+</code></pre>
+<p>Read it in four parts: <strong>Principal</strong> (only this provider), <strong>Action</strong> (only web-identity assume, nothing broader), <strong>aud</strong> (exact), <strong>sub</strong> (exact, one service connection). The condition key name starts with the provider URL; that is how AWS knows which provider's <code>aud</code> and <code>sub</code> you mean. [3]</p>
+<p><strong>Second example, one thing changed.</strong> Replace <code>StringEquals</code> on <code>sub</code> with <code>StringLike</code> and the value <code>sc://WBG-ORG/*</code>. Now every service connection in the organisation can assume the role. Wildcards are the usual failure, and the advisory bans them (A2, A4). <code>StringEquals</code> is an exact match; wildcards are allowed only in the <code>Like</code> operators. [8]</p>
+<p>Trap: if a condition key is missing from the request, the match is false. For <code>NotLike</code> operators it is true instead. [8]</p>
+<p>The prod rule (A6): the role used for production must have its own role and its own <code>sub</code>. A dev service connection must not match it.</p>
+<h2>6. Permissions and least privilege</h2>
+<p>Once assumed, AWS checks what the role may do. A request is allowed only if a policy allows it, and an <strong>explicit deny</strong> always wins. [5]</p>
+<p>Layers can only narrow:</p>
+<ul>
+<li><strong>Permissions boundary</strong>: allowed = identity policy ∩ boundary. [5]</li>
+<li><strong>Organization SCP (service control policy)</strong>: the action must also be allowed by the SCP. [5]</li>
+<li><strong>Session policy</strong> passed at assume time: result is the intersection with the role's policy; it can never grant more. [4]</li>
+</ul>
+<p><em>Least privilege</em> means the role lists only the actions and resource ARNs the pipeline needs (A5). A <code>*</code> on action or resource is the red flag.</p>
+<p><em>Common confusion:</em> login worked, job gets <code>AccessDenied</code>. The trust policy let the pipeline in; the permission policy did not allow the action.</p>
+<p>P1 asks who can edit the provider, trust policies and permissions. A pipeline role that can edit its own trust policy can widen its own access.</p>
+<h2>7. Pipeline side and secrets</h2>
+<p>The parts are the service connection, the old keys, and the logs. This only works if all three are clean; one stored key defeats the design.</p>
+<ul>
+<li>The <strong>service connection</strong> in Azure DevOps stores the role ARN and the "use OIDC" option. No keys. [3]</li>
+<li>Migration means: switch on OIDC, set the role, and delete the old access key and secret. [3] The advisory goes further: revoke the old keys in AWS too, and leave no fallback in variable groups, YAML, scripts, repos, or agent config (S1).</li>
+<li>Temporary keys and tokens must not appear in logs, artifacts, output variables or caches (S2). </li>
+<li>Changes to the role ARN, the service-connection reference, OIDC enablement and the credential duration need change control and independent review (D1). The duration is the variable <code>aws.rolecredential.maxduration</code>, 900 to 43200 seconds. [3]</li>
+<li>Test the negative cases before go-live: wrong audience, wrong subject, unauthorised connection, removed trust (D2).</li>
+</ul>
+<h2>8. Logging, monitoring, response</h2>
+<p>AWS <strong>CloudTrail</strong> records IAM and STS API calls, including who, from which IP, and when. A <strong>trail</strong> keeps them long term in an S3 bucket. [6]</p>
+<p>What the advisory wants recorded (L1, L2): every <code>AssumeRoleWithWebIdentity</code>, success and failure, with enough context to match it to a role and a pipeline run; and every create, change or delete of the provider, roles, trust policies and permission policies.</p>
+<p>What it wants watched (M1): repeated failures, unapproved <code>sub</code> or <code>aud</code>, unexpected assumptions, unauthorised changes.</p>
+<p>What it wants ready (R1): a tested way to cut off the federation (narrow the <code>sub</code>, disable the connection or the role), then review STS events and revoke leftover keys.</p>
+<h2>9. Audit method</h2>
+<p>For each control do four things: <strong>what does it protect, where is the evidence, what does pass look like, what is the finding if it fails.</strong> Open the object; a statement is not evidence.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Control (short)</th>
+<th>Open this</th>
+<th>Pass</th>
+<th>Fail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A1</td>
+<td>Provider uses the org-specific issuer</td>
+<td>IAM &gt; Identity providers</td>
+<td>one URL with the org GUID</td>
+<td>generic, test or personal org</td>
+</tr>
+<tr>
+<td>A2</td>
+<td><code>aud</code> exact, <code>StringEquals</code></td>
+<td>role trust policy</td>
+<td><code>api://AzureADTokenExchange</code>, exact</td>
+<td>wildcard or <code>Like</code></td>
+</tr>
+<tr>
+<td>A3</td>
+<td>Only <code>sts:AssumeRoleWithWebIdentity</code></td>
+<td>trust policy Action</td>
+<td>that one action, that one Principal</td>
+<td>broader action or other principals</td>
+</tr>
+<tr>
+<td>A4</td>
+<td><code>sub</code> exact, WBG format</td>
+<td>trust policy Condition</td>
+<td>one <code>sc://</code> value</td>
+<td>wildcard, missing sub</td>
+</tr>
+<tr>
+<td>A5</td>
+<td>Least privilege</td>
+<td>role permission policies</td>
+<td>named actions and ARNs</td>
+<td><code>*</code> or unused rights</td>
+</tr>
+<tr>
+<td>A6</td>
+<td>Prod role not reachable by dev/test</td>
+<td>prod role <code>sub</code></td>
+<td>prod connection only</td>
+<td>shared role or shared sub</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>Admin path restricted</td>
+<td>who holds <code>iam:*</code> on these objects</td>
+<td>approved admins only</td>
+<td>pipeline role can edit itself</td>
+</tr>
+<tr>
+<td>S1</td>
+<td>Old keys removed and revoked</td>
+<td>IAM user keys, ADO variable groups, YAML</td>
+<td>none present, keys deleted</td>
+<td>key still active or stored</td>
+</tr>
+<tr>
+<td>S2</td>
+<td>No secrets in logs</td>
+<td>pipeline logs, artifacts</td>
+<td>no token or temp key</td>
+<td>token printed on error</td>
+</tr>
+<tr>
+<td>C1</td>
+<td>Inventory, obsolete cleanup</td>
+<td>provider and role list</td>
+<td>list matches reality</td>
+<td>stale provider or role</td>
+</tr>
+<tr>
+<td>D1</td>
+<td>Change control</td>
+<td>pipeline repo history</td>
+<td>reviewed changes</td>
+<td>direct, unreviewed edits</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>Pre-prod test with negatives</td>
+<td>test records</td>
+<td>success plus four denials</td>
+<td>success only</td>
+</tr>
+<tr>
+<td>L1</td>
+<td>STS events logged</td>
+<td>CloudTrail</td>
+<td>events seen, success and fail</td>
+<td>gaps or no trail</td>
+</tr>
+<tr>
+<td>L2</td>
+<td>IAM changes logged</td>
+<td>CloudTrail</td>
+<td>create/modify/delete visible</td>
+<td>missing</td>
+</tr>
+<tr>
+<td>M1</td>
+<td>Detection configured</td>
+<td>SIEM or alarm rules</td>
+<td>rules for the listed events</td>
+<td>none</td>
+</tr>
+<tr>
+<td>R1</td>
+<td>Response documented and tested</td>
+<td>runbook, test record</td>
+<td>documented and exercised</td>
+<td>written but untested</td>
+</tr>
+</tbody>
+</table>
+<p>Read the evidence document the same way. The IDs above are labels for this page; the advisory does not number its controls. The captured pipeline log ("OIDC issuer", "Assuming role via OIDC Token", the <code>assumed-role</code> ARN) shows only the pipeline's view. It hints at A1 and S1, but the trust policy, the role's permissions and CloudTrail must be opened in AWS.</p>
+<h2>10. Adjacent AWS authentication</h2>
+<p>Once you hold the parts above, other cases are the same pieces in different places.</p>
+<ul>
+<li><strong>Humans</strong>: federate through an IdP to get temporary credentials; AWS recommends IAM Identity Center for central access. [9]</li>
+<li><strong>Other CI/CD</strong>: GitHub Actions uses the same OIDC pattern with its own issuer. [1]</li>
+<li><strong>Apps with users</strong>: Amazon Cognito brokers OIDC for sign-up and sign-in. [1]</li>
+<li><strong>Cross-account and service roles</strong>: a role assumed by another account or an AWS service. [10]</li>
+</ul>
+<p>For any new case ask: who is the IdP, what proves the caller, what restricts which caller, what can it do after, where is it logged?</p>
+<h2>References</h2>
+<ol>
+<li>https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_oidc.html : OIDC federation, JWT exchange, clock window.</li>
+<li>https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html : provider prerequisites.</li>
+<li>https://aws.amazon.com/blogs/modernizing-with-aws/how-to-federate-into-aws-from-azure-devops-using-openid-connect/ : Azure DevOps to AWS steps, trust policy, sub format.</li>
+<li>https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html : duration, session policies.</li>
+<li>https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html : deny wins, boundaries, SCPs.</li>
+<li>https://docs.aws.amazon.com/IAM/latest/UserGuide/cloudtrail-integration.html : CloudTrail for IAM and STS.</li>
+<li>https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html : OIDC condition keys.</li>
+<li>https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_condition_operators.html : string operators, missing keys.</li>
+<li>https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html : temporary credentials, least privilege.</li>
+<li>https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html : roles.</li>
+<li>https://learn.microsoft.com/en-us/azure/devops/pipelines/library/connect-to-azure?view=azure-devops : service connections (background).</li>
+</ol></body></html>

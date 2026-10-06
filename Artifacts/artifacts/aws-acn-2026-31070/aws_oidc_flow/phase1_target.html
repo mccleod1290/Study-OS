@@ -1,0 +1,31 @@
+<!DOCTYPE html><html><head><meta charset='utf-8'><title>Target</title><style>
+@page { margin: 1.5cm; size: A4; }
+body { font-family: DejaVu Sans, sans-serif; font-size: 10.5pt; line-height: 1.35; color: #111; }
+h1 { font-size: 16pt; border-bottom: 1px solid #333; padding-bottom: 0.3em; }
+h2 { font-size: 13pt; margin-top: 1.2em; }
+h3 { font-size: 11.5pt; }
+code, pre { font-family: DejaVu Sans Mono, monospace; font-size: 9pt; }
+pre { background: #f4f4f4; padding: 0.6em; overflow-wrap: break-word; white-space: pre-wrap; }
+table { border-collapse: collapse; width: 100%; margin: 0.8em 0; font-size: 9.5pt; }
+th, td { border: 1px solid #ccc; padding: 0.35em 0.45em; vertical-align: top; }
+th { background: #eee; }
+a { color: #0645ad; }
+</style></head><body><h1>Target</h1><pre>﻿topic: AWS OIDC flow (Azure DevOps to AWS, no static secrets)
+slug: aws_oidc_flow
+kind: work
+title: ACN-2026-31070 - AWS IAM key update with OIDC authentication (security architect advisory, final)
+path: user-input-learning-text/AWS - OIDC Case/SA-Report-ACN-2026-31070-IAM-OIDC-Final.docx
+done_when: &gt;-
+  He can audit each control in the security architect advisory on his own: say what it
+  protects, where to look in AWS and Azure DevOps for the evidence, what a pass and a fail
+  look like, and write the finding. Then the same base carries any other AWS authentication
+  case (federation, roles, keys).
+supporting_files:
+  - user-input-learning-text/AWS - OIDC Case/SA-Report-ACN-2026-31070-IAM-OIDC-Draft-1.0.docx   (draft, superseded)
+  - user-input-learning-text/AWS - OIDC Case/OIDC Authentication-AWS - No Static Secrets-OIS-TEMPLATE (1).docx   (solution architect template, 14 pre/post validation checks)
+  - user-input-learning-text/AWS - OIDC Case/ACN-2026-31070 - OIDC authenticaiton captured inforamtion for ACN-2026-31070.docx   (pipeline log evidence)
+flag: &gt;-
+  He was told 20+ controls. The final advisory lists 16 controls across 8 domains, and the
+  solution architect template adds 14 validation checks. 16 + 14 = 30 items overlap in part.
+  Confirm with the requester which list is the audit scope.
+</pre></body></html>

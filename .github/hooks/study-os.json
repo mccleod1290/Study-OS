@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      {
+        "type": "command",
+        "powershell": "python skills/scripts/hooks/study_os_hook.py sessionStart",
+        "cwd": ".",
+        "timeoutSec": 10
+      }
+    ],
+    "userPromptSubmitted": [
+      {
+        "type": "command",
+        "powershell": "python skills/scripts/hooks/study_os_hook.py userPromptSubmitted",
+        "cwd": ".",
+        "timeoutSec": 10
+      },
+      {
+        "type": "command",
+        "powershell": "python skills/scripts/hooks/log_user_inputs.py userPromptSubmitted",
+        "cwd": ".",
+        "timeoutSec": 10
+      }
+    ],
+    "postToolUse": [
+      {
+        "type": "command",
+        "powershell": "python skills/scripts/hooks/study_os_hook.py postToolUse",
+        "cwd": ".",
+        "timeoutSec": 10
+      },
+      {
+        "type": "command",
+        "powershell": "python skills/scripts/hooks/log_deliverables.py postToolUse",
+        "cwd": ".",
+        "timeoutSec": 10
+      }
+    ],
+    "errorOccurred": [
+      {
+        "type": "command",
+        "powershell": "python skills/scripts/hooks/study_os_hook.py errorOccurred",
+        "cwd": ".",
+        "timeoutSec": 10
+      }
+    ],
+    "sessionEnd": [
+      {
+        "type": "command",
+        "powershell": "python skills/scripts/hooks/study_os_hook.py sessionEnd",
+        "cwd": ".",
+        "timeoutSec": 10
+      },
+      {
+        "type": "command",
+        "powershell": "python skills/scripts/hooks/log_deliverables.py sessionEnd",
+        "cwd": ".",
+        "timeoutSec": 10
+      }
+    ]
+  }
+}

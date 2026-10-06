@@ -1,0 +1,2 @@
+pages: 5
+words: 1977 (outside fenced code)

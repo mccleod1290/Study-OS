@@ -1,0 +1,45 @@
+{
+ "title": "Video lecture (illustrative example)",
+ "subtitle": "Shape example only. Segments and timestamps are placeholders for what a transcript pipeline would give you.",
+ "slug": "video_transcript",
+ "study_mode": "video",
+ "mode": "zero",
+ "ui": {
+  "anchors": "Key claims",
+  "anchor": "Claim",
+  "critical": "Key claim",
+  "why": "Why the speaker says it matters",
+  "feeds": "It supports these claims",
+  "learner": "I watched a video and have its transcript. I do not know the subject.",
+  "context": "a single video lecture, studied from its transcript",
+  "labels": {"explain": "Explain", "evidence": "Find it", "challenge": "Quiz me", "deeper": "Go deeper"},
+  "prompts": {
+   "explain": "Using only the transcript segment I name, explain the idea in plain language. Define each term the first time. Tell me what the speaker skipped over, and mark anything that is your addition, not theirs.",
+   "evidence": "Point to where in the video this is said (timestamp) and quote the one line. Then tell me whether an independent source agrees, and give the source.",
+   "challenge": "Quiz me one question at a time on this segment. Hint before you answer. After five, tell me which timestamps to rewatch.",
+   "deeper": "Go beyond the video: what is the standard objection, what has changed since it was recorded, and what should I read next."
+  }
+ },
+ "sources": {
+  "s1": {"t": "Video: opening and framing", "ref": "00:00-04:10 (placeholder)"},
+  "s2": {"t": "Video: the main argument", "ref": "04:10-18:30 (placeholder)"},
+  "s3": {"t": "Video: worked example", "ref": "18:30-31:00 (placeholder)"}
+ },
+ "controls": {
+  "K1": "Claim 1: the speaker's central thesis",
+  "K2": "Claim 2: the example that supports it"
+ },
+ "tree": {
+  "id": "root", "t": "Video lecture", "s": "What the speaker says, in the order they say it, with a way to check each part.",
+  "k": [
+   {"id": "d1", "t": "Setup", "s": "The problem and the terms.", "lv": "foundation", "k": [
+    {"id": "d1a", "t": "The problem being solved", "lv": "foundation", "s": "The speaker states what goes wrong today and why it matters.", "w": "Without this the rest has no point.", "from": "transcript", "src": ["s1"]}
+   ]},
+   {"id": "d2", "t": "The argument", "s": "The core claim and its parts.", "lv": "core", "k": [
+    {"id": "d2a", "t": "Central thesis", "lv": "core", "s": "The one sentence the whole video builds toward.", "w": "Claim 1.", "c": ["K1"], "from": "transcript", "src": ["s2"]},
+    {"id": "d2b", "t": "Worked example", "lv": "core", "s": "A concrete case that the speaker uses to prove the thesis.", "w": "Claim 2.", "c": ["K2"], "from": "transcript", "src": ["s3"]},
+    {"id": "d2c", "t": "What the speaker did not prove", "lv": "dive", "s": "Gaps and assumptions to check outside the video.", "w": "A video is one voice. Verify before you rely on it.", "ungrounded": true}
+   ]}
+  ]
+ }
+}

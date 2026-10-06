@@ -1,0 +1,214 @@
+<!DOCTYPE html><html><head><meta charset='utf-8'><style>
+@page { margin: 1.5cm; size: A4; }
+body { font-family: DejaVu Sans, sans-serif; font-size: 10.5pt; line-height: 1.35; color: #111; }
+h1 { font-size: 16pt; border-bottom: 1px solid #333; padding-bottom: 0.3em; }
+h2 { font-size: 13pt; margin-top: 1.2em; }
+h3 { font-size: 11.5pt; }
+code, pre { font-family: DejaVu Sans Mono, monospace; font-size: 9pt; }
+pre { background: #f4f4f4; padding: 0.6em; overflow-wrap: break-word; white-space: pre-wrap; }
+table { border-collapse: collapse; width: 100%; margin: 0.8em 0; font-size: 9.5pt; }
+th, td { border: 1px solid #ccc; padding: 0.35em 0.45em; vertical-align: top; }
+th { background: #eee; }
+a { color: #0645ad; }
+</style></head><body><h1>AWS identity and credentials: who can talk to AWS, and with what proof</h1>
+<p>Domain 1 of the ACN-2026-31070 case. Sections 1 to 5 are the five parts, in build order. Sections 6 to 10 compare, widen, and give you a request list. Every part has the same shape: what it is, a real example, how you check it as an auditor, and the two mistakes people make. Controls S1, S2, A3, A5 and D1 rest on this page.</p>
+<h2>1. AWS account</h2>
+<p>An <strong>account</strong> is the box that holds your AWS resources and the identities that can use them. It has a <strong>12 digit account ID</strong>, such as <code>706569143085</code> in this case. [3]</p>
+<p>Every thing in AWS has an <strong>ARN</strong> (Amazon Resource Name), its full address. The pattern is <code>arn:partition:service:region:account-id:resource</code>. IAM objects have no region, so that slot is empty. ARNs are not secret. [3]</p>
+<div>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="92" viewBox="0 0 640 92" font-family="DejaVu Sans, sans-serif" font-size="11">
+<text x="8" y="26" font-family="DejaVu Sans Mono, monospace" font-size="13">arn : aws : iam : (empty) : 706569143085 : role/WBG-ADO-ORG-SERVICE-CONNECTION-TEST</text>
+<line x1="8" y1="34" x2="40" y2="34" stroke="#333"/><text x="8" y="50">fixed</text>
+<line x1="48" y1="34" x2="72" y2="34" stroke="#333"/><text x="48" y="64">partition</text>
+<line x1="88" y1="34" x2="112" y2="34" stroke="#333"/><text x="88" y="78">service</text>
+<line x1="150" y1="34" x2="256" y2="34" stroke="#c00"/><text x="150" y="50" fill="#c00">which account</text>
+<line x1="270" y1="34" x2="630" y2="34" stroke="#333"/><text x="270" y="50">type / name</text>
+</svg>
+</div>
+
+<p><em>Does not apply when:</em> the partition is not <code>aws</code>. China and GovCloud use <code>aws-cn</code> and <code>aws-us-gov</code>. [3]</p>
+<p><em>How you check it:</em> read the ARN left to right. The account ID tells you who owns the role. The evidence in this case shows <code>assumed-role/WBG-ADO-ORG-SERVICE-CONNECTION-TEST/aws-vsts-tools</code> in account <code>706569143085</code>. If that ID is not the account the team told you about, you stop and ask.</p>
+<p><em>Two mistakes:</em> treating an ARN as a secret and refusing to share it; and reading only the role name and missing that the account ID is different.</p>
+<h2>2. IAM user and access keys</h2>
+<p>An <strong>IAM user</strong> is an identity with long-term credentials. The usual pair is an <strong>access key ID</strong> and a <strong>secret access key</strong>. They work until someone deletes or deactivates them, from anywhere. Whoever holds them <em>is</em> that user. [2]</p>
+<p>AWS says to use users only where federation cannot do the job: a workload that cannot use a role, a third-party client, or CodeCommit. [1] If you must keep a user, it should have MFA, and keys should be updated and removed using the access key last used information. [2]</p>
+<p><em>Does not apply when:</em> the caller is a role. Roles have no password and no keys. [1]</p>
+<p><em>How you check it:</em> ask for the <strong>credential report</strong>. It is a CSV listing every IAM user and the status of passwords, access keys and MFA. IAM builds a new one at most every four hours. The permissions are <code>iam:GenerateCredentialReport</code> and <code>iam:GetCredentialReport</code>. [4]</p>
+<pre><code class="language-text">aws iam generate-credential-report
+aws iam get-credential-report
+</code></pre>
+<p>Read the columns for the user the pipeline used to have. A <strong>passing</strong> result for control S1 is the key marked inactive or the user gone. A <strong>failing</strong> one is an active key with a recent last-used date. The report covers only the first two keys per user, so also run <code>ListAccessKeys</code> for the full list. [4]</p>
+<p><em>Two mistakes:</em> believing a key is safe because "nobody uses it" (it is valid until deleted); and checking IAM but not the places a key can hide, such as variable groups, YAML, scripts, repos and agents, which is what control S1 lists.</p>
+<h2>3. IAM role</h2>
+<p>A <strong>role</strong> is an identity with permissions but no standard password or keys. Anyone allowed to <strong>assume</strong> it gets temporary credentials for a <strong>session</strong>. [1] A new account has no roles; services may add <strong>service-linked roles</strong> later. [1]</p>
+<p>Two policies sit on a role. The <strong>trust policy</strong> says who may assume it. The <strong>permission policy</strong> says what it can do once assumed. Control A3 audits the first; control A5 audits the second.</p>
+<p>Example. The role <code>WBG-ADO-ORG-SERVICE-CONNECTION-TEST</code> is assumed by the Azure DevOps service connection. In the log it appears as <code>arn:aws:sts::706569143085:assumed-role/WBG-ADO-ORG-SERVICE-CONNECTION-TEST/aws-vsts-tools</code>. The word <code>assumed-role</code> proves a role was used, not a user. The last part, <code>aws-vsts-tools</code>, is the <strong>session name</strong>, a label for that borrowing. [5]</p>
+<p><em>Does not apply when:</em> you need a credential that never expires. A role cannot give one.</p>
+<p><em>How you check it:</em> in the console, open IAM, then Roles, then the role. Read the <strong>Trust relationships</strong> tab and the <strong>Permissions</strong> tab. Passing for A3: only the Azure DevOps provider may assume it. Failing: a wildcard principal, or any account that should not be there. Writing the finding: "Role X trusts principal Y, which allows Z to assume it; restrict the trust policy to the Azure DevOps provider."</p>
+<p><em>Two mistakes:</em> auditing only permissions and not the trust policy; and thinking the role's <em>name</em> proves who can use it. Only the trust policy does.</p>
+<h2>4. STS and temporary credentials</h2>
+<p><strong>STS</strong> (Security Token Service) is the AWS service that hands out temporary credentials. [5] They are three values: an access key ID, a secret key and a <strong>session token</strong>. They expire. For <code>AssumeRoleWithWebIdentity</code> the default is one hour. The session can be set from 15 minutes up to the role's maximum, which is 1 to 12 hours. [5]</p>
+<p>This is the call this case uses. It takes the token from the pipeline and the role ARN, and <strong>needs no AWS credentials to make</strong>. That is why no key has to be stored. [5]</p>
+<pre><code class="language-text">Pipeline --(OIDC token + role ARN)--&gt; STS
+STS --(access key ID, secret key, session token, expiry)--&gt; Pipeline
+</code></pre>
+<div>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="190" viewBox="0 0 640 190" font-family="DejaVu Sans, sans-serif" font-size="11">
+<rect x="10" y="10" width="290" height="80" fill="#fde2e2" stroke="#333"/><text x="20" y="30" font-weight="bold">Static key (IAM user)</text><text x="20" y="48">created once, stored in a variable group</text><text x="20" y="64">valid until a human deletes it</text><text x="20" y="80" fill="#c00">leaked on day 1, usable on day 300</text>
+<rect x="340" y="10" width="290" height="80" fill="#e2f5e2" stroke="#333"/><text x="350" y="30" font-weight="bold">Temporary credential (role + STS)</text><text x="350" y="48">issued on each run, nothing stored</text><text x="350" y="64">expires in 1 hour by default</text><text x="350" y="80" fill="#060">leaked on day 1, dead by day 1</text>
+<line x1="20" y1="130" x2="300" y2="130" stroke="#c00" stroke-width="3"/><text x="20" y="150">key lifetime: months or years</text>
+<line x1="350" y1="130" x2="380" y2="130" stroke="#060" stroke-width="3"/><text x="350" y="150">session: about an hour</text>
+<text x="20" y="178" font-size="10" fill="#555">Line length is the exposure window. Shorter is better.</text>
+</svg>
+</div>
+
+<p><em>Does not apply when:</em> a long-term key is used. A plain access key has no session token and no expiry.</p>
+<p><em>How you check it:</em> look at the role's maximum session duration in the role summary, and the log lines showing "Assuming role via OIDC Token". Control S2 asks that none of these values appear in logs, outputs or artifacts. Search the logs for the session token. Control D1 asks that changes to the duration be reviewed.</p>
+<p><em>Two mistakes:</em> assuming "temporary" means "safe" (a leaked token works until it expires, so shorter is better); and forgetting the role's maximum can cap the duration you request.</p>
+<h2>5. Static versus temporary: the why</h2>
+<p>A leaked static key stays valid until a human finds and kills it. A leaked temporary credential dies on its own. That is the whole argument. AWS recommends temporary credentials with roles for workloads, and long-term keys only where nothing else works. [2]</p>
+<p>For a pipeline running outside AWS, AWS lists these ways to get temporary credentials: IAM Roles Anywhere with an X.509 certificate, <code>AssumeRoleWithSAML</code>, and <code>AssumeRoleWithWebIdentity</code> with a JWT from an identity provider. [2] This case uses the last one, with Azure DevOps as the provider. [6] [7]</p>
+<p><em>Does not apply when:</em> the workload truly cannot use any of these. Then the key is an exception and must be reviewed, rotated and justified. [2]</p>
+<p><em>How you use it:</em> in a finding, quote the AWS recommendation and name the replacement: assume a role through OIDC instead of using key X. [2]</p>
+<p><em>Two mistakes:</em> accepting "we rotate the key" as equivalent to removing it; and calling OIDC "secure" without checking the trust policy, which is where the real control lives.</p>
+<h2>6. Side by side</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>IAM user</th>
+<th>IAM role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Credentials</td>
+<td>access key ID and secret, valid until deleted [2]</td>
+<td>none of its own; temporary ones per session [1]</td>
+</tr>
+<tr>
+<td>Who uses it</td>
+<td>one identity, whoever holds the key</td>
+<td>anyone the trust policy allows [1]</td>
+</tr>
+<tr>
+<td>Appears in credential report</td>
+<td>yes [4]</td>
+<td>no, it lists users</td>
+</tr>
+<tr>
+<td>Appears in the log as</td>
+<td><code>user/NAME</code></td>
+<td><code>assumed-role/NAME/SESSION</code></td>
+</tr>
+<tr>
+<td>Right for the pipeline</td>
+<td>only if nothing else works [1]</td>
+<td>yes, through federation [2]</td>
+</tr>
+</tbody>
+</table>
+<h2>7. Other identities you will meet</h2>
+<ul>
+<li><strong>Root user.</strong> Owns the whole account. AWS says to protect its credentials and require MFA on it. [2]</li>
+<li><strong>Federated people.</strong> Staff should sign in through an identity provider, ideally IAM Identity Center, not through their own IAM users. [2]</li>
+<li><strong>Service-linked roles.</strong> Created and owned by an AWS service. You can see them, not edit them. [1]</li>
+<li><strong>Machines outside AWS.</strong> Roles Anywhere (a certificate) and SAML also give temporary credentials. [2]</li>
+</ul>
+<h2>8. Worked example: reading the evidence</h2>
+<p>The captured pipeline log shows four lines. Read them as a chain.</p>
+<ol>
+<li>"Getting OIDC Token". The service connection asked Azure DevOps for a token. No AWS credential is involved yet. [7]</li>
+<li>"Assuming role via OIDC Token". The pipeline calls STS with that token and the role ARN. [5]</li>
+<li><code>arn:aws:sts::706569143085:assumed-role/WBG-ADO-ORG-SERVICE-CONNECTION-TEST/aws-vsts-tools</code>. STS agreed. Account <code>706569143085</code>, a role, session <code>aws-vsts-tools</code>. [3] [5]</li>
+<li>A successful <code>aws s3 ls</code>. The temporary credentials worked against a resource.</li>
+</ol>
+<div>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="120" viewBox="0 0 640 120" font-family="DejaVu Sans, sans-serif" font-size="10">
+<rect x="5" y="30" width="135" height="50" fill="#e8f0fe" stroke="#333"/><text x="72" y="52" text-anchor="middle">1 Getting OIDC Token</text><text x="72" y="68" text-anchor="middle">no AWS key yet</text>
+<rect x="165" y="30" width="135" height="50" fill="#fff3cd" stroke="#333"/><text x="232" y="52" text-anchor="middle">2 Assuming role</text><text x="232" y="68" text-anchor="middle">token + role ARN</text>
+<rect x="325" y="30" width="155" height="50" fill="#fde2e2" stroke="#333"/><text x="402" y="52" text-anchor="middle">3 assumed-role ARN</text><text x="402" y="68" text-anchor="middle">STS said yes</text>
+<rect x="505" y="30" width="130" height="50" fill="#e2f5e2" stroke="#333"/><text x="570" y="52" text-anchor="middle">4 aws s3 ls works</text><text x="570" y="68" text-anchor="middle">credentials valid</text>
+<line x1="140" y1="55" x2="165" y2="55" stroke="#333"/><line x1="300" y1="55" x2="325" y2="55" stroke="#333"/><line x1="480" y1="55" x2="505" y2="55" stroke="#333"/>
+<text x="5" y="110" fill="#c00">Proves this run used a role. Does not prove no key exists elsewhere.</text>
+</svg>
+</div>
+
+<p>What this proves for S1: <strong>this run</strong> used no stored key. What it does not prove: that no key exists. A pipeline can succeed through a role while an old key still sits in a variable group. So the S1 evidence is two things, the log above <em>and</em> the credential report plus a search of the places keys hide.</p>
+<p>Second example, one condition changed. Suppose line 3 instead showed <code>arn:aws:iam::706569143085:user/ado-deploy</code>. Now the caller is a user, so a long-term key was used. The role-based design was bypassed. That is a failing S1 even though the pipeline "works". [1] [4]</p>
+<h2>9. Decoding three ARNs</h2>
+<p>Same pattern, three answers.</p>
+<table>
+<thead>
+<tr>
+<th>ARN</th>
+<th>Reads as</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>arn:aws:iam::706569143085:role/WBG-ADO-ORG-SERVICE-CONNECTION-TEST</code></td>
+<td>the role itself, in account <code>706569143085</code> (what the trust policy protects) [3]</td>
+</tr>
+<tr>
+<td><code>arn:aws:sts::706569143085:assumed-role/WBG-ADO-ORG-SERVICE-CONNECTION-TEST/aws-vsts-tools</code></td>
+<td>one live session of that role (what shows up in logs) [3] [5]</td>
+</tr>
+<tr>
+<td><code>arn:aws:iam::706569143085:user/ado-deploy</code></td>
+<td>an IAM user with a long-term key (what S1 wants gone) [3]</td>
+</tr>
+</tbody>
+</table>
+<p>Note <code>iam</code> for a stored identity and <code>sts</code> for a session.</p>
+<h2>10. What to ask the team for</h2>
+<p>You can start the work alone with this list. Each line is one request and what a good answer looks like.</p>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Ask for</th>
+<th>Good answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S1</td>
+<td>credential report, <code>ListAccessKeys</code> for the old user, a search of variable groups, YAML, scripts and repos</td>
+<td>key inactive or user deleted, no key text found [4]</td>
+</tr>
+<tr>
+<td>S2</td>
+<td>pipeline logs and artifacts from a recent run</td>
+<td>no token or session token values visible</td>
+</tr>
+<tr>
+<td>A3</td>
+<td>the role's trust policy</td>
+<td>only <code>sts:AssumeRoleWithWebIdentity</code>, only the Azure DevOps provider [5]</td>
+</tr>
+<tr>
+<td>A5</td>
+<td>the role's permission policy</td>
+<td>only the actions and resources the pipeline needs [2]</td>
+</tr>
+<tr>
+<td>D1</td>
+<td>change tickets for role ARN, service connection and duration</td>
+<td>approved by someone other than the author</td>
+</tr>
+</tbody>
+</table>
+<p>If a team cannot produce one of these, that gap is itself the finding.</p>
+<h2>Where this goes next</h2>
+<p>The same ideas carry other AWS cases: GitHub Actions, SAML sign-in, a cross-account hop. [2] Domain 2 (OIDC and tokens) explains the token that makes the swap possible.</p>
+<h2>references</h2>
+<ol>
+<li>https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html : role definition, no long-term keys, when to still use a user, service-linked roles.</li>
+<li>https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html : temporary credentials for workloads, MFA, update and remove keys, ways to deliver credentials outside AWS.</li>
+<li>https://docs.aws.amazon.com/IAM/latest/UserGuide/reference-arns.html : ARN format, partitions, 12 digit account ID, ARNs are not secret.</li>
+<li>https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_getting-report.html : credential report columns, four hour limit, permissions, first two keys only.</li>
+<li>https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html : temporary credentials, three values, duration, no AWS credentials needed for the call.</li>
+<li>https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_oidc.html : OIDC federation into a role.</li>
+<li>https://aws.amazon.com/blogs/modernizing-with-aws/how-to-federate-into-aws-from-azure-devops-using-openid-connect/ : Azure DevOps to AWS with OIDC.</li>
+</ol></body></html>

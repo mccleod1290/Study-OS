@@ -1,0 +1,11 @@
+﻿# his private source documents and anything he typed
+user-input-learning-text/
+Artifacts/sessions/**/inputs.md
+Artifacts/sessions/**/inputs.jsonl
+Artifacts/sessions/**/prompts.md
+
+Artifacts/captures/
+
+# local noise
+__pycache__/
+*.pyc

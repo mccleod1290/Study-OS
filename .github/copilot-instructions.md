@@ -1,0 +1,1 @@
+Ground every claim in an opened original source, cite it, and grade it 1 to 5. Deliver HTML, not PDF, unless asked. Write plain, short sentences (ASD-STE100 style, 80%). Keep it brief: 5 to 10 pages at most, lower is better. Read `AGENTS.md` and `REPO_MAP.md` at the start of every session. They say where skills, scripts and rules live and where output goes.
