@@ -21,6 +21,13 @@
         "powershell": "python skills/scripts/hooks/log_user_inputs.py userPromptSubmitted",
         "cwd": ".",
         "timeoutSec": 10
+      },
+      {
+        "type": "command",
+        "bash": "python3 skills/scripts/hooks/best_highlights.py userPromptSubmitted",
+        "powershell": "python skills/scripts/hooks/best_highlights.py userPromptSubmitted",
+        "cwd": ".",
+        "timeoutSec": 10
       }
     ],
     "postToolUse": [
@@ -55,6 +62,13 @@
       {
         "type": "command",
         "powershell": "python skills/scripts/hooks/log_deliverables.py sessionEnd",
+        "cwd": ".",
+        "timeoutSec": 10
+      },
+      {
+        "type": "command",
+        "bash": "python3 skills/scripts/hooks/best_highlights.py sessionEnd",
+        "powershell": "python skills/scripts/hooks/best_highlights.py sessionEnd",
         "cwd": ".",
         "timeoutSec": 10
       }

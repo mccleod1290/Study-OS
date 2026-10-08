@@ -57,6 +57,7 @@ Read this first. It says where everything is. Regenerate with `python skills/scr
 | script | path | what it does |
 |---|---|---|
 | `build_mindmap.py` | `skills/scripts/build_mindmap.py` |  |
+| `best_highlights.py` | `skills/scripts/hooks/best_highlights.py` | Write `best highlights.txt` inside a session folder. The name does not change. |
 | `log_deliverables.py` | `skills/scripts/hooks/log_deliverables.py` | Hook: log each deliverable delivered per run (a run = one session). |
 | `log_user_inputs.py` | `skills/scripts/hooks/log_user_inputs.py` | Hook: log every user input, verbatim, in one place. |
 | `paths.py` | `skills/scripts/hooks/paths.py` | Shared layout for the Study OS hooks. See .rules/artifacts-and-sessions.md. |

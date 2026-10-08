@@ -11,6 +11,10 @@ ROOT = next(p for p in Path(__file__).resolve().parents if (p / ".rules").is_dir
 SKIPDIR = {".git", "sessions", "user-input-learning-text", "__pycache__", "node_modules"}
 
 
+def noise(name: str) -> bool:
+    return name.endswith(":Zone.Identifier")
+
+
 def rel(p):
     return p.relative_to(ROOT).as_posix()
 
@@ -18,6 +22,8 @@ def rel(p):
 def walk(base, pattern):
     out = []
     for p in sorted(base.rglob(pattern)):
+        if noise(p.name):
+            continue
         if not any(x in SKIPDIR for x in p.relative_to(ROOT).parts) and "Artifacts" not in p.relative_to(ROOT).parts[:1]:
             out.append(p)
     return out
@@ -75,7 +81,7 @@ def build():
     for g in sorted((ROOT / "skills").iterdir()):
         if g.is_dir():
             subs = sorted(q.name for q in (g / "skills").iterdir() if q.is_dir()) if (g / "skills").is_dir() else sorted(q.name for q in g.iterdir() if q.is_dir() and (q / "SKILL.md").exists())
-            top = sorted(q.name for q in g.iterdir() if q.is_file())
+            top = sorted(q.name for q in g.iterdir() if q.is_file() and not noise(q.name))
             L.append(f"- `{rel(g)}/`" + (f" skills: {', '.join(subs)}" if subs else "") + (f". files: {', '.join(top)}" if top else ""))
     L += ["", "## Scripts", "", "| script | path | what it does |", "|---|---|---|"]
     for p in walk(ROOT / "skills" / "scripts", "*.py"):
@@ -86,6 +92,8 @@ def build():
     for p in sorted((ROOT / ".github" / "hooks").glob("*.json")):
         L.append(f"- hooks config `{rel(p)}`")
     for p in sorted((ROOT / ".rules").glob("*")):
+        if noise(p.name):
+            continue
         L.append(f"- rule `{rel(p)}`")
     L += ["", "## Where deliverables are", ""]
     art = ROOT / "Artifacts" / "artifacts"

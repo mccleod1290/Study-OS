@@ -71,6 +71,7 @@ python skills/scripts/repo_map.py --check   # must print OK</pre></div>
 <tr><td><code>postToolUse</code></td><td><code>study_os_hook.py</code><br><code>log_deliverables.py</code></td><td><code>actions.md</code>, <code>events.jsonl</code><br><code>deliverables.md</code>, per-topic <code>HISTORY.md</code></td></tr>
 <tr><td><code>errorOccurred</code></td><td><code>study_os_hook.py</code></td><td>error line in the session log</td></tr>
 <tr><td><code>sessionEnd</code></td><td>both scripts</td><td>final meta, deliverable summary</td></tr>
+<tr><td><code>userPromptSubmitted</code><br><code>sessionEnd</code></td><td><code>best_highlights.py</code></td><td><code>best highlights.txt</code> in that session folder. Same file name every time.</td></tr>
 </table></div>
 <p>Each script reads one JSON payload on stdin, writes files, and always exits 0. A failure goes to <code>hook_errors.log</code>. It never blocks the agent <b class="b b5" title="confidence 5 of 5">5</b>.</p>
 <p>The layout code is in <code>skills/scripts/hooks/paths.py</code>. Change a path there, in one place.</p>

@@ -42,7 +42,9 @@ Skills are under `skills/`, scripts under `skills/scripts/`. `REPO_MAP.md` lists
 
 ## Hooks that enforce this
 
-`.github/hooks/study-os.json` runs `skills/scripts/hooks/study_os_hook.py` (events, prompts, tool calls), `log_user_inputs.py` and `log_deliverables.py`. `skills/scripts/hooks/paths.py` holds the layout.
+`.github/hooks/study-os.json` runs `skills/scripts/hooks/study_os_hook.py` (events, prompts, tool calls), `log_user_inputs.py`, `log_deliverables.py`, and `best_highlights.py`. `skills/scripts/hooks/paths.py` holds the layout. Grok loads the same highlight script from `.grok/hooks/best-highlights.json`.
+
+`best_highlights.py` writes `best highlights.txt` inside the previous session folder on the first prompt, and inside the ending session folder on session end. The file name is always `best highlights.txt`.
 
 ## Limits
 
