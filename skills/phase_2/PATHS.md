@@ -15,6 +15,8 @@ skills/phase_2/output/<slug>/EVAL.md
 
 `skills/phase_2/RULES.md` is the law. `skills/phase_2/CRITERIA.md` is the only checklist.
 
+The visual pass writes beside the page, in the same topic folder. List: `VISUALS.md`, Files.
+
 ## PAGE.md blocks
 
 ```text

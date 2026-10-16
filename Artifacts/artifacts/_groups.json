@@ -2,5 +2,8 @@
  "aws-acn-2026-31070": [
   "aws_oidc_flow",
   "identity_and_credentials"
+ ],
+ "wahh-2e": [
+  "wahh_ch04_mapping_the_application"
  ]
 }

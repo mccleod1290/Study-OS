@@ -31,7 +31,19 @@ frugal_judge
 | `skills/reduce_ambiguity/` | Examples, pictures, links |
 | `skills/brevity_is_the_soul/` | Cut fluff, keep the flow |
 | `skills/frugal_judge/` | The judge. Not a test of him. |
+| `skills/diagrammer/` | Visual pass 1: SVG diagrams, `phase2_visuals.json` |
+| `skills/web_builder/` | Visual pass 2: the interactive page, `phase2_explorer.html` |
+| `skills/explainer_video/` | Visual pass 3: the narrated film and its wrapper |
+| `VISUALS.md` | Shared context for the visual pass: order, files, style, checks |
 | `output/<slug>/` | The artifact |
+
+## Visual pass
+
+After the judge says satisfied, the page can go three rungs further, after Karpathy (2026-10-02): diagrams, an interactive page, an explainer video. The page stays the source; nothing here edits it. Order, files and checks: `VISUALS.md`.
+
+```text
+SATISFIED -> diagrammer -> web_builder  +  explainer_video -> judge, visual checks
+```
 
 The explainer is an agent: `.grok/agents/explainer.md`. It is not a skill.
 

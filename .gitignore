@@ -9,3 +9,11 @@ Artifacts/captures/
 # local noise
 __pycache__/
 *.pyc
+
+# hackbots course notes stay local (emailed, not pushed)
+Artifacts/artifacts/hackbots/
+
+# nested repo and large videos stay local
+Artifacts/artifacts/idor-param-patterns/
+*.mp4
+Artifacts/artifacts/**/video/

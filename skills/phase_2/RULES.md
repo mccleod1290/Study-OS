@@ -10,6 +10,10 @@ The field keeps moving. A page that only quizzes him is useless the month the to
 
 Phase 2 does not test him. No quiz. No workbook. No score. No question block. No check of his fluency.
 
+## Order and coverage
+
+The law is `.rules/phase-order-and-coverage.md`. Phase 2 starts only after phase 1 is complete (map built, build exit 0, the phase 1 agent done), even when he asks for both at once. The page covers every domain, topic and anchor in `phase1_mindmap.json`, each tagged with its node id, in map order. `python skills/scripts/check_coverage.py <slug>` is the check.
+
 ## What the page is for
 
 - See the depth of the concept.
@@ -19,7 +23,7 @@ Phase 2 does not test him. No quiz. No workbook. No score. No question block. No
 
 ## What the page must be
 
-- 5 to 10 pages. Smaller inside that band is better. The numbers live in `CRITERIA.md`.
+- Up to 5 pages (2500 words) per sub heading. The whole page has no ceiling. Smaller is better. The numbers live in `CRITERIA.md` and `.rules/brevity.md` rule 10.
 - References in the last section. A link may also sit where a term would stop him.
 - Free of ambiguity. A new term is explained in the flow, or it has an example, a picture, or a link.
 - Free of jargon that has no gloss.
@@ -47,5 +51,9 @@ The explainer is an agent. It is not a skill. It runs four agents, in this order
 Then `frugal_judge` reads `CRITERIA.md` and writes `EVAL.md`. It does not teach, and it does not test him.
 
 If the judge is not satisfied, the explainer runs the four again. No sixth pass.
+
+## The visual pass
+
+Optional. It runs only after the judge says SATISFIED: `diagrammer`, then `web_builder` and `explainer_video`, each in its own agent, then the judge again with the visual checks. It shows the page; it adds no fact and edits nothing above. The law is `VISUALS.md`.
 
 A quiz, a paper, a build brief, or a spar belongs in `skills/phase_3/`. Not here.

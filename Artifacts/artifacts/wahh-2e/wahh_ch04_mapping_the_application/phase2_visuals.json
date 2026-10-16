@@ -1,0 +1,150 @@
+{
+  "slug": "wahh_ch04_mapping_the_application",
+  "page_hash": "3c6bbe9bccacc2bb4188a86c2a62c6304e20ab740601ca6eaea6a49d94565ccd",
+  "diagrams": [
+    {
+      "node": "d1",
+      "file": "diagrams/d1.svg",
+      "kind": "flow",
+      "title": "Visible content loop",
+      "caption": "Browse, review the site map, open the rest by hand, repeat; a crawler helps but must exclude delete and admin links.",
+      "grade": 5,
+      "steps": [
+        "Browse every link and finish multistage forms through a recording proxy.",
+        "Review the site map; the proxy parses every response.",
+        "Access the rest by hand, including what the spider found and you skipped.",
+        "Repeat."
+      ],
+      "when": {
+        "applies": "links and forms exist",
+        "fails": "a client-routed page, or links inside dead compiled objects"
+      }
+    },
+    {
+      "node": "d1b",
+      "file": "diagrams/d1b.svg",
+      "kind": "compare",
+      "title": "Spider then and now",
+      "caption": "An HTML-only spider sees a JavaScript app as empty; katana -jc parses its endpoints.",
+      "grade": 5
+    },
+    {
+      "node": "d2",
+      "file": "diagrams/d2.svg",
+      "kind": "flow",
+      "title": "Hidden content loop",
+      "caption": "Guess names, read code and size to tell a real hit from the custom 404, infer more names, add archived paths.",
+      "grade": 4,
+      "steps": [
+        "Start from a wordlist.",
+        "Request each name with ffuf; -ac calibrates the fake-404 filter.",
+        "Read status code and size: a 200 can be a custom not-found page; 401 or 403 means closed but present.",
+        "Infer more names from what exists: AddDocument implies EditDocument; -e .bak,.old,.tmp.",
+        "Archives add paths: a path archived but 404 live is a route the app once served."
+      ],
+      "when": {
+        "applies": "unlinked paths exist",
+        "fails": "one URL picks its function by parameter (section 3)"
+      }
+    },
+    {
+      "node": "d2f",
+      "file": "diagrams/d2f.svg",
+      "kind": "compare",
+      "title": "Search operators",
+      "caption": "site:, quotes and - still work; link:, related: and cache: do not, and they fail silently.",
+      "grade": 4
+    },
+    {
+      "node": "d3",
+      "file": "diagrams/d3.svg",
+      "kind": "compare",
+      "title": "File tree or routing by value",
+      "caption": "A file tree yields to a wordlist; a URL that routes by parameter needs the schema, the API description, the JavaScript or parameter discovery.",
+      "grade": 4,
+      "when": {
+        "applies": "routing by value, not by path",
+        "fails": "a plain file tree (section 2)"
+      }
+    },
+    {
+      "node": "d4",
+      "file": "diagrams/d4.svg",
+      "kind": "anatomy",
+      "title": "Entry points in a request",
+      "caption": "URL path, query, trusted headers, cookie and body all reach server logic; JSON keys are not verified.",
+      "grade": 2,
+      "when": {
+        "applies": "input reaches server logic",
+        "fails": "a client-side-only field"
+      }
+    },
+    {
+      "node": "d4e",
+      "file": "diagrams/d4e.svg",
+      "kind": "sequence",
+      "title": "Out-of-band hit",
+      "caption": "The target resolves a name you control, so the OAST server logs a DNS hit though the page shows nothing.",
+      "grade": 5,
+      "steps": [
+        "interactsh-client prints a name such as c23b2...oast.pro.",
+        "Send the name in a header: curl -s -H \"X-Forwarded-For: c23b2...oast.pro\" $TARGET.",
+        "The target resolves the name at the OAST server; the page shows nothing.",
+        "The client prints: Received DNS interaction (A)."
+      ]
+    },
+    {
+      "node": "d5",
+      "file": "diagrams/d5.svg",
+      "kind": "flow",
+      "title": "Fingerprint decision flow",
+      "caption": "Read the banner, extensions and error pages, cookie names; name the stack; look up each component in OSV.dev.",
+      "grade": 2,
+      "steps": [
+        "Banner: curl -sI and httpx -sc -title -td; Server: Apache/1.3.31 names stack and version.",
+        "HTTP fingerprint: httprecon and httprint status not verified; httpx -td uses the Wappalyzer dataset.",
+        "Extensions and error pages: .asp .aspx .jsp .php .dll; curl -sI $TARGET/CookieAuth.dll.",
+        "Cookie and directory names: JSESSIONID, ASPSESSIONID, PHPSESSID, /servlet (not verified).",
+        "Name the stack: Apache-Coyote is Tomcat, a Java servlet container.",
+        "Find the third-party component and version, then research known flaws.",
+        "Query OSV.dev; an empty answer means no known entry, not no flaw."
+      ],
+      "when": {
+        "applies": "at least one signal is not stripped",
+        "fails": "a CDN normalizes them (not verified)"
+      }
+    },
+    {
+      "node": "d6",
+      "file": "diagrams/d6.svg",
+      "kind": "anatomy",
+      "title": "Reading request names",
+      "caption": "Names carry meaning: a flag to flip, an ORDER BY, and a REST path that maps to a hidden call whose action and id you can change.",
+      "grade": 4,
+      "when": {
+        "applies": "names read like a programmer and stay consistent",
+        "fails": "opaque tokens"
+      }
+    },
+    {
+      "node": "d7",
+      "file": "diagrams/d7.svg",
+      "kind": "flow",
+      "title": "Map, then plan, then attack",
+      "caption": "Build the content and functional maps, check core functions and third-party code, rank, and only then attack.",
+      "grade": 2,
+      "steps": [
+        "Content map.",
+        "Functional map.",
+        "Know the core functions and mechanisms: session state, access control, authentication, recovery.",
+        "Match each feature to its usual bug class (not verified).",
+        "Check third-party code in OSV.dev and with nuclei -as.",
+        "Plan of attack: rank functions and bug classes; first probe all hosts with httpx."
+      ],
+      "when": {
+        "applies": "mapping ends before probing",
+        "fails": "never: no tool maps an app safely alone"
+      }
+    }
+  ]
+}

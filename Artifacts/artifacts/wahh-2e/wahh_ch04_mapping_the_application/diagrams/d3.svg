@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 500" role="img">
+<title>d3: a path per function against one URL with parameters</title>
+<desc>Compare: a plain file tree is found with a wordlist; when one URL carries the function in a parameter, directory brute force finds nothing and you map with GraphQL introspection, an OpenAPI file, JavaScript and parameter discovery.</desc>
+<defs><marker id="d3-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink,#1d1f23)"/></marker><marker id="d3-danger" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--danger,#d1453b)"/></marker><marker id="d3-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent,#b7791f)"/></marker><marker id="d3-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted,#6b6f76)"/></marker><marker id="d3-client" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--client,#2f6fdb)"/></marker><marker id="d3-server" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--server,#1f9d6b)"/></marker></defs>
+<rect x="0" y="0" width="1020" height="500" style="fill:var(--bg,#fbfaf7)"/>
+<text x="30" y="28" text-anchor="start" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:16px;font-weight:700;fill:var(--ink,#1d1f23)">d3: a path per function against one URL with parameters</text>
+<rect x="30" y="50" width="380" height="44" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--client,#2f6fdb);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="220.0" y="76.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;font-weight:700;fill:var(--ink,#1d1f23)">Plain file tree (section 2)</text>
+<rect x="450" y="50" width="540" height="44" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--client,#2f6fdb);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="720.0" y="76.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;font-weight:700;fill:var(--ink,#1d1f23)">Routing by value (section 3)</text>
+<rect x="30" y="105" width="380" height="70" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--ink,#1d1f23);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="220.0" y="135.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">A path per function</text>
+<text x="220.0" y="153.0" text-anchor="middle" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:13px;fill:var(--ink,#1d1f23)">ffuf -w words.txt -u $TARGET/FUZZ</text>
+<rect x="450" y="105" width="540" height="70" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--ink,#1d1f23);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="720.0" y="126.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">One URL, the function named by parameters</text>
+<text x="720.0" y="144.0" text-anchor="middle" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:13px;fill:var(--ink,#1d1f23)">POST /bank.jsp?servlet=TransferFunds&amp;method=confirmTransfer</text>
+<text x="720.0" y="162.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">2026: GraphQL puts all calls on one URL</text>
+<rect x="450" y="190" width="540" height="46" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--danger,#d1453b);stroke-width:1.5;stroke-dasharray:6 4"/>
+<text x="720.0" y="217.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">Directory brute force finds nothing here: map in two stages</text>
+<rect x="450" y="255" width="260" height="56" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--server,#1f9d6b);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="580.0" y="278.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">GraphQL introspection</text>
+<text x="580.0" y="296.0" text-anchor="middle" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:13px;fill:var(--ink,#1d1f23)">__schema</text>
+<rect x="730" y="255" width="260" height="56" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--server,#1f9d6b);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="860.0" y="278.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">OpenAPI description</text>
+<text x="860.0" y="296.0" text-anchor="middle" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:13px;fill:var(--ink,#1d1f23)">$TARGET/openapi.json</text>
+<rect x="450" y="325" width="260" height="70" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--server,#1f9d6b);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="580.0" y="355.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">JavaScript</text>
+<text x="580.0" y="373.0" text-anchor="middle" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:13px;fill:var(--ink,#1d1f23)">jsluice urls app.js</text>
+<rect x="730" y="325" width="260" height="70" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--server,#1f9d6b);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="860.0" y="346.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">Hidden parameters</text>
+<text x="860.0" y="364.0" text-anchor="middle" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:13px;fill:var(--ink,#1d1f23)">arjun -u $TARGET/search</text>
+<text x="860.0" y="382.0" text-anchor="middle" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:13px;fill:var(--ink,#1d1f23)">--stable</text>
+<g data-when="applies">
+<rect x="30" y="410" width="470.0" height="70" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--server,#1f9d6b);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="265.0" y="440.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;font-weight:700;fill:var(--ink,#1d1f23)">Applies</text>
+<text x="265.0" y="458.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">routing by value, not by path</text>
+</g>
+<g data-when="fails">
+<rect x="520.0" y="410" width="470.0" height="70" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--danger,#d1453b);stroke-width:1.5;stroke-dasharray:6 4"/>
+<text x="755.0" y="440.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;font-weight:700;fill:var(--ink,#1d1f23)">Does not apply</text>
+<text x="755.0" y="458.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">a plain file tree (section 2)</text>
+</g>
+</svg>

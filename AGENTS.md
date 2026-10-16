@@ -1,6 +1,8 @@
 # Agents: start here
 
 0. Rules that bind every answer: `.rules/grounding-and-confidence.md` (cite original documentation, grade every claim 1 to 5) `.rules/html-deliverables.md` (HTML only, PDF only on request), `.rules/brevity.md` (5 to 10 pages at most, lower is better), and `.rules/writing-and-web.md` (plain ASD-STE100-style writing, interactive HTML).
+0b. `.rules/context-isolation.md`: each phase and each judge runs in its own subagent window. Hand off by file. The writer is never the judge.
+0a. `.rules/phase-order-and-coverage.md`: phase 1 finishes before phase 2 starts, even when he asks for both at once. Phase 2 covers every node of the map. `python skills/scripts/check_coverage.py <slug>` must print OK.
 1. Read `REPO_MAP.md`. It says where every skill, script and rule is. Do not search the tree to find a skill.
 2. Read `.rules/artifacts-and-sessions.md` before writing any file. All AI output goes under `Artifacts/`.
 3. Workflows are in `WORKFLOW_STUDY.md` and `WORKFLOW_EXPERT_CAPTURE.md`. Follow them. Do not capture anyone without the consent gate.

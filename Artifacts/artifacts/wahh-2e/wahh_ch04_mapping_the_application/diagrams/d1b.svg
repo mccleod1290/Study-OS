@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 350" role="img">
+<title>d1b: spider 2011 against katana 2026</title>
+<desc>Compare: an HTML-only spider sees a JavaScript app as empty; katana with -jc parses JavaScript endpoints.</desc>
+<defs><marker id="d1b-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink,#1d1f23)"/></marker><marker id="d1b-danger" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--danger,#d1453b)"/></marker><marker id="d1b-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent,#b7791f)"/></marker><marker id="d1b-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted,#6b6f76)"/></marker><marker id="d1b-client" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--client,#2f6fdb)"/></marker><marker id="d1b-server" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--server,#1f9d6b)"/></marker></defs>
+<rect x="0" y="0" width="900" height="350" style="fill:var(--bg,#fbfaf7)"/>
+<text x="30" y="28" text-anchor="start" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:16px;font-weight:700;fill:var(--ink,#1d1f23)">d1b: spider 2011 against katana 2026</text>
+<rect x="40" y="50" width="380" height="44" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--client,#2f6fdb);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="230.0" y="76.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;font-weight:700;fill:var(--ink,#1d1f23)">2011 (book)</text>
+<rect x="480" y="50" width="380" height="44" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--client,#2f6fdb);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="670.0" y="76.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;font-weight:700;fill:var(--ink,#1d1f23)">2026</text>
+<rect x="40" y="112" width="380" height="60" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--ink,#1d1f23);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="230.0" y="137.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:12px;fill:var(--muted,#6b6f76)">Tool</text>
+<text x="230.0" y="155.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">Burp Spider, WebScarab</text>
+<rect x="480" y="112" width="380" height="60" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--ink,#1d1f23);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="670.0" y="137.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:12px;fill:var(--muted,#6b6f76)">Tool</text>
+<text x="670.0" y="155.0" text-anchor="middle" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:13px;fill:var(--ink,#1d1f23)">katana -u $TARGET -jc -d 3 -rl 50</text>
+<path d="M420,142 L480,142" fill="none" style="stroke:var(--ink,#1d1f23);stroke-width:1.6;stroke-dasharray:none" marker-end="url(#d1b-ink)"/>
+<rect x="40" y="188" width="380" height="60" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--ink,#1d1f23);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="230.0" y="213.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:12px;fill:var(--muted,#6b6f76)">Follows</text>
+<text x="230.0" y="231.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">HTML links only</text>
+<rect x="480" y="188" width="380" height="60" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--ink,#1d1f23);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="670.0" y="213.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:12px;fill:var(--muted,#6b6f76)">Follows</text>
+<text x="670.0" y="231.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">HTML links and JavaScript endpoints (-jc)</text>
+<path d="M420,218 L480,218" fill="none" style="stroke:var(--ink,#1d1f23);stroke-width:1.6;stroke-dasharray:none" marker-end="url(#d1b-ink)"/>
+<rect x="40" y="264" width="380" height="60" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--danger,#d1453b);stroke-width:1.5;stroke-dasharray:6 4"/>
+<text x="230.0" y="289.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:12px;fill:var(--muted,#6b6f76)">A JavaScript app</text>
+<text x="230.0" y="307.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">looks empty to an HTML-only spider</text>
+<rect x="480" y="264" width="380" height="60" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--server,#1f9d6b);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="670.0" y="289.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:12px;fill:var(--muted,#6b6f76)">A JavaScript app</text>
+<text x="670.0" y="307.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">endpoints parsed; -rl 50 caps requests/second</text>
+<path d="M420,294 L480,294" fill="none" style="stroke:var(--danger,#d1453b);stroke-width:1.6;stroke-dasharray:6 4" marker-end="url(#d1b-danger)"/>
+</svg>

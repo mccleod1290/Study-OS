@@ -1,0 +1,1444 @@
+{
+ "title": "AI-901: Introduction to AI in Azure",
+ "subtitle": "One map for the exam and for reading Foundry app code. Each node says what to learn and why. Claims that rest only on a course transcript are graded 3 in phase1_map.md.",
+ "slug": "ai_901",
+ "mode": "zero",
+ "study_mode": "course",
+ "ui": {
+  "anchors": "Exam skills and labs",
+  "anchor": "Anchor",
+  "critical": "Exam or lab anchor",
+  "why": "Why it matters for AI-901 and Foundry code",
+  "feeds": "It feeds these exam skills and lab checks",
+  "learner": "I am an application security practitioner. I know cloud, HTTP, REST and auth. I am new to AI services in Azure. I am preparing for exam AI-901 and I want to read Foundry app code.",
+  "context": "the Microsoft Azure AI Fundamentals exam AI-901 and the Microsoft Learn course Introduction to AI in Azure, which uses Microsoft Foundry",
+  "labels": {
+   "explain": "Explain",
+   "evidence": "Hands-on check",
+   "challenge": "Quiz me",
+   "deeper": "Go deeper"
+  },
+  "prompts": {
+   "explain": "Explain this AI-901 idea in plain, short sentences. Define each term at first use. I know cloud, HTTP, REST and auth, so skip those basics and link the idea to them. Say which parts come from Microsoft documentation and which you could not verify.",
+   "evidence": "Give me one hands-on check for this in Microsoft Foundry, in my own Azure subscription or trial only. Say what to click or run, what output shows it worked, and which resources to delete afterwards. Do not touch any account or resource I do not own.",
+   "challenge": "Quiz me one multiple-choice question at a time, in AI-901 style, on this topic. Give a hint before the answer. After five questions, list my gaps and name the Microsoft Learn module or lab to repeat.",
+   "deeper": "Go one level deeper: where this fails or is misused, what a security reviewer would check in the code or the setup, and what the official docs say that the course video did not. Cite official Microsoft pages and say where you are unsure."
+  }
+ },
+ "sources": {
+  "g1": {
+   "t": "Study guide, Exam AI-901, skills measured as of 2026-04-15 (official, 5)",
+   "u": "https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/ai-901"
+  },
+  "g2": {
+   "t": "Exam AI-901 page (official, 5; blurb is stale, see map)",
+   "u": "https://learn.microsoft.com/en-us/credentials/certifications/exams/ai-901/"
+  },
+  "o1": {
+   "t": "Deployment types in Foundry Models (official, 5)",
+   "u": "https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/deployment-types"
+  },
+  "o2": {
+   "t": "Keyless authentication with Entra ID, Foundry Models (official, 5)",
+   "u": "https://learn.microsoft.com/en-us/azure/foundry/foundry-models/how-to/configure-entra-id"
+  },
+  "o3": {
+   "t": "Foundry Agent Service overview (official, 5)",
+   "u": "https://learn.microsoft.com/en-us/azure/foundry/agents/overview"
+  },
+  "o4": {
+   "t": "Guardrails and controls overview, Foundry (official, 5)",
+   "u": "https://learn.microsoft.com/en-us/azure/foundry/guardrails/guardrails-overview"
+  },
+  "o5": {
+   "t": "What is Azure Content Understanding in Foundry Tools (official, 5)",
+   "u": "https://learn.microsoft.com/en-us/azure/ai-services/content-understanding/overview"
+  },
+  "o6": {
+   "t": "Responsible AI for Microsoft Foundry (official, 5; no list of the six principles)",
+   "u": "https://learn.microsoft.com/en-us/azure/foundry/responsible-use-of-ai-overview"
+  },
+  "o7": {
+   "t": "What is the Model Context Protocol (primary, 5)",
+   "u": "https://modelcontextprotocol.io/docs/getting-started/intro"
+  },
+  "o8": {
+   "t": "Managed identities for Azure resources (official, 5)",
+   "u": "https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview"
+  },
+  "o9": {
+   "t": "What is Azure Resource Manager, scope and resource groups (official, 5)",
+   "u": "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/overview"
+  },
+  "o10": {
+   "t": "Microsoft Foundry architecture (official, 5)",
+   "u": "https://learn.microsoft.com/en-us/azure/foundry/concepts/architecture"
+  },
+  "o11": {
+   "t": "What is Azure Language in Foundry Tools (official, 5)",
+   "u": "https://learn.microsoft.com/en-us/azure/ai-services/language-service/overview"
+  },
+  "o12": {
+   "t": "What is Azure Speech in Foundry Tools (official, 5)",
+   "u": "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/overview"
+  },
+  "o13": {
+   "t": "Introduction to Azure AI Search (official, 5)",
+   "u": "https://learn.microsoft.com/en-us/azure/search/search-what-is-azure-search"
+  },
+  "o14": {
+   "t": "Embeddings, Azure OpenAI in Foundry Models, classic page (official, 5)",
+   "u": "https://learn.microsoft.com/en-us/azure/foundry-classic/openai/concepts/understand-embeddings"
+  },
+  "o15": {
+   "t": "Responses API in Foundry, first 100k characters read (official, 4)",
+   "u": "https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/responses"
+  },
+  "a1": {
+   "t": "Attention Is All You Need, abstract (primary, 5 for the claim in the abstract)",
+   "u": "https://arxiv.org/abs/1706.03762"
+  },
+  "a2": {
+   "t": "An Image is Worth 16x16 Words, abstract (primary, 5 for the claim in the abstract)",
+   "u": "https://arxiv.org/abs/2010.11929"
+  },
+  "a3": {
+   "t": "Denoising Diffusion Probabilistic Models, abstract (primary, name only)",
+   "u": "https://arxiv.org/abs/2006.11239"
+  },
+  "c02_3_53_4_26": {
+   "t": "Ep 1: course introduction (case transcript, 3 alone)",
+   "ref": "file 02_ai_901_course_introduction_ep_1.md, 3:53-4:26"
+  },
+  "c15_2_41_4_12": {
+   "t": "Ep 14: course closing (case transcript, 3 alone)",
+   "ref": "file 15_ai_901_course_closing_ep_14.md, 2:41-4:12"
+  },
+  "c00_introduction_study_resources": {
+   "t": "Cram: Introduction;Study resources (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Introduction;Study resources"
+  },
+  "c03_1_42_5_59": {
+   "t": "Ep 2: introduction to AI concepts (case transcript, 3 alone)",
+   "ref": "file 03_ai_901_introduction_to_ai_concepts_ep_2.md, 1:42-5:59"
+  },
+  "c00_what_is_ai": {
+   "t": "Cram: What is AI (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): What is AI"
+  },
+  "c00_assistants_and_agents": {
+   "t": "Cram: Assistants and agents (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Assistants and agents"
+  },
+  "c05_5_49_6_51": {
+   "t": "Ep 4: introduction to generative AI and agents (case transcript, 3 alone)",
+   "ref": "file 05_ai_901_introduction_to_generative_ai_and_agents_ep_4.md, 5:49-6:51"
+  },
+  "c03_6_09_9_54": {
+   "t": "Ep 2: introduction to AI concepts (case transcript, 3 alone)",
+   "ref": "file 03_ai_901_introduction_to_ai_concepts_ep_2.md, 6:09-9:54"
+  },
+  "c00_responsible_ai": {
+   "t": "Cram: Responsible AI (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Responsible AI"
+  },
+  "c08_18_35_21_22": {
+   "t": "Ep 7: get started with text analysis in Azure (case transcript, 3 alone)",
+   "ref": "file 08_ai_901_get_started_with_text_analysis_in_azure_ep_7.md, 18:35-21:22"
+  },
+  "c03_22_36_23_34": {
+   "t": "Ep 2: introduction to AI concepts (case transcript, 3 alone)",
+   "ref": "file 03_ai_901_introduction_to_ai_concepts_ep_2.md, 22:36-23:34"
+  },
+  "c04_3_16_3_46": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 3:16-3:46"
+  },
+  "c00_azure_and_entra": {
+   "t": "Cram: Azure and Entra (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Azure and Entra"
+  },
+  "c04_3_46_5_17": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 3:46-5:17"
+  },
+  "c04_6_24_7_28": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 6:24-7:28"
+  },
+  "c00_microsoft_foundry": {
+   "t": "Cram: Microsoft Foundry (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Microsoft Foundry"
+  },
+  "c04_15_29_15_45_21_34_31_00_51_21_51_40": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 15:29-15:45;21:34-31:00;51:21-51:40"
+  },
+  "c00_generative_ai": {
+   "t": "Cram: Generative AI (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Generative AI"
+  },
+  "c05_3_39_4_50": {
+   "t": "Ep 4: introduction to generative AI and agents (case transcript, 3 alone)",
+   "ref": "file 05_ai_901_introduction_to_generative_ai_and_agents_ep_4.md, 3:39-4:50"
+  },
+  "c05_7_22_7_52": {
+   "t": "Ep 4: introduction to generative AI and agents (case transcript, 3 alone)",
+   "ref": "file 05_ai_901_introduction_to_generative_ai_and_agents_ep_4.md, 7:22-7:52"
+  },
+  "c06_17_58_18_40": {
+   "t": "Ep 5: get started with generative AI and agents in Azure (case transcript, 3 alone)",
+   "ref": "file 06_ai_901_get_started_with_generative_ai_and_agents_in_azure_ep.md, 17:58-18:40"
+  },
+  "c00_custom_ai_app": {
+   "t": "Cram: Custom AI app (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Custom AI app"
+  },
+  "c05_17_20_18_17": {
+   "t": "Ep 4: introduction to generative AI and agents (case transcript, 3 alone)",
+   "ref": "file 05_ai_901_introduction_to_generative_ai_and_agents_ep_4.md, 17:20-18:17"
+  },
+  "c06_8_04_9_16": {
+   "t": "Ep 5: get started with generative AI and agents in Azure (case transcript, 3 alone)",
+   "ref": "file 06_ai_901_get_started_with_generative_ai_and_agents_in_azure_ep.md, 8:04-9:16"
+  },
+  "c05_21_23_21_58": {
+   "t": "Ep 4: introduction to generative AI and agents (case transcript, 3 alone)",
+   "ref": "file 05_ai_901_introduction_to_generative_ai_and_agents_ep_4.md, 21:23-21:58"
+  },
+  "c06_9_16_10_10": {
+   "t": "Ep 5: get started with generative AI and agents in Azure (case transcript, 3 alone)",
+   "ref": "file 06_ai_901_get_started_with_generative_ai_and_agents_in_azure_ep.md, 9:16-10:10"
+  },
+  "c05_7_52_10_30": {
+   "t": "Ep 4: introduction to generative AI and agents (case transcript, 3 alone)",
+   "ref": "file 05_ai_901_introduction_to_generative_ai_and_agents_ep_4.md, 7:52-10:30"
+  },
+  "c00_embeddings": {
+   "t": "Cram: Embeddings (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Embeddings"
+  },
+  "c12_2_10_5_19": {
+   "t": "Ep 11: get started with computer vision in Azure (case transcript, 3 alone)",
+   "ref": "file 12_ai_901_get_started_with_computer_vision_in_azure_ep_11.md, 2:10-5:19"
+  },
+  "c06_2_39_4_14": {
+   "t": "Ep 5: get started with generative AI and agents in Azure (case transcript, 3 alone)",
+   "ref": "file 06_ai_901_get_started_with_generative_ai_and_agents_in_azure_ep.md, 2:39-4:14"
+  },
+  "c12_5_34_8_33": {
+   "t": "Ep 11: get started with computer vision in Azure (case transcript, 3 alone)",
+   "ref": "file 12_ai_901_get_started_with_computer_vision_in_azure_ep_11.md, 5:34-8:33"
+  },
+  "c04_36_00_38_12": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 36:00-38:12"
+  },
+  "c06_21_25_22_29": {
+   "t": "Ep 5: get started with generative AI and agents in Azure (case transcript, 3 alone)",
+   "ref": "file 06_ai_901_get_started_with_generative_ai_and_agents_in_azure_ep.md, 21:25-22:29"
+  },
+  "c00_models": {
+   "t": "Cram: Models (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Models"
+  },
+  "c06_4_23_4_54": {
+   "t": "Ep 5: get started with generative AI and agents in Azure (case transcript, 3 alone)",
+   "ref": "file 06_ai_901_get_started_with_generative_ai_and_agents_in_azure_ep.md, 4:23-4:54"
+  },
+  "c04_37_48_37_59": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 37:48-37:59"
+  },
+  "c04_30_29_30_47": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 30:29-30:47"
+  },
+  "c04_27_08_27_57": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 27:08-27:57"
+  },
+  "c06_5_56_6_27": {
+   "t": "Ep 5: get started with generative AI and agents in Azure (case transcript, 3 alone)",
+   "ref": "file 06_ai_901_get_started_with_generative_ai_and_agents_in_azure_ep.md, 5:56-6:27"
+  },
+  "c04_10_21_13_01_16_56_17_12_40_20_40_41": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 10:21-13:01;16:56-17:12;40:20-40:41"
+  },
+  "c00_endpoints_keys_and_entra_auth": {
+   "t": "Cram: Endpoints, keys and Entra auth (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Endpoints, keys and Entra auth"
+  },
+  "c00_app_integration_with_foundry": {
+   "t": "Cram: App integration with Foundry (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): App integration with Foundry"
+  },
+  "c04_13_05_13_43": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 13:05-13:43"
+  },
+  "c08_10_07_10_21": {
+   "t": "Ep 7: get started with text analysis in Azure (case transcript, 3 alone)",
+   "ref": "file 08_ai_901_get_started_with_text_analysis_in_azure_ep_7.md, 10:07-10:21"
+  },
+  "c00_foundry_generated_code_custom_ai_app": {
+   "t": "Cram: Foundry generated code;Custom AI app (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Foundry generated code;Custom AI app"
+  },
+  "c06_21_19_24_21": {
+   "t": "Ep 5: get started with generative AI and agents in Azure (case transcript, 3 alone)",
+   "ref": "file 06_ai_901_get_started_with_generative_ai_and_agents_in_azure_ep.md, 21:19-24:21"
+  },
+  "c05_23_40_25_30": {
+   "t": "Ep 4: introduction to generative AI and agents (case transcript, 3 alone)",
+   "ref": "file 05_ai_901_introduction_to_generative_ai_and_agents_ep_4.md, 23:40-25:30"
+  },
+  "c06_20_13_21_01_22_46_23_07": {
+   "t": "Ep 5: get started with generative AI and agents in Azure (case transcript, 3 alone)",
+   "ref": "file 06_ai_901_get_started_with_generative_ai_and_agents_in_azure_ep.md, 20:13-21:01;22:46-23:07"
+  },
+  "c00_foundry_generated_code": {
+   "t": "Cram: Foundry generated code (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Foundry generated code"
+  },
+  "c00_endpoints_keys_and_entra_auth_app_integration_with_foundry": {
+   "t": "Cram: Endpoints, keys and Entra auth;App integration with Foundry (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Endpoints, keys and Entra auth;App integration with Foundry"
+  },
+  "c04_20_06_20_32": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 20:06-20:32"
+  },
+  "c06_23_14_24_21": {
+   "t": "Ep 5: get started with generative AI and agents in Azure (case transcript, 3 alone)",
+   "ref": "file 06_ai_901_get_started_with_generative_ai_and_agents_in_azure_ep.md, 23:14-24:21"
+  },
+  "c00_endpoints_keys_and_entra_auth_custom_ai_app": {
+   "t": "Cram: Endpoints, keys and Entra auth;Custom AI app (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Endpoints, keys and Entra auth;Custom AI app"
+  },
+  "c04_40_42_45_45": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 40:42-45:45"
+  },
+  "c04_17_47_18_00_20_14_20_32": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 17:47-18:00;20:14-20:32"
+  },
+  "c00_agents": {
+   "t": "Cram: Agents (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Agents"
+  },
+  "c06_11_10_15_12": {
+   "t": "Ep 5: get started with generative AI and agents in Azure (case transcript, 3 alone)",
+   "ref": "file 06_ai_901_get_started_with_generative_ai_and_agents_in_azure_ep.md, 11:10-15:12"
+  },
+  "c04_8_47_9_27": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 8:47-9:27"
+  },
+  "c00_tools_and_knowledge_looking_at_an_agent": {
+   "t": "Cram: Tools and knowledge;Looking at an agent (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Tools and knowledge;Looking at an agent"
+  },
+  "c04_9_27_10_06": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 9:27-10:06"
+  },
+  "c06_31_19_33_45": {
+   "t": "Ep 5: get started with generative AI and agents in Azure (case transcript, 3 alone)",
+   "ref": "file 06_ai_901_get_started_with_generative_ai_and_agents_in_azure_ep.md, 31:19-33:45"
+  },
+  "c00_looking_at_an_agent": {
+   "t": "Cram: Looking at an agent (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Looking at an agent"
+  },
+  "c06_27_55_39_41": {
+   "t": "Ep 5: get started with generative AI and agents in Azure (case transcript, 3 alone)",
+   "ref": "file 06_ai_901_get_started_with_generative_ai_and_agents_in_azure_ep.md, 27:55-39:41"
+  },
+  "c08_20_11_20_48": {
+   "t": "Ep 7: get started with text analysis in Azure (case transcript, 3 alone)",
+   "ref": "file 08_ai_901_get_started_with_text_analysis_in_azure_ep_7.md, 20:11-20:48"
+  },
+  "c04_34_22_35_36": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 34:22-35:36"
+  },
+  "c05_13_52_14_15": {
+   "t": "Ep 4: introduction to generative AI and agents (case transcript, 3 alone)",
+   "ref": "file 05_ai_901_introduction_to_generative_ai_and_agents_ep_4.md, 13:52-14:15"
+  },
+  "c04_25_10_25_22": {
+   "t": "Ep 3: get started with AI in Azure (case transcript, 3 alone)",
+   "ref": "file 04_ai_901_get_started_with_ai_in_azure_ep_3.md, 25:10-25:22"
+  },
+  "c07_0_35_6_05": {
+   "t": "Ep 6: introduction to NLP concepts (case transcript, 3 alone)",
+   "ref": "file 07_ai_901_introduction_to_natural_language_processing_concepts_.md, 0:35-6:05"
+  },
+  "c00_natural_language_processing": {
+   "t": "Cram: Natural Language Processing (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Natural Language Processing"
+  },
+  "c08_0_38_9_19": {
+   "t": "Ep 7: get started with text analysis in Azure (case transcript, 3 alone)",
+   "ref": "file 08_ai_901_get_started_with_text_analysis_in_azure_ep_7.md, 0:38-9:19"
+  },
+  "c08_14_33_21_22": {
+   "t": "Ep 7: get started with text analysis in Azure (case transcript, 3 alone)",
+   "ref": "file 08_ai_901_get_started_with_text_analysis_in_azure_ep_7.md, 14:33-21:22"
+  },
+  "c08_29_58_30_26": {
+   "t": "Ep 7: get started with text analysis in Azure (case transcript, 3 alone)",
+   "ref": "file 08_ai_901_get_started_with_text_analysis_in_azure_ep_7.md, 29:58-30:26"
+  },
+  "c07_6_54_16_20": {
+   "t": "Ep 6: introduction to NLP concepts (case transcript, 3 alone)",
+   "ref": "file 07_ai_901_introduction_to_natural_language_processing_concepts_.md, 6:54-16:20"
+  },
+  "c09_1_41_5_08": {
+   "t": "Ep 8: introduction to AI speech concepts (case transcript, 3 alone)",
+   "ref": "file 09_ai_901_introduction_to_ai_speech_concepts_ep_8.md, 1:41-5:08"
+  },
+  "c00_speech": {
+   "t": "Cram: Speech (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Speech"
+  },
+  "c10_1_27_6_52_6_52_14_00": {
+   "t": "Ep 9: get started with speech in Azure (case transcript, 3 alone)",
+   "ref": "file 10_ai_901_get_started_with_speech_in_azure_ep_9.md, 1:27-6:52;6:52-14:00"
+  },
+  "c10_14_00_17_42": {
+   "t": "Ep 9: get started with speech in Azure (case transcript, 3 alone)",
+   "ref": "file 10_ai_901_get_started_with_speech_in_azure_ep_9.md, 14:00-17:42"
+  },
+  "c09_5_08_12_10": {
+   "t": "Ep 8: introduction to AI speech concepts (case transcript, 3 alone)",
+   "ref": "file 09_ai_901_introduction_to_ai_speech_concepts_ep_8.md, 5:08-12:10"
+  },
+  "c11_1_21_5_28": {
+   "t": "Ep 10: introduction to computer vision concepts (case transcript, 3 alone)",
+   "ref": "file 11_ai_901_introduction_to_computer_vision_concepts_ep_10.md, 1:21-5:28"
+  },
+  "c00_computer_vision": {
+   "t": "Cram: Computer vision (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Computer vision"
+  },
+  "c12_5_34_8_33_16_20_24_03": {
+   "t": "Ep 11: get started with computer vision in Azure (case transcript, 3 alone)",
+   "ref": "file 12_ai_901_get_started_with_computer_vision_in_azure_ep_11.md, 5:34-8:33;16:20-24:03"
+  },
+  "c00_image_and_video_generation": {
+   "t": "Cram: Image and video generation (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Image and video generation"
+  },
+  "c11_9_47_12_42": {
+   "t": "Ep 10: introduction to computer vision concepts (case transcript, 3 alone)",
+   "ref": "file 11_ai_901_introduction_to_computer_vision_concepts_ep_10.md, 9:47-12:42"
+  },
+  "c11_5_32_9_35": {
+   "t": "Ep 10: introduction to computer vision concepts (case transcript, 3 alone)",
+   "ref": "file 11_ai_901_introduction_to_computer_vision_concepts_ep_10.md, 5:32-9:35"
+  },
+  "c13_4_23_8_37": {
+   "t": "Ep 12: introduction to information extraction concepts (case transcript, 3 alone)",
+   "ref": "file 13_ai_901_introduction_to_information_extraction_concepts_ep_12.md, 4:23-8:37"
+  },
+  "c00_information_extraction": {
+   "t": "Cram: Information extraction (case transcript, 3 alone)",
+   "ref": "file 00_ai_901_cram_exam_transcript.md, section(s): Information extraction"
+  },
+  "c13_8_37_12_30": {
+   "t": "Ep 12: introduction to information extraction concepts (case transcript, 3 alone)",
+   "ref": "file 13_ai_901_introduction_to_information_extraction_concepts_ep_12.md, 8:37-12:30"
+  },
+  "c14_1_37_6_57": {
+   "t": "Ep 13: get started with information extraction in Azure (case transcript, 3 alone)",
+   "ref": "file 14_ai_901_get_started_with_information_extraction_in_azure_ep_1.md, 1:37-6:57"
+  },
+  "c14_4_44_7_00": {
+   "t": "Ep 13: get started with information extraction in Azure (case transcript, 3 alone)",
+   "ref": "file 14_ai_901_get_started_with_information_extraction_in_azure_ep_1.md, 4:44-7:00"
+  }
+ },
+ "controls": {
+  "X1": "Skill group: Describe principles of responsible AI (fairness, reliability and safety, privacy and security, inclusiveness, transparency, accountability).",
+  "X2": "Skill group: Identify AI model components and configurations (how generative models work, choose a model, deployment options and parameters).",
+  "X3": "Skill group: Identify AI workloads (generative and agentic, text analysis, speech, vision, information extraction) and their techniques.",
+  "X4": "Skill group: Implement generative AI apps and agents by using Foundry (system and user prompts, deploy and chat, SDK chat client, single agent, agent client).",
+  "X5": "Skill group: Implement AI solutions for text and speech by using Foundry (text analysis app, spoken prompts to a multimodal model, Azure Speech app).",
+  "X6": "Skill group: Implement computer vision and image generation by using Foundry (visual input in prompts, generated visuals, a vision app).",
+  "X7": "Skill group: Implement information extraction by using Foundry (Content Understanding for documents, images, audio and video, and a client app).",
+  "L1": "Check, Ep 2 browser lab: chat with the local computer-history agent. Run one text, one speech, one vision and one blocked prompt. Name the workload of each.",
+  "L2": "Check, Ep 3 Foundry lab: create a project (subscription, resource group, region). Find the project endpoint and the key. Deploy gpt-4.1-mini, chat, then switch keys off and use Entra only. Delete it after.",
+  "L3": "Check, Ep 4 browser lab: change the system prompt and see the reply change. Change temperature, top P and max tokens. Add a text file as knowledge. Read the Python: endpoint, key, model, instructions, input.",
+  "L4": "Check, Ep 5 Foundry lab: read input and output tokens. Open the Code tab (completions versus responses, key versus Entra). Save the setup as an agent, add file search, read the YAML, run it from code.",
+  "L5": "Check, Ep 6 browser lab: run sentiment, entities and a summary with a small local model. Then run language detection and PII in the Language app.",
+  "L6": "Check, Ep 7 Foundry lab: do sentiment, entities and summary by prompt with gpt-4.1. Then run language detection and PII redaction (text, document, conversation) with Azure Language. Read the TextAnalyticsClient code.",
+  "L7": "Check, Ep 8 browser lab: turn voice mode on, ask by voice, hear the answer. Name the speech-to-text step and the text-to-speech step.",
+  "L8": "Check, Ep 9 Foundry lab: create a speech agent, turn on voice mode, pick a voice, read the YAML and the Voice Live code.",
+  "L9": "Check, Ep 10 browser lab: enable image analysis and ask a question about a photo.",
+  "L10": "Check, Ep 11 Foundry lab: send text plus an image to gpt-4.1-mini. Generate images (FLUX.2-pro, FLUX.1-Kontext-pro) and a short video (sora-2). Read the base64 and images.generate code.",
+  "L11": "Check, Ep 12 browser lab: run the receipt extractor. Say which part was OCR and which part was field extraction.",
+  "L12": "Check, Ep 13 Foundry lab: open Content Understanding. Run Read and Layout on a sample, read the JSON, run an audio analyzer, read the code.",
+  "L13": "Check, cram demo: run the basic inference script with a key in an environment variable, then with Entra (DefaultAzureCredential and a token provider). Add a system message. Print only the content."
+ },
+ "tree": {
+  "id": "root",
+  "t": "AI-901: Introduction to AI in Azure",
+  "s": "Course map for the Microsoft Azure AI Fundamentals exam, with Foundry app code in view. Study guide weights: concepts 40 to 45 percent, Foundry implementation 55 to 60 percent.",
+  "k": [
+   {
+    "id": "d1",
+    "t": "AI concepts and responsible AI",
+    "lv": "foundation",
+    "s": "What AI is, which workloads exist, and the six principles. The study guide gives concepts 40 to 45 percent of the exam.",
+    "k": [
+     {
+      "id": "d1a",
+      "t": "Exam shape and weights",
+      "lv": "foundation",
+      "s": "Pass mark 700 of 1000. Multiple choice, no penalty for a wrong answer. Study guide: concepts 40 to 45 percent, Foundry implementation 55 to 60 percent.",
+      "w": "It sets the depth: read simple Python, do not write complex code.",
+      "src": [
+       "g1",
+       "g2",
+       "c02_3_53_4_26",
+       "c15_2_41_4_12",
+       "c00_introduction_study_resources"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d1b",
+      "t": "AI, ML and workloads",
+      "lv": "foundation",
+      "s": "AI is software that imitates human abilities. Machine learning learns patterns from data instead of fixed rules. Workloads: generative and agentic, text, speech, vision, information extraction.",
+      "w": "One real task chains several workloads, so you must name each one.",
+      "c": [
+       "X3",
+       "L1"
+      ],
+      "src": [
+       "g1",
+       "c03_1_42_5_59",
+       "c00_what_is_ai"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d1c",
+      "t": "Assistant versus agent",
+      "lv": "foundation",
+      "s": "An assistant answers a request and a human steers each turn. An agent works toward a goal: it can start on an event, plan steps and act.",
+      "w": "It is the line between a chat app and an automated task.",
+      "c": [
+       "X3"
+      ],
+      "src": [
+       "g1",
+       "c00_assistants_and_agents",
+       "c05_5_49_6_51"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d1d",
+      "t": "Six responsible AI principles",
+      "lv": "core",
+      "s": "Fairness, reliability and safety, privacy and security, inclusiveness, transparency, accountability. Each has a test: bias check, fail safe, protected data, works for all users, explainable, a person responsible.",
+      "w": "The study guide asks you to describe considerations for each one.",
+      "c": [
+       "X1"
+      ],
+      "src": [
+       "g1",
+       "c03_6_09_9_54",
+       "c00_responsible_ai"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d1e",
+      "t": "Principles become controls",
+      "lv": "dive",
+      "s": "Map each principle to a setting: guardrails for safety, Entra and private networking for security, human approval of tool calls for accountability.",
+      "w": "It turns six words into settings you can audit.",
+      "c": [
+       "X1",
+       "L1"
+      ],
+      "src": [
+       "o4",
+       "o10",
+       "o6",
+       "c08_18_35_21_22",
+       "c03_22_36_23_34"
+      ],
+      "from": "transcript"
+     }
+    ]
+   },
+   {
+    "id": "d2",
+    "t": "Azure, Entra and Foundry",
+    "lv": "foundation",
+    "s": "Where AI lives in Azure and who may use it. You know cloud, so read this for the Foundry names.",
+    "k": [
+     {
+      "id": "d2a",
+      "t": "Tenant and Entra ID",
+      "lv": "foundation",
+      "s": "A tenant is your organization's Entra directory. Users, groups, apps, managed identities and agents get identities there. A subscription trusts one tenant.",
+      "w": "Identity decides who may call a model, and Entra is the keyless way.",
+      "src": [
+       "o8",
+       "c04_3_16_3_46",
+       "c00_azure_and_entra"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d2b",
+      "t": "Subscription and resource group",
+      "lv": "foundation",
+      "s": "A subscription is a cost and access boundary. A resource group holds related resources: each sits in one group, groups do not nest, settings flow down.",
+      "w": "Roles and policy follow this tree.",
+      "src": [
+       "o9",
+       "c04_3_46_5_17",
+       "c00_azure_and_entra"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d2c",
+      "t": "Foundry resource and project",
+      "lv": "core",
+      "s": "The Foundry resource is the governance layer: networking, security, deployments. A project is an isolated workspace for one app or agent, with its own agents, files and evaluations.",
+      "w": "Endpoints, roles and quotas attach to one of these two levels.",
+      "c": [
+       "L2"
+      ],
+      "src": [
+       "o10",
+       "c04_6_24_7_28",
+       "c00_microsoft_foundry"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d2d",
+      "t": "Portal map and lab hygiene",
+      "lv": "core",
+      "s": "Portal ai.azure.com: Discover finds models and tools. Build holds agents, models, services, knowledge, guardrails. Operate and Admin cover assets, quota, projects. Delete lab resources after use.",
+      "w": "It guides every lab and avoids surprise cost.",
+      "c": [
+       "L2"
+      ],
+      "src": [
+       "c04_15_29_15_45_21_34_31_00_51_21_51_40",
+       "c00_microsoft_foundry"
+      ],
+      "from": "transcript"
+     }
+    ]
+   },
+   {
+    "id": "d3",
+    "t": "How generative AI models work",
+    "lv": "core",
+    "s": "The model ideas behind every Foundry call. Read these before the code.",
+    "k": [
+     {
+      "id": "d3a",
+      "t": "LLM and SLM",
+      "lv": "foundation",
+      "s": "LLMs have billions of parameters. SLMs are smaller, often distilled, faster and cheaper. Both are generative. Inference is a model producing output from input.",
+      "w": "Model size trades power against speed and cost.",
+      "c": [
+       "X2"
+      ],
+      "src": [
+       "g1",
+       "c00_generative_ai",
+       "c05_3_39_4_50"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d3b",
+      "t": "Tokens",
+      "lv": "foundation",
+      "s": "A token is a word, part of a word or punctuation. The model reads and writes tokens. The playground shows input and output tokens apart.",
+      "w": "Tokens set limits and cost, and chat history adds input tokens.",
+      "c": [
+       "X2"
+      ],
+      "src": [
+       "c00_generative_ai",
+       "c05_7_22_7_52",
+       "c06_17_58_18_40"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d3c",
+      "t": "System and user prompt",
+      "lv": "core",
+      "s": "The system prompt (instructions) sets role, format and limits. The user prompt is the request. Chat Completions sends role messages. The Responses API takes instructions plus input.",
+      "w": "It is the cheapest control on model behavior.",
+      "c": [
+       "X4",
+       "L3",
+       "L13"
+      ],
+      "src": [
+       "g1",
+       "o15",
+       "c00_custom_ai_app",
+       "c05_17_20_18_17",
+       "c06_8_04_9_16"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d3d",
+      "t": "Sampling parameters",
+      "lv": "core",
+      "s": "Temperature and top P set randomness: low is focused, high is varied. Max tokens caps the reply. A repetition penalty cuts repeated text. Newer models may not expose temperature.",
+      "w": "Low suits a legal summary. High suits marketing copy.",
+      "c": [
+       "X2",
+       "L3"
+      ],
+      "src": [
+       "g1",
+       "c05_21_23_21_58",
+       "c06_9_16_10_10",
+       "c00_custom_ai_app"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d3e",
+      "t": "Embeddings and attention",
+      "lv": "core",
+      "s": "An embedding is a vector of numbers for meaning: close vectors mean similar meaning. Attention weights which tokens matter in context. The model predicts the next token, adds it and repeats.",
+      "w": "Embeddings power semantic search, which grounds agents.",
+      "c": [
+       "X2"
+      ],
+      "src": [
+       "o14",
+       "a1",
+       "c05_7_52_10_30",
+       "c00_embeddings"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d3f",
+      "t": "Multimodal versus multimodel",
+      "lv": "core",
+      "s": "Modality is a kind of data: text, audio, image, video, code. Multimodal: one model takes or gives more than one. Multimodel: an app chains several models.",
+      "w": "One letter apart, two ideas.",
+      "c": [
+       "X2"
+      ],
+      "src": [
+       "g1",
+       "c00_generative_ai",
+       "c12_2_10_5_19"
+      ],
+      "from": "transcript"
+     }
+    ]
+   },
+   {
+    "id": "d4",
+    "t": "Models, deployment and guardrails",
+    "lv": "core",
+    "s": "Pick a model, deploy it, set where it runs and how it is filtered.",
+    "k": [
+     {
+      "id": "d4a",
+      "t": "Model catalog and choice",
+      "lv": "foundation",
+      "s": "The catalog lists thousands of models: sold directly by Azure, or from partners and the community. Choose by task, quality, cost and latency, not by name.",
+      "w": "One catalog serves chat, image, video and speech models.",
+      "c": [
+       "X2"
+      ],
+      "src": [
+       "g1",
+       "c06_2_39_4_14",
+       "c12_5_34_8_33",
+       "c00_microsoft_foundry"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d4b",
+      "t": "Deploy before use",
+      "lv": "foundation",
+      "s": "A model must be deployed into a project before an app can call it. Default settings are quick. Custom settings show version, type, token rate and guardrail.",
+      "w": "The deployment name is what code passes as the model.",
+      "c": [
+       "X4",
+       "L2"
+      ],
+      "src": [
+       "o1",
+       "c04_36_00_38_12",
+       "c06_21_25_22_29",
+       "c00_models"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d4c",
+      "t": "Deployment types",
+      "lv": "core",
+      "s": "Global: any region. Data Zone: inside a US, EU or APAC zone. Regional (docs: Standard): one geography. Each can be pay-per-token, provisioned or batch.",
+      "w": "It sets where prompts are processed, how you pay and latency.",
+      "c": [
+       "X2",
+       "L2"
+      ],
+      "src": [
+       "o1",
+       "c00_models",
+       "c06_4_23_4_54",
+       "c04_37_48_37_59"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d4d",
+      "t": "PTU and priority",
+      "lv": "core",
+      "s": "Provisioned throughput units (PTU) reserve capacity for steady latency. Priority is a faster pay-as-you-go tier on Standard types. Flex is the cheap, delay-tolerant tier.",
+      "w": "Reserved capacity versus pay per token is the contrast to know.",
+      "c": [
+       "X2"
+      ],
+      "src": [
+       "o1",
+       "c00_models",
+       "c04_30_29_30_47"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d4e",
+      "t": "Guardrails",
+      "lv": "core",
+      "s": "A guardrail is a named set of controls. Each names a risk, where to scan and an action (annotate or block). Models default to Microsoft.DefaultV2. Severity: low, medium, high.",
+      "w": "It is the safety setting on every deployment.",
+      "c": [
+       "X1",
+       "X2",
+       "L1",
+       "L2"
+      ],
+      "src": [
+       "o4",
+       "c00_models",
+       "c04_27_08_27_57",
+       "c06_5_56_6_27"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d4f",
+      "t": "Agent guardrails",
+      "lv": "dive",
+      "s": "An agent guardrail fully replaces the model's guardrail. Agents add two scan points, tool call and tool response, in preview. Prompt attacks and indirect attacks are risk types.",
+      "w": "A tool response is untrusted input to the agent.",
+      "c": [
+       "X1"
+      ],
+      "src": [
+       "o4",
+       "o3"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d5",
+    "t": "Calling Foundry from code",
+    "lv": "core",
+    "s": "Endpoint, REST, SDK and three ways to prove who you are. This is the Foundry app code the study guide wants you to read.",
+    "k": [
+     {
+      "id": "d5a",
+      "t": "Endpoint and REST",
+      "lv": "foundation",
+      "s": "An endpoint is an HTTPS URL for a Foundry resource or project. Calls are JSON over REST. A project shows two: a project endpoint and an Azure OpenAI endpoint.",
+      "w": "Same HTTP you know, with a model behind it.",
+      "c": [
+       "X4",
+       "L2"
+      ],
+      "src": [
+       "o15",
+       "c04_10_21_13_01_16_56_17_12_40_20_40_41",
+       "c00_endpoints_keys_and_entra_auth"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d5b",
+      "t": "The SDK",
+      "lv": "core",
+      "s": "An SDK wraps the REST call and often the sign-in. Course packages: openai, azure-identity, TextAnalyticsClient (Language), the Speech SDK, a Content Understanding client.",
+      "w": "You read a flow: import, configure, create client, call, read result.",
+      "c": [
+       "X4"
+      ],
+      "src": [
+       "c00_app_integration_with_foundry",
+       "c04_13_05_13_43",
+       "c08_10_07_10_21"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d5c",
+      "t": "Chat client code",
+      "lv": "core",
+      "s": "Read it in five steps: import, endpoint and model, auth, call, print the reply. Everything later in the course varies this.",
+      "w": "The exam checks that you can say what each part does.",
+      "c": [
+       "X4",
+       "L3",
+       "L13"
+      ],
+      "src": [
+       "g1",
+       "c00_foundry_generated_code_custom_ai_app",
+       "c06_21_19_24_21",
+       "c05_23_40_25_30"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d5d",
+      "t": "Completions versus Responses API",
+      "lv": "core",
+      "s": "Chat Completions sends a list of role and content messages. The Responses API takes model, instructions and input, and works with models and agents. The Code tab switches between them.",
+      "w": "Same job, two call shapes. Know the method names.",
+      "c": [
+       "X4",
+       "L4"
+      ],
+      "src": [
+       "o15",
+       "c06_20_13_21_01_22_46_23_07",
+       "c00_foundry_generated_code"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d5e",
+      "t": "API keys",
+      "lv": "core",
+      "s": "A key in a header is a shared secret: whoever holds it can call you. Keep it in an environment variable or Key Vault, never in code or git. Two keys allow rotation.",
+      "w": "Entra swaps the secret for an identity.",
+      "c": [
+       "X4",
+       "L2"
+      ],
+      "src": [
+       "o2",
+       "o15",
+       "c00_endpoints_keys_and_entra_auth_app_integration_with_foundry",
+       "c04_20_06_20_32"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d5f",
+      "t": "Entra ID tokens",
+      "lv": "core",
+      "s": "Token scope: https://ai.azure.com/.default, sent as a bearer token. Python: DefaultAzureCredential and get_bearer_token_provider. The caller needs the Cognitive Services User role on the Foundry resource.",
+      "w": "Access becomes a role you can grant and revoke.",
+      "c": [
+       "X4",
+       "L2",
+       "L13"
+      ],
+      "src": [
+       "o2",
+       "c06_23_14_24_21",
+       "c00_endpoints_keys_and_entra_auth_custom_ai_app",
+       "c04_40_42_45_45"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d5g",
+      "t": "Managed identity",
+      "lv": "core",
+      "s": "A managed identity is an Entra identity Azure gives a resource, such as a VM or app. Code gets tokens with no stored secret. System-assigned ends with the resource; user-assigned can be shared.",
+      "w": "It is the keyless answer inside Azure.",
+      "c": [
+       "X4"
+      ],
+      "src": [
+       "o8",
+       "o2",
+       "c00_endpoints_keys_and_entra_auth"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d5h",
+      "t": "Switch keys off",
+      "lv": "dive",
+      "s": "The resource owner can disable key access so only Entra works. The portal then greys out key 1 and key 2. The Ep 3 lab runs this way.",
+      "w": "Keyless is a setting, not only a code choice.",
+      "c": [
+       "L2"
+      ],
+      "src": [
+       "c04_17_47_18_00_20_14_20_32"
+      ],
+      "from": "transcript"
+     }
+    ]
+   },
+   {
+    "id": "d6",
+    "t": "Agents",
+    "lv": "core",
+    "s": "A model plus instructions plus tools. Build in the portal, run from code.",
+    "k": [
+     {
+      "id": "d6a",
+      "t": "Prompt versus hosted agent",
+      "lv": "foundation",
+      "s": "A prompt agent is no code: instructions, model and tools that Foundry runs. A hosted agent is your container, run by Foundry with a managed endpoint and its own Entra identity.",
+      "w": "Choose: least to manage, or full control.",
+      "c": [
+       "X4"
+      ],
+      "src": [
+       "o3",
+       "c00_agents",
+       "c06_11_10_15_12"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d6b",
+      "t": "Tools and MCP",
+      "lv": "core",
+      "s": "Tools let an agent act: file search, web search, code interpreter, custom functions, MCP servers. MCP, the Model Context Protocol, is an open standard that connects AI apps to tools, data and workflows.",
+      "w": "Without tools an agent only talks.",
+      "c": [
+       "X4",
+       "L4"
+      ],
+      "src": [
+       "o3",
+       "o7",
+       "c04_8_47_9_27",
+       "c00_tools_and_knowledge_looking_at_an_agent"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d6c",
+      "t": "Knowledge and Azure AI Search",
+      "lv": "core",
+      "s": "Knowledge grounds answers in your data instead of training data. In Foundry it is an uploaded file with a vector index, or Azure AI Search knowledge bases.",
+      "w": "A model alone does not know your files or policies.",
+      "c": [
+       "X4",
+       "L3",
+       "L4"
+      ],
+      "src": [
+       "o13",
+       "c04_9_27_10_06",
+       "c06_31_19_33_45",
+       "c00_looking_at_an_agent"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d6d",
+      "t": "Portal to client app",
+      "lv": "core",
+      "s": "Test in the playground, save the setup as a named agent, read its YAML (kind prompt, model, instructions, tools), then call it by name and version with the project client.",
+      "w": "The study guide's path: create, test, call.",
+      "c": [
+       "X4",
+       "L4"
+      ],
+      "src": [
+       "g1",
+       "o3",
+       "c06_27_55_39_41"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d6e",
+      "t": "Approval and agent identity",
+      "lv": "dive",
+      "s": "Tool calls need approval: once, always for one tool, or always for all. An agent can have its own Entra identity and role, so you can audit and limit it.",
+      "w": "An acting agent needs least privilege, like any service account.",
+      "c": [
+       "X1"
+      ],
+      "src": [
+       "o3",
+       "c08_20_11_20_48",
+       "c04_34_22_35_36",
+       "c00_azure_and_entra"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d6f",
+      "t": "Multi-agent workflows",
+      "lv": "dive",
+      "s": "Several agents can split a job: one gathers, one summarizes, one acts. Foundry offers sequential, human-in-the-loop and group-chat workflows.",
+      "w": "Know the idea. The study guide tests a single-agent solution.",
+      "c": [
+       "X4"
+      ],
+      "src": [
+       "g1",
+       "c05_13_52_14_15",
+       "c04_25_10_25_22"
+      ],
+      "from": "transcript"
+     }
+    ]
+   },
+   {
+    "id": "d7",
+    "t": "NLP and Azure Language",
+    "lv": "core",
+    "s": "Text analysis two ways: a prompted model or a purpose-built service.",
+    "k": [
+     {
+      "id": "d7a",
+      "t": "Text analysis tasks",
+      "lv": "foundation",
+      "s": "Key terms show topics. Entities show who, where and when. Sentiment gives tone. Classification gives a category. Summarization gives the core message.",
+      "w": "The study guide names keyword extraction, entity detection, sentiment and summarization.",
+      "c": [
+       "X3",
+       "L5"
+      ],
+      "src": [
+       "g1",
+       "c07_0_35_6_05",
+       "c00_natural_language_processing"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d7b",
+      "t": "Prompted model or Azure Language",
+      "lv": "core",
+      "s": "A general model does many tasks from one prompt, but replies can vary. Azure Language is preconfigured and returns structured, repeatable results. Use a model to explore. Use Language in pipelines.",
+      "w": "This choice is the core text-analysis question.",
+      "c": [
+       "X3",
+       "X5",
+       "L6"
+      ],
+      "src": [
+       "o11",
+       "c08_0_38_9_19",
+       "c00_natural_language_processing"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d7c",
+      "t": "Azure Language features and code",
+      "lv": "core",
+      "s": "Core: PII detection, language detection, entity recognition, health text. Key phrases, sentiment and summarization are labelled legacy. Code: TextAnalyticsClient with endpoint and key. Agents use the Language MCP server.",
+      "w": "The exam names features the docs call legacy. Know both views.",
+      "c": [
+       "X5",
+       "L6"
+      ],
+      "src": [
+       "o11",
+       "c08_14_33_21_22",
+       "c08_29_58_30_26"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d7d",
+      "t": "Preprocessing and statistics",
+      "lv": "dive",
+      "s": "Classic pipeline: tokenize, normalize, drop stop words, stem or lemmatize, tag parts of speech. Statistical methods count: term frequency, TF-IDF, bag of words, TextRank. Semantic models use embeddings.",
+      "w": "Managed services do this for you, so you need only the vocabulary.",
+      "c": [
+       "X3"
+      ],
+      "src": [
+       "c07_6_54_16_20",
+       "c00_natural_language_processing"
+      ],
+      "from": "transcript"
+     }
+    ]
+   },
+   {
+    "id": "d8",
+    "t": "Speech",
+    "lv": "core",
+    "s": "Two directions: audio to text, and text to audio.",
+    "k": [
+     {
+      "id": "d8a",
+      "t": "Speech to text and text to speech",
+      "lv": "foundation",
+      "s": "Speech recognition turns spoken audio into text. Speech synthesis turns text into spoken audio. Assistants, transcripts, call centers and accessibility tools use both.",
+      "w": "Name the direction and you have named the workload.",
+      "c": [
+       "X3",
+       "L7"
+      ],
+      "src": [
+       "o12",
+       "c09_1_41_5_08",
+       "c00_speech"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d8b",
+      "t": "Azure Speech three ways",
+      "lv": "core",
+      "s": "Azure Speech runs from the playground (no code), from the Speech SDK (config with endpoint and key, audio config, recognizer or synthesizer), or as an agent tool through MCP.",
+      "w": "Same service, three entry points: explore, build, automate.",
+      "c": [
+       "X5",
+       "L7",
+       "L8"
+      ],
+      "src": [
+       "o12",
+       "c10_1_27_6_52_6_52_14_00"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d8c",
+      "t": "Voice Live",
+      "lv": "core",
+      "s": "Voice Live runs a real-time spoken conversation with a generative model that has instructions and tools. It handles listening, speaking, noise and interruptions. A voice-based prompt agent uses it.",
+      "w": "Chaining the two steps feels slow.",
+      "c": [
+       "X5",
+       "L8"
+      ],
+      "src": [
+       "o12",
+       "o3",
+       "c10_14_00_17_42"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d8d",
+      "t": "Speech pipelines",
+      "lv": "dive",
+      "s": "Recognition: capture audio, extract features, acoustic model to phonemes, language model to words, post-process. Synthesis: normalize text, map to phonemes, add prosody, generate the waveform.",
+      "w": "Context picks the right word when two words sound alike.",
+      "c": [
+       "X3"
+      ],
+      "src": [
+       "c09_5_08_12_10"
+      ],
+      "from": "transcript"
+     }
+    ]
+   },
+   {
+    "id": "d9",
+    "t": "Computer vision and generation",
+    "lv": "core",
+    "s": "Understand images, send images to models, and generate images and video.",
+    "k": [
+     {
+      "id": "d9a",
+      "t": "Vision tasks",
+      "lv": "foundation",
+      "s": "Classification gives one label per image. Detection gives what and where, with boxes. Semantic segmentation labels every pixel. Contextual analysis says what is happening.",
+      "w": "Each task answers a different question, so you pick by question.",
+      "c": [
+       "X3",
+       "L9"
+      ],
+      "src": [
+       "g1",
+       "c11_1_21_5_28",
+       "c00_computer_vision"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d9b",
+      "t": "Multimodal prompts",
+      "lv": "core",
+      "s": "Send text and an image in one prompt. The image goes as a URL or as base64 text. The model reads both together and answers in text.",
+      "w": "It is how a chat model reads visual input in code.",
+      "c": [
+       "X6",
+       "L9",
+       "L10"
+      ],
+      "src": [
+       "g1",
+       "c12_2_10_5_19"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d9c",
+      "t": "Image and video generation",
+      "lv": "core",
+      "s": "Search the catalog by task: text to image, image to image, video. Course models: GPT image, FLUX.2-pro, FLUX.1-Kontext-pro, sora-2. Choose by task, quality, cost, latency. Code: images.generate.",
+      "w": "Names change, so check the catalog.",
+      "c": [
+       "X6",
+       "L10"
+      ],
+      "src": [
+       "g1",
+       "c12_5_34_8_33_16_20_24_03",
+       "c00_image_and_video_generation"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d9d",
+      "t": "Diffusion models",
+      "lv": "core",
+      "s": "Training adds noise to images in steps and teaches the model to reverse it. Generation starts from noise and removes it in steps guided by the prompt. Video repeats this across frames.",
+      "w": "Hence the steps, time and cost.",
+      "c": [
+       "X6"
+      ],
+      "src": [
+       "a3",
+       "c11_9_47_12_42",
+       "c00_image_and_video_generation"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d9e",
+      "t": "CNN versus vision transformer",
+      "lv": "dive",
+      "s": "A CNN slides filters over an image, builds feature maps, then predicts probabilities. A vision transformer cuts the image into patches, turns each into a vector and uses attention.",
+      "w": "Local patterns versus global context is the contrast to remember.",
+      "c": [
+       "X3"
+      ],
+      "src": [
+       "a2",
+       "c11_5_32_9_35",
+       "c00_computer_vision"
+      ],
+      "from": "transcript"
+     }
+    ]
+   },
+   {
+    "id": "d10",
+    "t": "Information extraction",
+    "lv": "core",
+    "s": "Turn receipts, forms, audio and video into structured data.",
+    "k": [
+     {
+      "id": "d10a",
+      "t": "OCR",
+      "lv": "foundation",
+      "s": "OCR reads text from images and scans. It gives text, not meaning: it does not know that 23.50 is a total. It is the first step of most document flows.",
+      "w": "Do not confuse reading text with understanding fields.",
+      "c": [
+       "X3",
+       "X7",
+       "L11"
+      ],
+      "src": [
+       "g1",
+       "c13_4_23_8_37",
+       "c00_information_extraction"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d10b",
+      "t": "Field extraction",
+      "lv": "core",
+      "s": "Field extraction maps OCR text to named fields such as vendor, date and total. Steps: ingest OCR output with position and confidence, detect candidates, map, normalize, send to systems.",
+      "w": "OCR says what text exists. Field extraction says what it means.",
+      "c": [
+       "X7",
+       "L11"
+      ],
+      "src": [
+       "g1",
+       "c13_8_37_12_30"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d10c",
+      "t": "Content Understanding analyzers",
+      "lv": "core",
+      "s": "Content Understanding handles documents, images, audio and video. Prebuilt analyzers fit invoices and receipts. Custom analyzers use your schema. Output: JSON or Markdown, with confidence scores.",
+      "w": "Call it by REST or SDK and pass the JSON on.",
+      "c": [
+       "X7",
+       "L12"
+      ],
+      "src": [
+       "g1",
+       "o5",
+       "c14_1_37_6_57",
+       "c00_information_extraction"
+      ],
+      "from": "transcript"
+     },
+     {
+      "id": "d10d",
+      "t": "Audio and video extraction",
+      "lv": "dive",
+      "s": "The same analyzer idea runs on audio (transcripts, topics) and video (key moments, speech). Open question: the docs say it uses generative AI; the cram calls it more deterministic than an LLM.",
+      "w": "Treat the cram's claim as unverified.",
+      "c": [
+       "X7",
+       "L12"
+      ],
+      "src": [
+       "o5",
+       "c14_4_44_7_00",
+       "c00_information_extraction"
+      ],
+      "from": "transcript"
+     }
+    ]
+   }
+  ]
+ }
+}

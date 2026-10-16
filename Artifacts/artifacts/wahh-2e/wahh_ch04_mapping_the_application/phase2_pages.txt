@@ -1,0 +1,14 @@
+phase2_page.md word count, outside fenced code (per sub heading; ceiling 2500 each, .rules/brevity.md rule 10):
+
+    282  0.6p  1. Enumerating visible content
+    411  0.8p  2. Discovering hidden content
+    204  0.4p  3. Pages, functional paths, hidden parameters
+    237  0.5p  4. Entry points for user input
+    239  0.5p  5. Fingerprinting server-side technology
+    168  0.3p  6. Server-side functionality and unique behavior
+    236  0.5p  7. Mapping the attack surface
+    241  0.5p  references
+
+phase2_page.html total (twin/check.py counter, code at half): 2188 words = 4.4 pages (500/page).
+Hard cap per twin/check.py: 2500. Whole-page word ceiling: none (per-sub-heading rule). No section over 2500.
+coverage: check_coverage.py prints OK (47 nodes + 17 anchors, map order).

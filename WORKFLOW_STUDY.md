@@ -46,7 +46,7 @@ A phase that is missing its input does not start. It stops and says which file i
 1. Put the source in `user-input-learning-text/<case>/`. Private. Never edited.
 2. Phase 1. `/interviewer`, then the map. Run `python skills/scripts/build_mindmap.py <topic_slug>`. Exit 0 and a hash.
 3. Learn from the mind map. Pick learn alone or the AI prompt on each topic. Set status: to learn, learning, got it.
-4. Phase 2. One page per domain. Start with the domains the map marks audit critical.
+4. Phase 2. Start it only after phase 1 is complete: build exit 0 and the phase 1 agent done. Asked for both at once, run phase 1 first and wait (`.rules/phase-order-and-coverage.md`). One page per domain. Start with the domains the map marks audit critical.
 5. Phase 3 when the page is clear. Build, write, upload.
 6. Phase 4. Take the one route back it gives you. Re-enter at the phase it names.
 7. `/tidy`. Then `python skills/scripts/repo_map.py`.

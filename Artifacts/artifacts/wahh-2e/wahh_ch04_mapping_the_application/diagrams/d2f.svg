@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" role="img">
+<title>d2f: search operators, 2011 against 2026</title>
+<desc>Compare: site: still works; link:, related: are not on the operator page; cache: died 24 September 2024.</desc>
+<defs><marker id="d2f-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink,#1d1f23)"/></marker><marker id="d2f-danger" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--danger,#d1453b)"/></marker><marker id="d2f-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent,#b7791f)"/></marker><marker id="d2f-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted,#6b6f76)"/></marker><marker id="d2f-client" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--client,#2f6fdb)"/></marker><marker id="d2f-server" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--server,#1f9d6b)"/></marker></defs>
+<rect x="0" y="0" width="900" height="420" style="fill:var(--bg,#fbfaf7)"/>
+<text x="30" y="28" text-anchor="start" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:16px;font-weight:700;fill:var(--ink,#1d1f23)">d2f: search operators, 2011 against 2026</text>
+<rect x="40" y="50" width="380" height="44" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--client,#2f6fdb);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="230.0" y="76.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;font-weight:700;fill:var(--ink,#1d1f23)">2011 (book)</text>
+<rect x="480" y="50" width="380" height="44" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--client,#2f6fdb);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="670.0" y="76.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;font-weight:700;fill:var(--ink,#1d1f23)">2026</text>
+<rect x="40" y="112" width="380" height="46" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--ink,#1d1f23);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="230.0" y="139.0" text-anchor="middle" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:13px;fill:var(--ink,#1d1f23)">site:</text>
+<rect x="480" y="112" width="380" height="46" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--server,#1f9d6b);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="670.0" y="139.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">works</text>
+<path d="M420,135 L480,135" fill="none" style="stroke:var(--ink,#1d1f23);stroke-width:1.6;stroke-dasharray:none" marker-end="url(#d2f-ink)"/>
+<rect x="40" y="170" width="380" height="46" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--ink,#1d1f23);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="230.0" y="197.0" text-anchor="middle" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:13px;fill:var(--ink,#1d1f23)">link:</text>
+<rect x="480" y="170" width="380" height="46" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--danger,#d1453b);stroke-width:1.5;stroke-dasharray:6 4"/>
+<text x="670.0" y="197.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">not on the operator page</text>
+<path d="M420,193 L480,193" fill="none" style="stroke:var(--danger,#d1453b);stroke-width:1.6;stroke-dasharray:6 4" marker-end="url(#d2f-danger)"/>
+<rect x="40" y="228" width="380" height="46" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--ink,#1d1f23);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="230.0" y="255.0" text-anchor="middle" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:13px;fill:var(--ink,#1d1f23)">related:</text>
+<rect x="480" y="228" width="380" height="46" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--danger,#d1453b);stroke-width:1.5;stroke-dasharray:6 4"/>
+<text x="670.0" y="255.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">not on the operator page</text>
+<path d="M420,251 L480,251" fill="none" style="stroke:var(--danger,#d1453b);stroke-width:1.6;stroke-dasharray:6 4" marker-end="url(#d2f-danger)"/>
+<rect x="40" y="286" width="380" height="46" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--ink,#1d1f23);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="230.0" y="313.0" text-anchor="middle" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:13px;fill:var(--ink,#1d1f23)">cache:</text>
+<rect x="480" y="286" width="380" height="46" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--danger,#d1453b);stroke-width:1.5;stroke-dasharray:6 4"/>
+<text x="670.0" y="313.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">died 24 September 2024</text>
+<path d="M420,309 L480,309" fill="none" style="stroke:var(--danger,#d1453b);stroke-width:1.6;stroke-dasharray:6 4" marker-end="url(#d2f-danger)"/>
+<rect x="40" y="350" width="820" height="46" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--accent,#b7791f);stroke-width:2;stroke-dasharray:none"/>
+<text x="450.0" y="377.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">Quotes and the minus sign (-) still work. Dead operators fail silently.</text>
+</svg>

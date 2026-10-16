@@ -17,6 +17,8 @@ this is the phase 2 pass. the approach file stays `.grok/skills/ideas-skill/refe
 
 read `skills/phase_1/output/<slug>/MAP.md` first. if it is missing, stop and write nothing.
 
+read every node of `phase1_mindmap.json`. each domain, topic and anchor gets a place on the page, tagged with its id in curly braces (`{d1}`, `{d1a}`, `{H1}`). a topic can be one line. it cannot be missing. rule: `.rules/phase-order-and-coverage.md`.
+
 the order of `skills/phase_2/output/<slug>/PAGE.md` is the map order, in the blocks in `skills/phase_2/PATHS.md`. a domain the map dropped does not get a section. do not reteach an acquired skill as if it were missing. exposure is not acquired.
 
 each learning section: the parts the result depends on, the condition, when it does not apply, then how.

@@ -1,0 +1,893 @@
+{
+ "title": "WAHH 2e chapter 4: mapping the application",
+ "subtitle": "The book is 2011. The mechanism holds. Many tools and defaults changed. Each node says what broke and the 2026 way.",
+ "slug": "wahh_ch04_mapping_the_application",
+ "study_mode": "book",
+ "mode": "zero",
+ "ui": {
+  "anchors": "Chapter hack steps",
+  "anchor": "Hack step",
+  "critical": "Hack-step critical",
+  "why": "Why it matters for mapping",
+  "feeds": "It feeds these hack steps and questions",
+  "learner": "I am reading The Web Application Hacker's Handbook, 2nd edition (2011), chapter 4. I know HTTP basics and have used the Burp proxy. The book is from 2011, so I need the 2026 way for each technique.",
+  "context": "chapter 4 of WAHH 2e, mapping a web application, where I must say what still holds, what broke, and the 2026 command for each 2011 technique",
+  "labels": {
+   "explain": "Explain",
+   "evidence": "Try it (lab)",
+   "challenge": "Quiz me",
+   "deeper": "Go deeper"
+  },
+  "prompts": {
+   "explain": "Explain this chapter 4 idea in plain, short sentences. Define each term at first use. Then give three parts: what the 2011 book says, what is outdated or changed, and the 2026 way with one exact command. Say which parts of your answer you could not verify from official docs.",
+   "evidence": "Give me a safe, legal lab exercise for this, only on my own machine or on PortSwigger Web Security Academy or Hack The Box labs. Do not target any site I do not own or have written permission to test. Show the exact tool command, what output means the technique worked, and what output means the 2011 method failed on a modern target.",
+   "challenge": "Quiz me one question at a time on this topic. Start with the 2011 method, then ask what broke and what I run in 2026. Give a hint before the answer. After five questions list my gaps and the book pages to reread.",
+   "deeper": "Go one level deeper: why the old method fails on modern apps (SPAs, CDN or WAF, HTTP/2, generic banners), what a defender sees when I run the 2026 tool, and which tool flags change the result. Cite official docs and say where you are unsure. Then link it to the next idea in the chapter."
+  }
+ },
+ "sources": {
+  "b73": {
+   "t": "WAHH 2e ch4, p.73",
+   "ref": "WAHH 2e ch4, p.73"
+  },
+  "b74": {
+   "t": "WAHH 2e ch4, p.74",
+   "ref": "WAHH 2e ch4, p.74"
+  },
+  "b7576": {
+   "t": "WAHH 2e ch4, pp.75-76",
+   "ref": "WAHH 2e ch4, pp.75-76"
+  },
+  "b77": {
+   "t": "WAHH 2e ch4, p.77",
+   "ref": "WAHH 2e ch4, p.77"
+  },
+  "b7780": {
+   "t": "WAHH 2e ch4, pp.77-80",
+   "ref": "WAHH 2e ch4, pp.77-80"
+  },
+  "b80": {
+   "t": "WAHH 2e ch4, p.80",
+   "ref": "WAHH 2e ch4, p.80"
+  },
+  "b8081": {
+   "t": "WAHH 2e ch4, pp.80-81",
+   "ref": "WAHH 2e ch4, pp.80-81"
+  },
+  "b81": {
+   "t": "WAHH 2e ch4, p.81",
+   "ref": "WAHH 2e ch4, p.81"
+  },
+  "b8485": {
+   "t": "WAHH 2e ch4, pp.84-85",
+   "ref": "WAHH 2e ch4, pp.84-85"
+  },
+  "b85": {
+   "t": "WAHH 2e ch4, p.85",
+   "ref": "WAHH 2e ch4, p.85"
+  },
+  "b8688": {
+   "t": "WAHH 2e ch4, pp.86-88",
+   "ref": "WAHH 2e ch4, pp.86-88"
+  },
+  "b89": {
+   "t": "WAHH 2e ch4, p.89",
+   "ref": "WAHH 2e ch4, p.89"
+  },
+  "b90": {
+   "t": "WAHH 2e ch4, p.90",
+   "ref": "WAHH 2e ch4, p.90"
+  },
+  "b91": {
+   "t": "WAHH 2e ch4, p.91",
+   "ref": "WAHH 2e ch4, p.91"
+  },
+  "b9193": {
+   "t": "WAHH 2e ch4, pp.91-93",
+   "ref": "WAHH 2e ch4, pp.91-93"
+  },
+  "b93": {
+   "t": "WAHH 2e ch4, p.93",
+   "ref": "WAHH 2e ch4, p.93"
+  },
+  "b96": {
+   "t": "WAHH 2e ch4, p.96",
+   "ref": "WAHH 2e ch4, p.96"
+  },
+  "b97": {
+   "t": "WAHH 2e ch4, p.97",
+   "ref": "WAHH 2e ch4, p.97"
+  },
+  "b98": {
+   "t": "WAHH 2e ch4, p.98",
+   "ref": "WAHH 2e ch4, p.98"
+  },
+  "b99": {
+   "t": "WAHH 2e ch4, p.99",
+   "ref": "WAHH 2e ch4, p.99"
+  },
+  "b100": {
+   "t": "WAHH 2e ch4, p.100",
+   "ref": "WAHH 2e ch4, p.100"
+  },
+  "b101": {
+   "t": "WAHH 2e ch4, p.101",
+   "ref": "WAHH 2e ch4, p.101"
+  },
+  "b102": {
+   "t": "WAHH 2e ch4, p.102",
+   "ref": "WAHH 2e ch4, p.102"
+  },
+  "b105": {
+   "t": "WAHH 2e ch4, p.105",
+   "ref": "WAHH 2e ch4, p.105"
+  },
+  "b106": {
+   "t": "WAHH 2e ch4, p.106",
+   "ref": "WAHH 2e ch4, p.106"
+  },
+  "b107": {
+   "t": "WAHH 2e ch4, p.107",
+   "ref": "WAHH 2e ch4, p.107"
+  },
+  "b109": {
+   "t": "WAHH 2e ch4, p.109",
+   "ref": "WAHH 2e ch4, p.109"
+  },
+  "b110": {
+   "t": "WAHH 2e ch4, p.110",
+   "ref": "WAHH 2e ch4, p.110"
+  },
+  "b113": {
+   "t": "WAHH 2e ch4, p.113",
+   "ref": "WAHH 2e ch4, p.113"
+  },
+  "b114": {
+   "t": "WAHH 2e ch4, p.114",
+   "ref": "WAHH 2e ch4, p.114"
+  },
+  "bq": {
+   "t": "WAHH 2e ch4, pp.114-115",
+   "ref": "WAHH 2e ch4, pp.114-115"
+  },
+  "ffuf": {
+   "t": "ffuf README (flags -w -u -mc -fc -fs -recursion -e -ac -rate)",
+   "u": "https://github.com/ffuf/ffuf"
+  },
+  "ferox": {
+   "t": "feroxbuster README (flags -u -x -s)",
+   "u": "https://github.com/epi052/feroxbuster"
+  },
+  "katana": {
+   "t": "katana README (flags -u -jc -d -kf -rl -jsl)",
+   "u": "https://github.com/projectdiscovery/katana"
+  },
+  "httpx": {
+   "t": "httpx README (flags -l -td -sc -title -server)",
+   "u": "https://github.com/projectdiscovery/httpx"
+  },
+  "arjun": {
+   "t": "Arjun wiki, Usage (flags -u -m -w -t --stable --passive)",
+   "u": "https://github.com/s0md3v/Arjun/wiki/Usage"
+  },
+  "nuclei": {
+   "t": "nuclei README (flags -u -t -tags -as -s)",
+   "u": "https://github.com/projectdiscovery/nuclei"
+  },
+  "oast": {
+   "t": "interactsh README (interactsh-client, DNS HTTP SMTP LDAP)",
+   "u": "https://github.com/projectdiscovery/interactsh"
+  },
+  "wburls": {
+   "t": "waybackurls README",
+   "u": "https://github.com/tomnomnom/waybackurls"
+  },
+  "gau": {
+   "t": "gau README (sources, --subs, --providers)",
+   "u": "https://github.com/lc/gau"
+  },
+  "cdx": {
+   "t": "Wayback CDX server API docs",
+   "u": "https://github.com/internetarchive/wayback/tree/master/wayback-cdx-server"
+  },
+  "pminer": {
+   "t": "PortSwigger Param Miner README",
+   "u": "https://github.com/PortSwigger/param-miner"
+  },
+  "jsluice": {
+   "t": "BishopFox jsluice README",
+   "u": "https://github.com/BishopFox/jsluice"
+  },
+  "lfinder": {
+   "t": "LinkFinder README",
+   "u": "https://github.com/GerbenJavado/LinkFinder"
+  },
+  "seclists": {
+   "t": "SecLists README",
+   "u": "https://github.com/danielmiessler/SecLists"
+  },
+  "assetnote": {
+   "t": "Assetnote wordlists",
+   "u": "https://wordlists.assetnote.io/"
+  },
+  "osv": {
+   "t": "OSV.dev documentation",
+   "u": "https://google.github.io/osv.dev/"
+  },
+  "flash": {
+   "t": "Adobe Flash Player end of life",
+   "u": "https://www.adobe.com/products/flashplayer/end-of-life.html"
+  },
+  "ccrawl": {
+   "t": "Common Crawl, get started",
+   "u": "https://commoncrawl.org/get-started"
+  },
+  "dirb": {
+   "t": "OWASP wiki, DirBuster (inactive, archived)",
+   "u": "https://wiki.owasp.org/index.php/DirBuster"
+  },
+  "burpcrawl": {
+   "t": "PortSwigger, Burp full crawl and audit",
+   "u": "https://portswigger.net/burp/documentation/desktop/automated-scanning/webapp-scans/full-crawl-and-audit"
+  },
+  "zapno": {
+   "t": "ZAP, no longer an OWASP project",
+   "u": "https://www.zaproxy.org/docs/nowaspzap/"
+  },
+  "gql": {
+   "t": "GraphQL, introspection",
+   "u": "https://graphql.org/learn/introspection/"
+  },
+  "oas": {
+   "t": "OpenAPI Specification",
+   "u": "https://spec.openapis.org/oas/latest.html"
+  },
+  "rfc9113": {
+   "t": "RFC 9113, HTTP/2",
+   "u": "https://www.rfc-editor.org/rfc/rfc9113.html"
+  },
+  "reg": {
+   "t": "The Register, OSVDB shuts down (secondary)",
+   "u": "https://www.theregister.com/2016/04/06/open_source_vuln_database_closes/"
+  },
+  "serc": {
+   "t": "Search Engine Roundtable, Google cache gone (secondary)",
+   "u": "https://seroundtable.com/google-cache-dead-38112.html"
+  },
+  "wscar": {
+   "t": "Wikipedia, WebScarab (secondary)",
+   "u": "https://en.wikipedia.org/wiki/WebScarab"
+  },
+  "gsearch": {
+   "t": "Google Search help, search operators",
+   "u": "https://support.google.com/websearch/answer/2466433"
+  }
+ },
+ "controls": {
+  "H1": "Hack steps p.80: user-directed spidering",
+  "H2": "Hack steps p.85: brute-force content discovery",
+  "H3": "Hack steps pp.86-88: inference from published content",
+  "H4": "Hack steps p.90: search engines and archives",
+  "H5": "Hack steps p.91: developer names and forum posts",
+  "H6": "Hack steps p.93: web server default content (Nikto)",
+  "H7": "Hack steps p.96: functional paths",
+  "H8": "Hack steps p.97: hidden parameters",
+  "H9": "Hack steps p.106: fingerprint server-side technology",
+  "H10": "Hack steps p.109: server-side functionality and extrapolation",
+  "H11": "Hack steps p.110: unique application behavior",
+  "H12": "Hack steps p.113: map the attack surface",
+  "Q1": "Question 1: CookieAuth.dll?GetLogon?curl=Z2Fdefault.aspx",
+  "Q2": "Question 2: list the members of a forum from ucp.php?mode=register",
+  "Q3": "Question 3: Address.asp?action=view&location=default",
+  "Q4": "Question 4: Server: Apache-Coyote/1.1",
+  "Q5": "Question 5: /admin.cpf on two different servers"
+ },
+ "tree": {
+  "id": "root",
+  "t": "WAHH 2e chapter 4",
+  "s": "Map an unknown web app, then say for each 2011 technique what still holds, what broke, and what you run in 2026.",
+  "k": [
+   {
+    "id": "d1",
+    "t": "Enumerating visible content",
+    "lv": "foundation",
+    "s": "Find every page and function you can reach by normal use, with a browser, a spider, or both.",
+    "k": [
+     {
+      "id": "d1a",
+      "t": "Manual browsing",
+      "lv": "foundation",
+      "s": "Follow every link. Finish every multistage function, such as registration and password reset. 2026: still the base. Burp's built-in Chromium browser records the walk.",
+      "w": "A spider cannot do what a person does here, and the whole map starts from it.",
+      "src": [
+       "b74",
+       "burpcrawl"
+      ]
+     },
+     {
+      "id": "d1b",
+      "t": "Spiders and crawlers",
+      "lv": "core",
+      "s": "A spider requests a page, parses links and forms, and repeats. 2026: use a JS-aware crawler, for example katana -u https://t -jc -d 3.",
+      "w": "Old spiders read HTML only, so a modern app looks nearly empty to them.",
+      "src": [
+       "b74",
+       "katana"
+      ]
+     },
+     {
+      "id": "d1c",
+      "t": "Robots.txt and comments",
+      "lv": "core",
+      "s": "robots.txt lists URLs the owner does not want crawled. HTML comments leak paths too. 2026: katana -kf robotstxt,sitemapxml reads the known files for you.",
+      "w": "The owner names the sensitive paths for you.",
+      "src": [
+       "b74",
+       "b77",
+       "katana"
+      ]
+     },
+     {
+      "id": "d1d",
+      "t": "User-directed spidering",
+      "lv": "core",
+      "s": "You browse through an intercepting proxy. The tool parses every response and builds the map. You pick the data, so validation passes and delete links stay unused. 2026: same method in Burp.",
+      "w": "This is the safe way to reach login-only and multistage content.",
+      "src": [
+       "b7780",
+       "burpcrawl"
+      ],
+      "c": [
+       "H1"
+      ]
+     },
+     {
+      "id": "d1e",
+      "t": "Spider limits and danger",
+      "lv": "core",
+      "s": "Spiders miss script menus, fail validation, loop on volatile URLs, and break sessions. A spider can also find and call admin functions. 2026: set scope and rate, for example katana -rl 50.",
+      "w": "The book names a spider that defaced a live site. Name the failure before you press start.",
+      "src": [
+       "b7576",
+       "b77",
+       "katana"
+      ]
+     },
+     {
+      "id": "d1f",
+      "t": "Flash, applets, ActiveX",
+      "lv": "dive",
+      "s": "Links inside compiled client objects are invisible to a spider. 2026: Adobe blocked Flash content on 12 January 2021. The same gap now sits in JavaScript bundles.",
+      "w": "You need to know where the links hide today, not in 2011.",
+      "src": [
+       "b7576",
+       "flash"
+      ]
+     },
+     {
+      "id": "d1g",
+      "t": "Dead tools in this chapter",
+      "lv": "dive",
+      "s": "WebScarab is archived and ZAP replaced it. DirBuster is archived. 2026: CAT, Wikto, IEWatch, httprint and httprecon are old. I did not open a source on them, so treat them as unverified.",
+      "w": "Do not install a 2011 tool because the book names it.",
+      "src": [
+       "wscar",
+       "dirb",
+       "zapno"
+      ],
+      "ungrounded": true
+     }
+    ]
+   },
+   {
+    "id": "d2",
+    "t": "Discovering hidden content",
+    "lv": "core",
+    "s": "Find content the app never links: backups, old versions, test pages, logs, defaults.",
+    "k": [
+     {
+      "id": "d2a",
+      "t": "What hides, and why",
+      "lv": "foundation",
+      "s": "Test and debug functions, backup copies, old versions, config and include files, comments and logs. 2026: the same classes still appear. Add .git folders and API docs.",
+      "w": "The hidden part is often the weak part.",
+      "src": [
+       "b8081"
+      ],
+      "ungrounded": true
+     },
+     {
+      "id": "d2b",
+      "t": "Brute-force names",
+      "lv": "core",
+      "s": "Request many guessed names and read the responses. Burp Intruder did it in the book. 2026: DirBuster is archived. Use ffuf -w words.txt -u https://t/FUZZ -ac.",
+      "w": "Guessing is how you find what no link shows.",
+      "src": [
+       "b81",
+       "dirb",
+       "ffuf"
+      ],
+      "c": [
+       "H2"
+      ]
+     },
+     {
+      "id": "d2c",
+      "t": "Reading status codes",
+      "lv": "core",
+      "s": "A 200 does not mean it exists. A 404 does not mean it does not. 2026: custom 200 pages still lie. ffuf -ac calibrates, and -fc and -fs filter by code and size.",
+      "w": "Raw hit lists are noise until you filter the app's own not-found page.",
+      "src": [
+       "b8485",
+       "ffuf",
+       "bq"
+      ],
+      "c": [
+       "H2",
+       "Q5"
+      ]
+     },
+     {
+      "id": "d2d",
+      "t": "Inferring names",
+      "lv": "core",
+      "s": "Apps follow naming schemes: AddDocument suggests EditDocument. Numbers, dates and backup extensions help. 2026: ffuf -e .bak,.old extends each word. Assetnote lists are built per technology.",
+      "w": "One real name gives you five guesses.",
+      "src": [
+       "b85",
+       "b8688",
+       "ffuf",
+       "assetnote",
+       "seclists",
+       "bq"
+      ],
+      "c": [
+       "H3",
+       "Q2"
+      ]
+     },
+     {
+      "id": "d2e",
+      "t": "Automated discovery tools",
+      "lv": "core",
+      "s": "Burp Content Discovery combined lists, spidering and name extrapolation. 2026: feroxbuster -u https://t -x php,html scans for files with those extensions.",
+      "w": "Automation covers the volume. You still read the results.",
+      "src": [
+       "b8688",
+       "ferox"
+      ]
+     },
+     {
+      "id": "d2f",
+      "t": "Search engines",
+      "lv": "core",
+      "s": "Google site:, link:, related: and cache: found old and partner content. 2026: Google's own operator page lists none of link:, related:, cache:. The cache: operator died in September 2024.",
+      "w": "Old tricks fail silently. You get an empty result, not an error.",
+      "src": [
+       "b90",
+       "gsearch",
+       "serc"
+      ],
+      "c": [
+       "H4"
+      ]
+     },
+     {
+      "id": "d2g",
+      "t": "Archives and URL history",
+      "lv": "core",
+      "s": "Archives hold snapshots of content no longer linked. 2026: gau --subs example.com merges Wayback, Common Crawl, OTX and URLScan. waybackurls and the Wayback CDX API do the same.",
+      "w": "Removed does not mean gone.",
+      "src": [
+       "b89",
+       "gau",
+       "wburls",
+       "cdx",
+       "ccrawl"
+      ],
+      "c": [
+       "H4"
+      ]
+     },
+     {
+      "id": "d2h",
+      "t": "Names and forum posts",
+      "lv": "dive",
+      "s": "Developer names and emails lead to forum questions that leak technologies, config and source. 2026: the method holds. Public repos are the new forum.",
+      "w": "People leak what the app hides.",
+      "src": [
+       "b91"
+      ],
+      "c": [
+       "H5"
+      ],
+      "ungrounded": true
+     },
+     {
+      "id": "d2i",
+      "t": "Web server defaults",
+      "lv": "dive",
+      "s": "Servers ship sample scripts and known third-party apps. Nikto and Wikto check for them, with many false results. 2026: nuclei -u https://t -as picks templates from detected technology.",
+      "w": "A default install is a known target.",
+      "src": [
+       "b9193",
+       "nuclei"
+      ],
+      "c": [
+       "H6"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d3",
+    "t": "Pages, functional paths, hidden parameters",
+    "lv": "core",
+    "s": "A URL is not always a page. One URL can hold many functions, and a parameter can switch logic on.",
+    "k": [
+     {
+      "id": "d3a",
+      "t": "Pages vs functional paths",
+      "lv": "core",
+      "s": "When every request goes to one URL, parameters name the servlet and method. Map those paths and their dependencies. 2026: this is the normal case. GraphQL uses one endpoint, and introspection lists its types.",
+      "w": "Directory brute force finds nothing on a one-URL app.",
+      "src": [
+       "b93",
+       "b96",
+       "gql"
+      ],
+      "c": [
+       "H7"
+      ]
+     },
+     {
+      "id": "d3b",
+      "t": "API descriptions as the map",
+      "lv": "core",
+      "s": "Not in the book. An OpenAPI description formally describes an API's surface. 2026: fetch it if the app publishes one, then read the routes.",
+      "w": "It replaces guessing with reading.",
+      "src": [
+       "oas"
+      ]
+     },
+     {
+      "id": "d3c",
+      "t": "Mining JavaScript",
+      "lv": "core",
+      "s": "The book says review client code for hints. 2026: katana -jc parses endpoints in JS files. jsluice pulls URLs and secrets. LinkFinder: python linkfinder.py -i URL -o cli.",
+      "w": "Bundles name routes the UI never shows.",
+      "src": [
+       "b8688",
+       "katana",
+       "jsluice",
+       "lfinder"
+      ]
+     },
+     {
+      "id": "d3d",
+      "t": "Hidden parameters",
+      "lv": "core",
+      "s": "Guess names like debug, test, hide with values true, yes, 1, using Intruder cluster bomb. 2026: arjun -u URL -m GET tests a 25,890-name list. Param Miner tests up to 65,000 names per request.",
+      "w": "One debug flag can turn validation off.",
+      "src": [
+       "b96",
+       "b97",
+       "arjun",
+       "pminer"
+      ],
+      "c": [
+       "H8"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d4",
+    "t": "Entry points for user input",
+    "lv": "core",
+    "s": "List every place the app reads data from you. Each one is a test target.",
+    "k": [
+     {
+      "id": "d4a",
+      "t": "The entry-point list",
+      "lv": "foundation",
+      "s": "URL path, query parameters, POST fields, cookies, and some headers: User-Agent, Referer, Accept, Accept-Language, Host. 2026: add JSON keys and nested fields.",
+      "w": "You cannot test an input you did not list.",
+      "src": [
+       "b98"
+      ],
+      "ungrounded": true
+     },
+     {
+      "id": "d4b",
+      "t": "REST-style path parameters",
+      "lv": "core",
+      "s": "In /shop/browse/electronics/iPhone3G/ the path parts are data. 2026: API routes are the modern form. An OpenAPI description lists them as paths.",
+      "w": "Path segments get injected like query values.",
+      "src": [
+       "b98",
+       "oas"
+      ]
+     },
+     {
+      "id": "d4c",
+      "t": "Odd parameter formats",
+      "lv": "dive",
+      "s": "Parameters can sit after a semicolon, in a path, or as URL-encoded XML in one value. Dissect the format or you miss the fields inside. 2026: JSON bodies are the common case.",
+      "w": "Treating a blob as one parameter hides the bug.",
+      "src": [
+       "b99"
+      ],
+      "ungrounded": true
+     },
+     {
+      "id": "d4d",
+      "t": "Headers as input",
+      "lv": "core",
+      "s": "Referer, User-Agent and X-Forwarded-For get logged and trusted. A mobile User-Agent can reach less-tested code. 2026: Param Miner guesses headers. HTTP/2 changes the wire format (RFC 9113), not what the app reads.",
+      "w": "Developers treat headers as clean.",
+      "src": [
+       "b100",
+       "pminer",
+       "rfc9113"
+      ]
+     },
+     {
+      "id": "d4e",
+      "t": "Out-of-band channels",
+      "lv": "core",
+      "s": "Data can arrive by SMTP mail, a server-side fetch, or a mobile API. 2026: interactsh-client prints the DNS, HTTP and SMTP hits on your payload domain.",
+      "w": "The response may show nothing. The side channel proves the bug.",
+      "src": [
+       "b101",
+       "oast"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d5",
+    "t": "Fingerprinting server-side technology",
+    "lv": "core",
+    "s": "Name the stack. The name gives you known bugs and a guess about the code.",
+    "k": [
+     {
+      "id": "d5a",
+      "t": "Banner grabbing",
+      "lv": "foundation",
+      "s": "The Server header can give name and version. Versions also leak in templates and custom headers. 2026: httpx -l hosts.txt -web-server -td. Banners are often trimmed or generic (not verified).",
+      "w": "The version decides which known bugs apply.",
+      "src": [
+       "b101",
+       "httpx",
+       "bq"
+      ],
+      "c": [
+       "H9",
+       "Q4"
+      ],
+      "ungrounded": true
+     },
+     {
+      "id": "d5b",
+      "t": "HTTP fingerprinting",
+      "lv": "dive",
+      "s": "Servers differ in optional parts of the spec, so tools like httprecon rank likely servers. 2026: httpx -td uses the Wappalyzer dataset. The status of httprecon and httprint is not verified.",
+      "w": "Use it when the banner lies.",
+      "src": [
+       "b102",
+       "httpx"
+      ],
+      "c": [
+       "H9"
+      ],
+      "ungrounded": true
+     },
+     {
+      "id": "d5c",
+      "t": "Extensions and error pages",
+      "lv": "core",
+      "s": "asp, aspx, jsp, php and dll point to a platform. A request for a missing .aspx shows an ASP.NET error. 2026: many routes carry no extension, so these clues are rarer (not verified).",
+      "w": "Cheap clue, and Q1 and Q3 use it.",
+      "src": [
+       "b102",
+       "b105",
+       "bq"
+      ],
+      "c": [
+       "H9",
+       "Q1",
+       "Q3"
+      ],
+      "ungrounded": true
+     },
+     {
+      "id": "d5d",
+      "t": "Directories and session cookies",
+      "lv": "core",
+      "s": "JSESSIONID, ASPSESSIONID, PHPSESSID and paths like /servlet or /cfdocs name the stack. 2026: cookie names are often renamed or generic (not verified). nuclei -as and httpx -td read more signals.",
+      "w": "One cookie name can settle it.",
+      "src": [
+       "b105",
+       "nuclei"
+      ],
+      "c": [
+       "H9"
+      ],
+      "ungrounded": true
+     },
+     {
+      "id": "d5e",
+      "t": "Third-party components",
+      "lv": "core",
+      "s": "Carts, forums and logins appear in many apps. Find the version, then research known flaws. 2026: query OSV.dev with POST /v1/query, or run its scanner.",
+      "w": "You study a deployment you can install yourself.",
+      "src": [
+       "b105",
+       "b106",
+       "osv"
+      ],
+      "c": [
+       "H9"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d6",
+    "t": "Server-side functionality and unique behavior",
+    "lv": "core",
+    "s": "Read parameter names and URLs like a programmer. Guess the code behind them.",
+    "k": [
+     {
+      "id": "d6a",
+      "t": "Dissecting requests",
+      "lv": "core",
+      "s": "From calendar.jsp?isExpired=0&OrderBy=name you infer Java, a database, ORDER BY, and a flag to flip. 2026: do the same on JSON fields. GraphQL introspection lists fields.",
+      "w": "Each name hints at a bug class and a next test.",
+      "src": [
+       "b107",
+       "gql",
+       "bq"
+      ],
+      "c": [
+       "H10",
+       "Q3"
+      ]
+     },
+     {
+      "id": "d6b",
+      "t": "REST URL to internal call",
+      "lv": "core",
+      "s": "/pub/media/117/view probably maps to manager?schema=pub&type=media&id=117&action=view. Try edit and add, other collections, higher ids. 2026: ffuf -w ids.txt -u https://t/pub/media/FUZZ/view.",
+      "w": "You guess the hidden call behind a clean URL.",
+      "src": [
+       "b109",
+       "ffuf"
+      ],
+      "c": [
+       "H10"
+      ]
+     },
+     {
+      "id": "d6c",
+      "t": "Extrapolating behavior",
+      "lv": "dive",
+      "s": "Parts of one app act alike. An echo function shows the global filter. A decode function decodes your cookie. 2026: a WAF may block you, so a block can mean the WAF, not the app (not verified).",
+      "w": "One open area explains the closed ones.",
+      "src": [
+       "b109"
+      ],
+      "c": [
+       "H10"
+      ],
+      "ungrounded": true
+     },
+     {
+      "id": "d6d",
+      "t": "Unique behavior",
+      "lv": "dive",
+      "s": "Hunt the bolted-on parts: different style, comments, CAPTCHA, tracking, third-party code. They often skip the standard defenses. 2026: many are third-party scripts. Crawl them with katana -jc.",
+      "w": "The odd part got the least testing.",
+      "src": [
+       "b110",
+       "katana"
+      ],
+      "c": [
+       "H11"
+      ],
+      "ungrounded": true
+     }
+    ]
+   },
+   {
+    "id": "d7",
+    "t": "Mapping the attack surface",
+    "lv": "core",
+    "s": "Turn the map into a ranked plan of attack.",
+    "k": [
+     {
+      "id": "d7a",
+      "t": "Map first, probe later",
+      "lv": "foundation",
+      "s": "Mapping comes before attack. No tool maps an app fully and safely, so mix manual work with controlled automation. 2026: Burp's Chromium crawl and login handling help, but they do not finish the job.",
+      "w": "Skipping this step is how you miss whole areas.",
+      "src": [
+       "b73",
+       "b114",
+       "burpcrawl"
+      ]
+     },
+     {
+      "id": "d7b",
+      "t": "Core functions and mechanisms",
+      "lv": "core",
+      "s": "Know the core features, session state, access control, authentication and the support flows like recovery. 2026: the same, plus the API behind each screen.",
+      "w": "These carry the serious bugs.",
+      "src": [
+       "b97"
+      ],
+      "c": [
+       "H12"
+      ]
+     },
+     {
+      "id": "d7c",
+      "t": "Feature to bug class",
+      "lv": "core",
+      "s": "Map each feature to its usual bug: file upload to path traversal, login to enumeration, redirect to open redirect, email to injection. 2026: add the API classes (not verified).",
+      "w": "It turns a map into test cases.",
+      "src": [
+       "b110"
+      ],
+      "c": [
+       "H12"
+      ],
+      "ungrounded": true
+     },
+     {
+      "id": "d7d",
+      "t": "Check third-party code",
+      "lv": "core",
+      "s": "Look up each third-party part in a public vulnerability database. 2026: OSVDB shut down in 2016. Use OSV.dev, and nuclei -as for known exposures.",
+      "w": "The book names a dead database.",
+      "src": [
+       "b113",
+       "reg",
+       "osv",
+       "nuclei"
+      ],
+      "c": [
+       "H12"
+      ]
+     },
+     {
+      "id": "d7e",
+      "t": "Plan of attack",
+      "lv": "core",
+      "s": "Rank the most interesting functions and the worst bug classes. 2026: first probe all hosts: httpx -l hosts.txt -sc -title -td.",
+      "w": "You have limited time. Aim it.",
+      "src": [
+       "b113",
+       "httpx"
+      ],
+      "c": [
+       "H12"
+      ]
+     },
+     {
+      "id": "d7f",
+      "t": "The EIS example",
+      "lv": "dive",
+      "s": "The book walks one app: /auth, /core/sitestats, /gb, /home, /pub, /shop. Each path gets its likely bug. 2026: practice the same walk on PortSwigger Web Security Academy or HTB labs.",
+      "w": "It shows the pattern on a whole app.",
+      "src": [
+       "b110"
+      ],
+      "ungrounded": true
+     }
+    ]
+   }
+  ]
+ }
+}

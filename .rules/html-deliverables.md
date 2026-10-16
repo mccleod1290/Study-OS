@@ -8,3 +8,4 @@
 6. If an old skill says to make a PDF or a page count from a PDF, this rule wins. Page count falls back to words: at most 2500 words for a lesson and 5000 for a reference, as set in `.rules/brevity.md`.
 7. A deliverable without its HTML is not delivered. The `log_deliverables` hook logs it.
 8. Length is capped by `.rules/brevity.md`: 5 to 10 pages at most, lower is better.
+9. One exception, set by him on 2026-10-16: an explainer video. `phase2_video.mp4` sits beside `phase2_video.html`, the wrapper that plays it. The wrapper is the deliverable and is self-contained apart from that one relative `src`. Rule: `skills/phase_2/VISUALS.md`.

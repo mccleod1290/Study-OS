@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>app map: IDOR lab</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1c1c1a;--mut:#5a5a54;--line:#e3e2dd;--card:#fff;--g5:#2e7d32;--g4:#00897b;--g3:#b8860b;--g2:#d9803e;--g1:#c0392b;--code:#f4f3ef}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#1a1a18;--fg:#e9e8e3;--mut:#a6a59d;--line:#333330;--card:#232320;--code:#262623}}
+:root[data-theme=dark]{--bg:#1a1a18;--fg:#e9e8e3;--mut:#a6a59d;--line:#333330;--card:#232320;--code:#262623}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 -apple-system,Segoe UI,Roboto,sans-serif;padding:0 16px}
+main{max-width:860px;margin:0 auto;padding:28px 0 60px}
+h1{font-size:1.5rem;margin:0 0 4px}
+h2{font-size:1.15rem;margin:30px 0 8px;border-bottom:1px solid var(--line);padding-bottom:5px}
+h3{font-size:1rem;margin:18px 0 4px}
+.sub{color:var(--mut);font-size:.9rem;margin:0 0 14px}
+.tally{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.tally span{font-size:.8rem;padding:2px 8px;border-radius:10px;border:1px solid var(--line)}
+code{background:var(--code);padding:1px 5px;border-radius:4px;font:13px/1.4 ui-monospace,Consolas,monospace}
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.9rem}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:10px 0}
+.b{display:inline-block;min-width:18px;text-align:center;color:#fff;font-size:.72rem;font-weight:700;border-radius:4px;padding:1px 5px;margin-right:5px}
+.g5{background:var(--g5)}.g4{background:var(--g4)}.g3{background:var(--g3)}.g2{background:var(--g2)}.g1{background:var(--g1)}
+.boundary{border-left:3px solid var(--g3);padding-left:12px;color:var(--mut);font-size:.92rem}
+ul{margin:6px 0;padding-left:20px}
+footer{margin-top:30px;color:var(--mut);font-size:.82rem;border-top:1px solid var(--line);padding-top:10px}
+@media print{body{padding:0}main{max-width:100%}.card{break-inside:avoid}a{color:inherit;text-decoration:none}}
+</style>
+</head>
+<body>
+<main>
+<h1>app map: Insecure direct object references lab</h1>
+<p class="sub">target <code>0a95006b03f30ebf833543780095002f.web-security-academy.net</code> · PortSwigger Web Security Academy (authorized) · mapped 2026-10-16 · <code>/app_exploration</code>, one lead + three worker agents</p>
+
+<p class="boundary">this is a map, not an attack. it records the app's functions, their requests, and their parameters, so the shape is understood. no identifier was swapped, no payload sent, no login submitted. the access-control hypotheses the map raises are named at the end and handed off; they were not tested here.</p>
+
+<div class="tally">
+  <span>words ~720</span>
+  <span><b class="b g5">5</b>observed on the wire</span>
+  <span><b class="b g4">4</b>read from the app's JS</span>
+  <span><b class="b g1">1</b>open question</span>
+  <span>3 areas · 8 functions · 6 HTTP endpoints · 2 sockets</span>
+</div>
+
+<h2>1. catalog (public, no login)</h2>
+<div class="card">
+<h3>product catalog</h3>
+<p><b class="b g5">5</b><code>GET /</code> → 200 text/html. the public shop front: server-rendered product cards, each "View details" link carries a productId. no parameter on the wire.</p>
+<h3>product detail</h3>
+<p><b class="b g5">5</b><code>GET /product?productId=&lt;int&gt;</code> → 200 text/html. one query parameter, <code>productId</code>: a small sequential integer (1, 2, 3 seen). the id selects the product object on the server; each value returns a different page. no JSON, the id is not echoed in a body field. this is the direct object reference the lab is named for — recorded, not swapped.</p>
+<p><b class="b g5">5</b><code>GET /image/productcatalog/products/&lt;int&gt;.jpg</code> — product images, also keyed by an integer. the ids are <b>not contiguous</b> (1, 3, 6, 8, 18, 23 … 71 for ~20 products), so the product id space is sparse: real objects sit at scattered integers, not 1..N. static CSS/JS also load under <code>/resources/</code>.</p>
+</div>
+
+<h2>2. account and auth</h2>
+<div class="card">
+<h3>account gate</h3>
+<p><b class="b g5">5</b><code>GET /my-account</code> with no session redirects to <code>/login</code>. this is the authentication gate: account data needs a session first. authorization — whose account you see — only matters past this gate, so it is not visible from here.</p>
+<h3>login form</h3>
+<p><b class="b g5">5</b><code>GET /login</code> → 200 serves the form. <b class="b g4">4</b><code>POST /login</code> (from the form, not submitted) takes three fields, names only, never values:</p>
+<table><tr><th>field</th><th>shape</th><th>tells you</th></tr>
+<tr><td><code>csrf</code></td><td>32-char hidden token, required</td><td>a per-request synchronizer token, not just a cookie</td></tr>
+<tr><td><code>username</code></td><td>text, required</td><td>—</td></tr>
+<tr><td><code>password</code></td><td>password, required</td><td>—</td></tr></table>
+</div>
+
+<h2>3. live chat</h2>
+<div class="card">
+<h3>chat message (WebSocket)</h3>
+<p><b class="b g4">4</b><code>wss://&lt;host&gt;/chat</code> — not an HTTP request, so no status. from <code>chat.js</code> plus one harmless "hello": out it sends plain <code>READY</code> on open, then JSON <code>{ "message": &lt;string&gt; }</code> (textarea, maxlength 500, html-encoded). in it receives <code>TYPING</code>, a chat line <code>{ "user", "content" }</code>, or <code>{ "error" }</code>.</p>
+<h3>transcript</h3>
+<p><b class="b g4">4</b><code>POST /download-transcript</code> — body field <code>transcript</code>, a client-built string (the message rows). the server writes it to a file and redirects to:</p>
+<p><b class="b g5">5</b><code>GET /download-transcript/&lt;int&gt;.txt</code> → 200 text/plain. <code>2.txt</code> was observed. the transcript id is a sequential integer in the path — a second direct object reference.</p>
+</div>
+
+<h2>from the app's JavaScript (not exercised)</h2>
+<div class="card">
+<ul>
+<li><b class="b g4">4</b><code>wss://&lt;host&gt;/academyLabHeader</code> — opened by <code>labHeader.js</code>, "PING" every 5s, receives lab-status HTML. PortSwigger lab infrastructure, not an app feature.</li>
+<li><b class="b g4">4</b>scripts worth a later read: <code>/resources/js/chat.js</code>, <code>/resources/js/viewTranscript.js</code>.</li>
+<li><b class="b g4">4</b><code>window.renderChatMessage(content)</code> — an optional client hook; absent here, so inbound <code>content</code> renders without it.</li>
+</ul>
+</div>
+
+<h2>the object model</h2>
+<div class="card">
+<p>two objects are reached by a bare, guessable integer:</p>
+<ul>
+<li><b class="b g5">5</b><b>product</b> → <code>productId</code> (int, sequential), query string on <code>/product</code>.</li>
+<li><b class="b g5">5</b><b>chat transcript</b> → <code>&lt;int&gt;.txt</code> (int, sequential), path on <code>/download-transcript/</code>.</li>
+<li><b class="b g5">5</b><b>product image</b> → <code>&lt;int&gt;.jpg</code> (int, sparse/non-contiguous), path on <code>/image/productcatalog/products/</code>.</li>
+</ul>
+<p>three of the app's object paths take a bare integer. two are sequential (transcript, and productId as seen), one is sparse (image). the <b>chat message</b> object has no id: keyed <code>message</code> out, <code>user</code>/<code>content</code> in. the <code>transcript</code> parameter is a free string the server trusts to write the stored file.</p>
+</div>
+
+<h2>where the map goes (handed off, not tested)</h2>
+<p class="boundary">the map names these for a later, separate testing job; this skill does not run them. a tester works only between accounts they own, never a stranger's data. see card <code>13-where-the-map-goes</code>.</p>
+<ul>
+<li><b class="b g5">5</b><code>download-transcript/&lt;int&gt;.txt</code> is an unauthenticated, sequential-id file path: the shape of a transcript that returns another user's chat. the lab's likely IDOR.</li>
+<li><b class="b g4">4</b><code>productId</code> selects an object server-side; worth confirming whether any per-user product view exists behind login.</li>
+</ul>
+
+<h2>open questions</h2>
+<ul>
+<li><b class="b g5">5</b><s>image path: filename or id?</s> resolved by reading the captured image URLs: it is <code>&lt;int&gt;.jpg</code>, an integer object id, sparse across the catalog.</li>
+<li><b class="b g1">1</b>the session cookie name: httpOnly and set only on a real login, so unconfirmed from a map-only pass. needs a live instance + a legitimate login.</li>
+<li><b class="b g1">1</b>the chat <code>user:"CONNECTED"</code> inbound sentinel: presence/keepalive, or does it carry agent identity? needs the live socket (frame bodies were not retained in the capture).</li>
+</ul>
+<p class="boundary">the two still-open questions need a live lab instance. this instance 504'd (PortSwigger labs expire after inactivity), so the deeper dig ran against the saved captures instead; response bodies were not retained, which caps what the captures alone can answer. relaunch the lab for a fresh URL and the authenticated surface (post-login <code>/my-account</code>, the real session cookie, the live chat frames) can be mapped too.</p>
+
+<footer>built by <code>/app_exploration</code>: lead survey, three <code>app_explorer</code> workers (catalog, account, live chat), captures merged by <code>norm.py</code>. raw captures are value-free (names and shapes only); the capture files are sensitive and disposable. sources beside this file: <code>endpoints.md</code>, <code>notes/</code>, <code>captures/</code>.</footer>
+</main>
+</body>
+</html>

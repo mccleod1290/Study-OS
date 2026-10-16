@@ -1,0 +1,374 @@
+{
+ "title": "System design for AI-built apps (Pluto)",
+ "subtitle": "Ras Mic's walk-through, mapped. Eight decisions, the rule behind each, and the gaps he skips.",
+ "slug": "ai_system_design_pluto",
+ "study_mode": "video",
+ "mode": "zero",
+ "sources": {
+  "yt": {
+   "t": "Ras Mic, System Design Overview (YouTube, 2026-07-03)",
+   "u": "https://www.youtube.com/watch?v=4jy0T98dYoI"
+  },
+  "sup": {
+   "t": "Supabase docs: Row Level Security",
+   "u": "https://supabase.com/docs/guides/database/postgres/row-level-security"
+  },
+  "cvx": {
+   "t": "Convex docs: Best practices, access control",
+   "u": "https://docs.convex.dev/understanding/best-practices/"
+  }
+ },
+ "controls": {
+  "S1": "Pick the top abstraction layer, not raw cloud (3:06-7:00)",
+  "S2": "Start with one monorepo for all clients and the backend (10:46-12:30)",
+  "S3": "Clients reach data only through checked server code (13:36-14:19)",
+  "S4": "Join server and database in one all-code backend (15:13-16:10, 18:49)",
+  "S5": "Keep agent work alive with durable processes and queues (16:25-18:09)",
+  "S6": "Split a service when it has one surface and no foothold elsewhere (20:16-22:30)",
+  "S7": "Log errors and events so failure is visible (24:35-25:26)",
+  "S8": "Name the trade-off you accept, on purpose (27:01-27:30)"
+ },
+ "tree": {
+  "id": "root",
+  "t": "System design for AI-built apps",
+  "s": "One talk, one product (Pluto). The rule behind each tool pick matters more than the tool list.",
+  "k": [
+   {
+    "id": "d1",
+    "t": "Design is trade-offs",
+    "s": "No perfect system. Weigh scalability, reliability, performance, cost.",
+    "lv": "foundation",
+    "k": [
+     {
+      "id": "d1a",
+      "t": "Trade-offs",
+      "s": "Every stack and every tool costs something. Name what you give up.",
+      "lv": "foundation",
+      "w": "Without the cost named, a choice is a fashion.",
+      "src": [
+       "yt"
+      ],
+      "c": [
+       "S8"
+      ]
+     },
+     {
+      "id": "d1b",
+      "t": "Quality axes",
+      "s": "Scalability, reliability, performance, money. Add a fifth: can the agent operate it?",
+      "lv": "core",
+      "w": "The fifth axis explains his tool picks. My reading of the talk.",
+      "src": [
+       "yt"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d2",
+    "t": "The abstraction ladder",
+    "s": "Own metal, then clouds, then wrappers over clouds. He builds on the top rung.",
+    "lv": "foundation",
+    "k": [
+     {
+      "id": "d2a",
+      "t": "Own metal to cloud",
+      "s": "Rack servers gave way to AWS, GCP, Azure. Nobody plugs in machines now.",
+      "lv": "foundation",
+      "w": "Cloud hid the hardware. That is the first abstraction.",
+      "src": [
+       "yt"
+      ],
+      "c": [
+       "S1"
+      ]
+     },
+     {
+      "id": "d2b",
+      "t": "Wrappers over clouds",
+      "s": "Vercel, Convex, Supabase wrap the clouds. Better developer and agent experience.",
+      "lv": "core",
+      "w": "The agent writes and runs these well, per him. No measurement shown.",
+      "src": [
+       "yt"
+      ],
+      "c": [
+       "S1"
+      ]
+     },
+     {
+      "id": "d2c",
+      "t": "Agent experience",
+      "s": "Pick tools an agent knows, whose setup is code.",
+      "lv": "dive",
+      "w": "Top alpha idea. It filters every later choice.",
+      "src": [
+       "yt"
+      ],
+      "c": [
+       "S1",
+       "S4"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d3",
+    "t": "Pluto's shape",
+    "s": "Web, desktop, mobile and admin surfaces. One monorepo.",
+    "lv": "core",
+    "k": [
+     {
+      "id": "d3a",
+      "t": "Four client surfaces",
+      "s": "SvelteKit web, Electron desktop, Expo mobile, internal admin.",
+      "lv": "foundation",
+      "w": "Many clients share one backend.",
+      "src": [
+       "yt"
+      ]
+     },
+     {
+      "id": "d3b",
+      "t": "Monorepo as agent context",
+      "s": "One repo so the agent sees the whole system. Turborepo with Vercel.",
+      "lv": "core",
+      "w": "Split repos split the agent's context and the human's.",
+      "src": [
+       "yt"
+      ],
+      "c": [
+       "S2"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d4",
+    "t": "Backend and data",
+    "s": "Server in front of data. Convex joins server and database.",
+    "lv": "core",
+    "k": [
+     {
+      "id": "d4a",
+      "t": "Client to server to DB",
+      "s": "The client calls the server. The server calls the database.",
+      "lv": "foundation",
+      "w": "Direct client access leaks secrets if a secret key is exposed.",
+      "src": [
+       "yt",
+       "sup"
+      ],
+      "c": [
+       "S3"
+      ]
+     },
+     {
+      "id": "d4b",
+      "t": "Access checks decide",
+      "s": "Public Convex functions can be called by anyone. Check identity inside. RLS is another way.",
+      "lv": "dive",
+      "w": "The rule is checked paths, not no paths. His reason is imprecise.",
+      "src": [
+       "cvx",
+       "sup"
+      ],
+      "c": [
+       "S3"
+      ]
+     },
+     {
+      "id": "d4c",
+      "t": "Queries, mutations, actions",
+      "s": "Read, write, call outside. One backend and database in one box.",
+      "lv": "core",
+      "w": "One stack to run, one place for code and data.",
+      "src": [
+       "yt"
+      ],
+      "c": [
+       "S4"
+      ]
+     },
+     {
+      "id": "d4d",
+      "t": "Durable processes",
+      "s": "Work survives a closed tab and retries. Workflow component.",
+      "lv": "core",
+      "w": "Vibe-coded chat dies when the user leaves.",
+      "src": [
+       "yt"
+      ],
+      "c": [
+       "S5"
+      ]
+     },
+     {
+      "id": "d4e",
+      "t": "Queues and work pools",
+      "s": "Hold users in line. Run jobs in parallel.",
+      "lv": "core",
+      "w": "Throughput and ordering without custom code.",
+      "src": [
+       "yt"
+      ],
+      "c": [
+       "S5"
+      ]
+     },
+     {
+      "id": "d4f",
+      "t": "Everything is code",
+      "s": "Infra as code means the agent can build and change it. Components install from a link.",
+      "lv": "dive",
+      "w": "This is why Convex wins for him.",
+      "src": [
+       "yt"
+      ],
+      "c": [
+       "S4"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d5",
+    "t": "Services",
+    "s": "Split a block out when it has one surface and no foothold elsewhere.",
+    "lv": "core",
+    "k": [
+     {
+      "id": "d5a",
+      "t": "Footprint rule",
+      "s": "Few call sites, one job, own data store. He calls the rule vibes.",
+      "lv": "core",
+      "w": "Countable, unlike team-size advice.",
+      "src": [
+       "yt"
+      ],
+      "c": [
+       "S6"
+      ]
+     },
+     {
+      "id": "d5b",
+      "t": "iMessage and inference plus payments",
+      "s": "Two services: one small and contained, one that a future owner would hold.",
+      "lv": "core",
+      "w": "Real cases for the rule.",
+      "src": [
+       "yt"
+      ],
+      "c": [
+       "S6"
+      ]
+     },
+     {
+      "id": "d5c",
+      "t": "Effect TS and credits billing",
+      "s": "Effect for error handling on money paths. Autumn for credits, Stripe for plain plans.",
+      "lv": "dive",
+      "w": "Money code must show failure clearly.",
+      "src": [
+       "yt"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d6",
+    "t": "Operate and accept trade-offs",
+    "s": "See failures. Pay for speed on purpose.",
+    "lv": "core",
+    "k": [
+     {
+      "id": "d6a",
+      "t": "Observability",
+      "s": "Sentry and PostHog. Know what broke and when.",
+      "lv": "foundation",
+      "w": "You cannot fix what you cannot see.",
+      "src": [
+       "yt"
+      ],
+      "c": [
+       "S7"
+      ]
+     },
+     {
+      "id": "d6b",
+      "t": "Sandbox and company login",
+      "s": "Daytona gives each agent a computer. WorkOS handles company login.",
+      "lv": "core",
+      "w": "Abstraction again. The agent-with-computer part is AI security, paused.",
+      "src": [
+       "yt"
+      ]
+     },
+     {
+      "id": "d6c",
+      "t": "Cost taken on purpose",
+      "s": "Over $100 spent on a $20 plan. Cost is a problem for later.",
+      "lv": "core",
+      "w": "A named trade-off. Honest, not a plan.",
+      "src": [
+       "yt"
+      ],
+      "c": [
+       "S8"
+      ]
+     },
+     {
+      "id": "d6d",
+      "t": "Scale claim unmeasured",
+      "s": "'Every tool handles scale.' No load test shown.",
+      "lv": "dive",
+      "w": "Belief, not evidence. Test it yourself.",
+      "src": [
+       "yt"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "d7",
+    "t": "Gaps the talk skips",
+    "s": "Security of this stack. My inference, not from him.",
+    "lv": "dive",
+    "k": [
+     {
+      "id": "d7a",
+      "t": "Authorization and tenants",
+      "s": "Where is the per-user, per-company check? Unsaid.",
+      "lv": "dive",
+      "w": "He targets companies of 15 to 60 people. Cross-tenant access is the risk.",
+      "ungrounded": true
+     },
+     {
+      "id": "d7b",
+      "t": "Component supply chain",
+      "s": "Paste a link to the agent, it installs third-party code.",
+      "lv": "dive",
+      "w": "No review step described.",
+      "ungrounded": true
+     },
+     {
+      "id": "d7c",
+      "t": "Retries and double charge",
+      "s": "Durable retries plus credits need idempotency.",
+      "lv": "dive",
+      "w": "Business logic surface.",
+      "ungrounded": true
+     },
+     {
+      "id": "d7d",
+      "t": "Vendor exit",
+      "s": "What happens when a wrapper changes price or fails?",
+      "lv": "dive",
+      "w": "No exit plan named.",
+      "ungrounded": true
+     }
+    ]
+   }
+  ]
+ }
+}

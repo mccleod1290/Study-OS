@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 590" role="img">
+<title>d6: read parameter names like the programmer</title>
+<desc>Anatomy: calendar.jsp?isExpired=0&amp;OrderBy=name means Java, a flag to flip and a database ORDER BY. The path /pub/media/117/view maps to manager?schema=pub&amp;id=117&amp;action=view; try edit, add and higher ids.</desc>
+<defs><marker id="d6-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ink,#1d1f23)"/></marker><marker id="d6-danger" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--danger,#d1453b)"/></marker><marker id="d6-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent,#b7791f)"/></marker><marker id="d6-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted,#6b6f76)"/></marker><marker id="d6-client" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--client,#2f6fdb)"/></marker><marker id="d6-server" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--server,#1f9d6b)"/></marker></defs>
+<rect x="0" y="0" width="1000" height="590" style="fill:var(--bg,#fbfaf7)"/>
+<text x="30" y="28" text-anchor="start" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:16px;font-weight:700;fill:var(--ink,#1d1f23)">d6: read parameter names like the programmer</text>
+<text x="30" y="60" text-anchor="start" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;font-weight:700;fill:var(--ink,#1d1f23)">Dissecting a request</text>
+<text x="40" y="110" textLength="144" lengthAdjust="spacingAndGlyphs" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:20px;fill:var(--ink,#1d1f23)">calendar.jsp</text>
+<text x="184" y="110" textLength="12" lengthAdjust="spacingAndGlyphs" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:20px;fill:var(--ink,#1d1f23)">?</text>
+<text x="196" y="110" textLength="132" lengthAdjust="spacingAndGlyphs" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:20px;fill:var(--ink,#1d1f23)">isExpired=0</text>
+<text x="328" y="110" textLength="12" lengthAdjust="spacingAndGlyphs" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:20px;fill:var(--ink,#1d1f23)">&amp;</text>
+<text x="340" y="110" textLength="144" lengthAdjust="spacingAndGlyphs" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:20px;fill:var(--ink,#1d1f23)">OrderBy=name</text>
+<path d="M40,116 L40,122 L182,122 L182,116" fill="none" style="stroke:var(--client,#2f6fdb);stroke-width:1.6"/>
+<path d="M196,116 L196,122 L326,122 L326,116" fill="none" style="stroke:var(--client,#2f6fdb);stroke-width:1.6"/>
+<path d="M340,116 L340,122 L484,122 L484,116" fill="none" style="stroke:var(--client,#2f6fdb);stroke-width:1.6"/>
+<path d="M412,122 L412,156" fill="none" style="stroke:var(--client,#2f6fdb);stroke-width:1.4"/>
+<text x="422" y="160" text-anchor="start" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">a database ORDER BY</text>
+<path d="M262,122 L262,196" fill="none" style="stroke:var(--client,#2f6fdb);stroke-width:1.4"/>
+<text x="272" y="200" text-anchor="start" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">a flag to flip</text>
+<path d="M112,122 L112,236" fill="none" style="stroke:var(--client,#2f6fdb);stroke-width:1.4"/>
+<text x="122" y="240" text-anchor="start" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">Java</text>
+<path d="M30,272 L970,272" fill="none" style="stroke:var(--muted,#6b6f76);stroke-width:1;stroke-dasharray:4 4"/>
+<text x="30" y="298" text-anchor="start" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;font-weight:700;fill:var(--ink,#1d1f23)">REST path to a hidden internal call</text>
+<text x="40" y="345" textLength="228" lengthAdjust="spacingAndGlyphs" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:20px;fill:var(--ink,#1d1f23)">/pub/media/117/view</text>
+<path d="M285,337 L372,337" fill="none" style="stroke:var(--accent,#b7791f);stroke-width:1.6;stroke-dasharray:none" marker-end="url(#d6-accent)"/>
+<text x="328" y="322" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">maps to</text>
+<text x="380" y="345" textLength="96" lengthAdjust="spacingAndGlyphs" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:20px;fill:var(--ink,#1d1f23)">manager?</text>
+<text x="476" y="345" textLength="120" lengthAdjust="spacingAndGlyphs" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:20px;fill:var(--ink,#1d1f23)">schema=pub</text>
+<text x="596" y="345" textLength="12" lengthAdjust="spacingAndGlyphs" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:20px;fill:var(--ink,#1d1f23)">&amp;</text>
+<text x="608" y="345" textLength="72" lengthAdjust="spacingAndGlyphs" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:20px;fill:var(--ink,#1d1f23)">id=117</text>
+<text x="680" y="345" textLength="12" lengthAdjust="spacingAndGlyphs" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:20px;fill:var(--ink,#1d1f23)">&amp;</text>
+<text x="692" y="345" textLength="132" lengthAdjust="spacingAndGlyphs" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:20px;fill:var(--ink,#1d1f23)">action=view</text>
+<path d="M608,351 L608,357 L678,357 L678,351" fill="none" style="stroke:var(--client,#2f6fdb);stroke-width:1.6"/>
+<path d="M692,351 L692,357 L824,357 L824,351" fill="none" style="stroke:var(--client,#2f6fdb);stroke-width:1.6"/>
+<path d="M758,357 L758,382" fill="none" style="stroke:var(--client,#2f6fdb);stroke-width:1.4"/>
+<text x="768" y="386" text-anchor="start" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">try edit, add</text>
+<path d="M643,357 L643,412" fill="none" style="stroke:var(--client,#2f6fdb);stroke-width:1.4"/>
+<text x="653" y="416" text-anchor="start" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">try higher ids</text>
+<rect x="30" y="440" width="580" height="44" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--server,#1f9d6b);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="320.0" y="466.0" text-anchor="middle" style="font-family:ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;font-size:13px;fill:var(--ink,#1d1f23)">ffuf -w ids.txt -u $TARGET/pub/media/FUZZ/view -mc 200 -rate 10</text>
+<g data-when="applies">
+<rect x="30" y="510" width="460.0" height="64" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--server,#1f9d6b);stroke-width:1.5;stroke-dasharray:none"/>
+<text x="260.0" y="537.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;font-weight:700;fill:var(--ink,#1d1f23)">Applies</text>
+<text x="260.0" y="555.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">names read like a programmer and stay consistent</text>
+</g>
+<g data-when="fails">
+<rect x="510.0" y="510" width="460.0" height="64" rx="6" style="fill:var(--bg,#fbfaf7);stroke:var(--danger,#d1453b);stroke-width:1.5;stroke-dasharray:6 4"/>
+<text x="740.0" y="537.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;font-weight:700;fill:var(--ink,#1d1f23)">Does not apply</text>
+<text x="740.0" y="555.0" text-anchor="middle" style="font-family:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;font-size:14px;fill:var(--ink,#1d1f23)">opaque tokens</text>
+</g>
+</svg>

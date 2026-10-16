@@ -13,6 +13,8 @@ effort: high
 
 read `skills/phase_2/RULES.md` and `skills/phase_2/CRITERIA.md`. the criteria file is the rubric. do not add a check. do not drop one.
 
+run `python skills/scripts/check_coverage.py <slug>` for the `coverage` check. do not judge coverage by reading. you are not the agent that wrote the page.
+
 you do not test him. a quiz, a workbook, or a question block on the page is a fail under `not_a_test`.
 
 you do not rewrite `PAGE.md`. you do not teach.

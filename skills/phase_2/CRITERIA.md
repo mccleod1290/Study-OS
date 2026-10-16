@@ -6,17 +6,21 @@ The page limit lives here.
 
 ## pages
 
-Read `pages.txt`. It is the PDF page count.
+Pages are counted per sub heading (domain section), not for the whole page: 1 page = 500 words (`.rules/brevity.md` rule 10). A page with one section is read as before: `pages.txt` is the page count.
 
-Fail if the count is over 10. Fail if the count is under 5.
-
-5 through 10 can pass. Prefer the smaller count. Do not pad.
+Fail if any one section is over 5 pages (2500 words). The whole page has no page ceiling. Prefer smaller sections. Do not pad.
 
 ## words
 
-Count words in `PAGE.md` outside fenced code.
+Count words in each sub heading (domain section) of `PAGE.md` outside fenced code.
 
-Fail if that count is over 2000.
+Fail if any one section is over 2500. This is the lesson ceiling in `.rules/brevity.md`, applied per sub heading by rule 10. The page total has no limit. Cut prose, never a node.
+
+## coverage
+
+Run `python skills/scripts/check_coverage.py <slug>`. Every domain, topic and anchor of `phase1_mindmap.json` is on the page, tagged with its node id, in map order.
+
+Fail if the script does not print OK.
 
 ## references
 

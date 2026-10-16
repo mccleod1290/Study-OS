@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mind map</title>
+<style>
+:root{
+  --bg:#f5f6fb; --panel:#ffffff; --panel2:#f0f2f9; --ink:#171a2b; --muted:#667089; --line:#dfe3ef;
+  --shadow:0 10px 30px rgba(30,40,90,.12); --accent:#5b6cff; --gold:#f5a524; --ok:#22b07d; --warn:#f0a020;
+  --node:#ffffff; --grid:rgba(90,100,160,.10);
+  --font: "Segoe UI Variable","Segoe UI",Inter,system-ui,-apple-system,Roboto,sans-serif;
+}
+:root[data-theme=dark]{
+  --bg:#0d1020; --panel:#161a30; --panel2:#1d2240; --ink:#e9ecfb; --muted:#97a0c2; --line:#2a3058;
+  --shadow:0 14px 40px rgba(0,0,0,.45); --accent:#8a97ff; --node:#1a1f3a; --grid:rgba(140,150,230,.08);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);overflow:hidden;font-size:14px}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--accent)}
+.app{display:flex;flex-direction:column;height:100%}
+
+/* header */
+header{display:flex;align-items:center;gap:14px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line);z-index:5;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;min-width:0;margin-right:6px}
+.brand b{font-size:16px;letter-spacing:.2px}
+.brand span{font-size:11.5px;color:var(--muted);max-width:420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tabs{display:flex;background:var(--panel2);border-radius:12px;padding:3px;gap:2px}
+.tabs button{border:0;background:transparent;padding:7px 14px;border-radius:9px;font-weight:600;color:var(--muted)}
+.tabs button.on{background:var(--panel);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.search{position:relative;flex:1;min-width:180px;max-width:360px}
+.search input{width:100%;padding:9px 34px 9px 34px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font:inherit;outline:none}
+.search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);opacity:.55}
+.search kbd{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:5px;padding:0 5px}
+.spacer{flex:1}
+.prog{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted)}
+.prog b{display:block;color:var(--ink);font-size:13px}
+.icon-btn{border:1px solid var(--line);background:var(--panel2);border-radius:10px;width:36px;height:36px;display:grid;place-items:center}
+.icon-btn:hover{border-color:var(--accent)}
+
+/* filter bar */
+.filters{display:flex;gap:8px;padding:8px 16px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap;align-items:center}
+.chip{border:1px solid var(--line);background:var(--panel2);padding:5px 12px;border-radius:999px;font-size:12.5px;display:inline-flex;align-items:center;gap:6px}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.filters .sep{width:1px;height:20px;background:var(--line);margin:0 4px}
+.ctl-active{display:none;background:color-mix(in srgb,var(--gold) 20%,transparent);border:1px solid var(--gold);color:var(--ink)}
+.ctl-active.show{display:inline-flex}
+
+/* main */
+main{flex:1;display:flex;min-height:0;position:relative}
+.stage{flex:1;position:relative;min-width:0;overflow:hidden;
+  background-image:radial-gradient(var(--grid) 1.2px,transparent 1.2px);background-size:26px 26px}
+svg#map{width:100%;height:100%;display:block;cursor:grab;touch-action:none}
+svg#map.drag{cursor:grabbing}
+.link{fill:none;stroke-linecap:round;transition:opacity .25s}
+.node{cursor:pointer;transition:opacity .25s}
+.node.dim,.link.dim{opacity:.16}
+.node rect.body{transition:filter .2s}
+.node:hover rect.body{filter:drop-shadow(0 6px 12px rgba(20,30,80,.28))}
+.node.sel rect.ring{opacity:1}
+.node rect.ring{opacity:0;fill:none;stroke:var(--accent);stroke-width:3}
+.node text{font-family:var(--font);pointer-events:none}
+.node.hit rect.body{stroke:var(--gold)!important;stroke-width:3!important}
+.tog{cursor:pointer}
+.tools{position:absolute;right:14px;bottom:14px;display:flex;flex-direction:column;gap:6px}
+.legend{position:absolute;left:14px;bottom:14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-size:12px;box-shadow:var(--shadow);display:grid;gap:5px;color:var(--muted)}
+.legend div{display:flex;align-items:center;gap:8px}
+.hint{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:var(--panel);border:1px solid var(--line);padding:6px 14px;border-radius:999px;font-size:12px;color:var(--muted);box-shadow:var(--shadow);transition:opacity .6s}
+
+/* drawer */
+aside{width:0;overflow:hidden;background:var(--panel);border-left:1px solid var(--line);transition:width .28s cubic-bezier(.2,.8,.2,1);flex:none;z-index:4}
+aside.open{width:430px}
+.dr{width:430px;height:100%;overflow:auto;padding:20px 22px 40px}
+.crumb{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.crumb a{color:var(--muted);text-decoration:none;cursor:pointer}.crumb a:hover{color:var(--accent)}
+.dr h2{margin:8px 0 8px;font-size:22px;line-height:1.2}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.badge{font-size:11.5px;padding:3px 10px;border-radius:999px;font-weight:600;border:1px solid var(--line);background:var(--panel2)}
+.badge.f{color:#1a8f66}.badge.c{color:#3d55e6}.badge.d{color:#b05bd0}.badge.u{color:#c26a00;border-color:#f0a020}
+.ctl{border:1px solid var(--gold);background:color-mix(in srgb,var(--gold) 16%,transparent);cursor:pointer;color:var(--ink)}
+.sec{margin:18px 0 6px;font-size:11.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.dr p{margin:0;line-height:1.55}
+.callout{background:var(--panel2);border-left:4px solid var(--accent);padding:10px 14px;border-radius:0 12px 12px 0;line-height:1.5}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.seg button{border:1px solid var(--line);background:var(--panel2);padding:9px 6px;border-radius:12px;font-weight:600;font-size:13px}
+.seg button.on[data-s="0"]{background:var(--muted);color:#fff;border-color:transparent}
+.seg button.on[data-s="1"]{background:var(--warn);color:#fff;border-color:transparent}
+.seg button.on[data-s="2"]{background:var(--ok);color:#fff;border-color:transparent}
+.links a{display:flex;gap:8px;align-items:center;padding:9px 12px;border:1px solid var(--line);border-radius:12px;margin-bottom:6px;text-decoration:none;color:var(--ink);background:var(--panel2)}
+.links a:hover{border-color:var(--accent)}
+.links small{color:var(--muted);display:block;font-size:11px}
+.ai{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel2)}
+.ai .tb{display:flex;gap:2px;padding:6px;border-bottom:1px solid var(--line);background:var(--panel)}
+.ai .tb button{flex:1;border:0;background:transparent;padding:6px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.ai .tb button.on{background:var(--accent);color:#fff}
+.ai textarea{width:100%;min-height:150px;border:0;background:transparent;color:var(--ink);padding:12px;font:12.5px/1.5 var(--font);resize:vertical;outline:none}
+.ai .ft{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-top:1px solid var(--line)}
+.btn{border:0;background:var(--accent);color:#fff;padding:8px 14px;border-radius:10px;font-weight:600}
+.btn.ghost{background:var(--panel);color:var(--ink);border:1px solid var(--line)}
+textarea.notes{width:100%;min-height:80px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--ink);padding:10px;font:inherit;resize:vertical}
+.kids button{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--panel2);padding:8px 12px;border-radius:10px;margin-bottom:5px}
+.kids button:hover{border-color:var(--accent)}
+.nav{display:flex;gap:8px;margin-top:22px}
+.nav .btn{flex:1}
+.close{position:absolute;right:14px;top:12px}
+
+/* path + controls views */
+.view{position:absolute;inset:0;overflow:auto;padding:22px 26px 60px;display:none;background:var(--bg)}
+.view.on{display:block}
+.view h3{margin:0 0 4px;font-size:20px}
+.view .lead{color:var(--muted);margin:0 0 18px}
+.dom{background:var(--panel);border:1px solid var(--line);border-radius:18px;margin-bottom:14px;overflow:hidden;box-shadow:0 2px 10px rgba(30,40,90,.05)}
+.dom>.h{display:flex;gap:12px;align-items:center;padding:14px 18px;cursor:pointer}
+.dom .num{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700}
+.dom .bar{height:6px;background:var(--panel2);border-radius:99px;flex:0 0 120px;overflow:hidden}
+.dom .bar i{display:block;height:100%;border-radius:99px;transition:width .3s}
+.dom .items{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;padding:0 18px 16px}
+.item{border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:10px 12px;cursor:pointer;display:flex;gap:10px;align-items:flex-start}
+.item:hover{border-color:var(--accent)}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--muted);flex:none;margin-top:1px;display:grid;place-items:center;font-size:11px;color:#fff}
+.dot.s1{border-color:var(--warn);background:linear-gradient(90deg,var(--warn) 50%,transparent 50%)}
+.dot.s2{border-color:var(--ok);background:var(--ok)}
+.item small{display:block;color:var(--muted);margin-top:2px}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.ccard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer}
+.ccard:hover{border-color:var(--gold);transform:translateY(-1px)}
+.ccard b{display:inline-block;background:var(--gold);color:#222;padding:1px 9px;border-radius:8px;margin-bottom:6px}
+.ccard small{display:block;color:var(--muted);margin-top:8px}
+
+@media(max-width:820px){aside.open{position:absolute;right:0;top:0;bottom:0;width:100%}.dr{width:100%}.brand span{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand"><b id="title"></b><span id="subtitle"></span></div>
+  <div class="tabs" id="tabs">
+    <button data-v="map" class="on">Mind map</button>
+    <button data-v="path">Learning path</button>
+    <button data-v="controls" id="tabctl">Audit controls</button>
+  </div>
+  <div class="search">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" placeholder="Search topics..." autocomplete="off">
+    <kbd>/</kbd>
+  </div>
+  <div class="spacer"></div>
+  <div class="prog">
+    <svg width="38" height="38" viewBox="0 0 38 38"><circle cx="19" cy="19" r="15" fill="none" stroke="var(--line)" stroke-width="5"/><circle id="ring" cx="19" cy="19" r="15" fill="none" stroke="var(--ok)" stroke-width="5" stroke-linecap="round" stroke-dasharray="94.2" stroke-dashoffset="94.2" transform="rotate(-90 19 19)" style="transition:stroke-dashoffset .5s"/></svg>
+    <div><b id="pct">0%</b><span id="cnt"></span></div>
+  </div>
+  <button class="icon-btn" id="theme" title="Toggle theme">◐</button>
+</header>
+<div class="filters" id="filters">
+  <button class="chip on" data-f="all">All</button>
+  <button class="chip" data-f="crit"><i style="background:var(--gold)"></i><span id="critlbl">Audit-critical</span></button>
+  <span class="sep"></span>
+  <button class="chip" data-f="foundation"><i style="background:#1a8f66"></i>Foundation</button>
+  <button class="chip" data-f="core"><i style="background:#3d55e6"></i>Core</button>
+  <button class="chip" data-f="dive"><i style="background:#b05bd0"></i>Deep dive</button>
+  <span class="sep"></span>
+  <button class="chip" data-f="todo">Not done yet</button>
+  <button class="chip ctl-active" id="ctlchip"></button>
+  <span class="spacer"></span>
+  <button class="chip" id="expand">Expand all</button>
+  <button class="chip" id="collapse">Collapse all</button>
+</div>
+<main>
+  <div class="stage" id="stage">
+    <svg id="map"><g id="view"><g id="links"></g><g id="nodes"></g></g></svg>
+    <div class="hint" id="hint">Click a node to learn it. Click ⊕ to open a branch. Drag to pan, scroll to zoom.</div>
+    <div class="legend">
+      <div><svg width="14" height="14"><rect width="14" height="14" rx="4" fill="none" stroke="var(--muted)" stroke-width="2"/></svg>Solid edge: foundation or core</div>
+      <div><svg width="14" height="14"><rect width="14" height="14" rx="4" fill="none" stroke="var(--muted)" stroke-width="2" stroke-dasharray="3 2"/></svg>Dashed edge: deep dive</div>
+      <div><span style="width:14px;height:14px;border-radius:50%;background:var(--gold);display:inline-block"></span><span id="goldlbl">Gold badge: audit controls it feeds</span></div>
+      <div><span style="width:14px;height:14px;border-radius:50%;background:var(--ok);display:inline-block"></span>Green tick: you got it</div>
+    </div>
+    <div class="tools">
+      <button class="icon-btn" id="zin" title="Zoom in">+</button>
+      <button class="icon-btn" id="zout" title="Zoom out">−</button>
+      <button class="icon-btn" id="fit" title="Fit to screen (F)">⤢</button>
+    </div>
+    <div class="view" id="pathv"></div>
+    <div class="view" id="ctlv"></div>
+  </div>
+  <aside id="drawer"><div class="dr" id="dr"></div></aside>
+</main>
+</div>
+
+<script id="data" type="application/json">{"controls":{"H1":"Hack steps p.80: user-directed spidering","H10":"Hack steps p.109: server-side functionality and extrapolation","H11":"Hack steps p.110: unique application behavior","H12":"Hack steps p.113: map the attack surface","H2":"Hack steps p.85: brute-force content discovery","H3":"Hack steps pp.86-88: inference from published content","H4":"Hack steps p.90: search engines and archives","H5":"Hack steps p.91: developer names and forum posts","H6":"Hack steps p.93: web server default content (Nikto)","H7":"Hack steps p.96: functional paths","H8":"Hack steps p.97: hidden parameters","H9":"Hack steps p.106: fingerprint server-side technology","Q1":"Question 1: CookieAuth.dll?GetLogon?curl=Z2Fdefault.aspx","Q2":"Question 2: list the members of a forum from ucp.php?mode=register","Q3":"Question 3: Address.asp?action=view&location=default","Q4":"Question 4: Server: Apache-Coyote/1.1","Q5":"Question 5: /admin.cpf on two different servers"},"mode":"zero","slug":"wahh_ch04_mapping_the_application","sources":{"arjun":{"t":"Arjun wiki, Usage (flags -u -m -w -t --stable --passive)","u":"https://github.com/s0md3v/Arjun/wiki/Usage"},"assetnote":{"t":"Assetnote wordlists","u":"https://wordlists.assetnote.io/"},"b100":{"ref":"WAHH 2e ch4, p.100","t":"WAHH 2e ch4, p.100"},"b101":{"ref":"WAHH 2e ch4, p.101","t":"WAHH 2e ch4, p.101"},"b102":{"ref":"WAHH 2e ch4, p.102","t":"WAHH 2e ch4, p.102"},"b105":{"ref":"WAHH 2e ch4, p.105","t":"WAHH 2e ch4, p.105"},"b106":{"ref":"WAHH 2e ch4, p.106","t":"WAHH 2e ch4, p.106"},"b107":{"ref":"WAHH 2e ch4, p.107","t":"WAHH 2e ch4, p.107"},"b109":{"ref":"WAHH 2e ch4, p.109","t":"WAHH 2e ch4, p.109"},"b110":{"ref":"WAHH 2e ch4, p.110","t":"WAHH 2e ch4, p.110"},"b113":{"ref":"WAHH 2e ch4, p.113","t":"WAHH 2e ch4, p.113"},"b114":{"ref":"WAHH 2e ch4, p.114","t":"WAHH 2e ch4, p.114"},"b73":{"ref":"WAHH 2e ch4, p.73","t":"WAHH 2e ch4, p.73"},"b74":{"ref":"WAHH 2e ch4, p.74","t":"WAHH 2e ch4, p.74"},"b7576":{"ref":"WAHH 2e ch4, pp.75-76","t":"WAHH 2e ch4, pp.75-76"},"b77":{"ref":"WAHH 2e ch4, p.77","t":"WAHH 2e ch4, p.77"},"b7780":{"ref":"WAHH 2e ch4, pp.77-80","t":"WAHH 2e ch4, pp.77-80"},"b80":{"ref":"WAHH 2e ch4, p.80","t":"WAHH 2e ch4, p.80"},"b8081":{"ref":"WAHH 2e ch4, pp.80-81","t":"WAHH 2e ch4, pp.80-81"},"b81":{"ref":"WAHH 2e ch4, p.81","t":"WAHH 2e ch4, p.81"},"b8485":{"ref":"WAHH 2e ch4, pp.84-85","t":"WAHH 2e ch4, pp.84-85"},"b85":{"ref":"WAHH 2e ch4, p.85","t":"WAHH 2e ch4, p.85"},"b8688":{"ref":"WAHH 2e ch4, pp.86-88","t":"WAHH 2e ch4, pp.86-88"},"b89":{"ref":"WAHH 2e ch4, p.89","t":"WAHH 2e ch4, p.89"},"b90":{"ref":"WAHH 2e ch4, p.90","t":"WAHH 2e ch4, p.90"},"b91":{"ref":"WAHH 2e ch4, p.91","t":"WAHH 2e ch4, p.91"},"b9193":{"ref":"WAHH 2e ch4, pp.91-93","t":"WAHH 2e ch4, pp.91-93"},"b93":{"ref":"WAHH 2e ch4, p.93","t":"WAHH 2e ch4, p.93"},"b96":{"ref":"WAHH 2e ch4, p.96","t":"WAHH 2e ch4, p.96"},"b97":{"ref":"WAHH 2e ch4, p.97","t":"WAHH 2e ch4, p.97"},"b98":{"ref":"WAHH 2e ch4, p.98","t":"WAHH 2e ch4, p.98"},"b99":{"ref":"WAHH 2e ch4, p.99","t":"WAHH 2e ch4, p.99"},"bq":{"ref":"WAHH 2e ch4, pp.114-115","t":"WAHH 2e ch4, pp.114-115"},"burpcrawl":{"t":"PortSwigger, Burp full crawl and audit","u":"https://portswigger.net/burp/documentation/desktop/automated-scanning/webapp-scans/full-crawl-and-audit"},"ccrawl":{"t":"Common Crawl, get started","u":"https://commoncrawl.org/get-started"},"cdx":{"t":"Wayback CDX server API docs","u":"https://github.com/internetarchive/wayback/tree/master/wayback-cdx-server"},"dirb":{"t":"OWASP wiki, DirBuster (inactive, archived)","u":"https://wiki.owasp.org/index.php/DirBuster"},"ferox":{"t":"feroxbuster README (flags -u -x -s)","u":"https://github.com/epi052/feroxbuster"},"ffuf":{"t":"ffuf README (flags -w -u -mc -fc -fs -recursion -e -ac -rate)","u":"https://github.com/ffuf/ffuf"},"flash":{"t":"Adobe Flash Player end of life","u":"https://www.adobe.com/products/flashplayer/end-of-life.html"},"gau":{"t":"gau README (sources, --subs, --providers)","u":"https://github.com/lc/gau"},"gql":{"t":"GraphQL, introspection","u":"https://graphql.org/learn/introspection/"},"gsearch":{"t":"Google Search help, search operators","u":"https://support.google.com/websearch/answer/2466433"},"httpx":{"t":"httpx README (flags -l -td -sc -title -server)","u":"https://github.com/projectdiscovery/httpx"},"jsluice":{"t":"BishopFox jsluice README","u":"https://github.com/BishopFox/jsluice"},"katana":{"t":"katana README (flags -u -jc -d -kf -rl -jsl)","u":"https://github.com/projectdiscovery/katana"},"lfinder":{"t":"LinkFinder README","u":"https://github.com/GerbenJavado/LinkFinder"},"nuclei":{"t":"nuclei README (flags -u -t -tags -as -s)","u":"https://github.com/projectdiscovery/nuclei"},"oas":{"t":"OpenAPI Specification","u":"https://spec.openapis.org/oas/latest.html"},"oast":{"t":"interactsh README (interactsh-client, DNS HTTP SMTP LDAP)","u":"https://github.com/projectdiscovery/interactsh"},"osv":{"t":"OSV.dev documentation","u":"https://google.github.io/osv.dev/"},"pminer":{"t":"PortSwigger Param Miner README","u":"https://github.com/PortSwigger/param-miner"},"reg":{"t":"The Register, OSVDB shuts down (secondary)","u":"https://www.theregister.com/2016/04/06/open_source_vuln_database_closes/"},"rfc9113":{"t":"RFC 9113, HTTP/2","u":"https://www.rfc-editor.org/rfc/rfc9113.html"},"seclists":{"t":"SecLists README","u":"https://github.com/danielmiessler/SecLists"},"serc":{"t":"Search Engine Roundtable, Google cache gone (secondary)","u":"https://seroundtable.com/google-cache-dead-38112.html"},"wburls":{"t":"waybackurls README","u":"https://github.com/tomnomnom/waybackurls"},"wscar":{"t":"Wikipedia, WebScarab (secondary)","u":"https://en.wikipedia.org/wiki/WebScarab"},"zapno":{"t":"ZAP, no longer an OWASP project","u":"https://www.zaproxy.org/docs/nowaspzap/"}},"study_mode":"book","subtitle":"The book is 2011. The mechanism holds. Many tools and defaults changed. Each node says what broke and the 2026 way.","title":"WAHH 2e chapter 4: mapping the application","tree":{"id":"root","k":[{"id":"d1","k":[{"id":"d1a","lv":"foundation","s":"Follow every link. Finish every multistage function, such as registration and password reset. 2026: still the base. Burp's built-in Chromium browser records the walk.","src":["b74","burpcrawl"],"t":"Manual browsing","w":"A spider cannot do what a person does here, and the whole map starts from it."},{"id":"d1b","lv":"core","s":"A spider requests a page, parses links and forms, and repeats. 2026: use a JS-aware crawler, for example katana -u https://t -jc -d 3.","src":["b74","katana"],"t":"Spiders and crawlers","w":"Old spiders read HTML only, so a modern app looks nearly empty to them."},{"id":"d1c","lv":"core","s":"robots.txt lists URLs the owner does not want crawled. HTML comments leak paths too. 2026: katana -kf robotstxt,sitemapxml reads the known files for you.","src":["b74","b77","katana"],"t":"Robots.txt and comments","w":"The owner names the sensitive paths for you."},{"c":["H1"],"id":"d1d","lv":"core","s":"You browse through an intercepting proxy. The tool parses every response and builds the map. You pick the data, so validation passes and delete links stay unused. 2026: same method in Burp.","src":["b7780","burpcrawl"],"t":"User-directed spidering","w":"This is the safe way to reach login-only and multistage content."},{"id":"d1e","lv":"core","s":"Spiders miss script menus, fail validation, loop on volatile URLs, and break sessions. A spider can also find and call admin functions. 2026: set scope and rate, for example katana -rl 50.","src":["b7576","b77","katana"],"t":"Spider limits and danger","w":"The book names a spider that defaced a live site. Name the failure before you press start."},{"id":"d1f","lv":"dive","s":"Links inside compiled client objects are invisible to a spider. 2026: Adobe blocked Flash content on 12 January 2021. The same gap now sits in JavaScript bundles.","src":["b7576","flash"],"t":"Flash, applets, ActiveX","w":"You need to know where the links hide today, not in 2011."},{"id":"d1g","lv":"dive","s":"WebScarab is archived and ZAP replaced it. DirBuster is archived. 2026: CAT, Wikto, IEWatch, httprint and httprecon are old. I did not open a source on them, so treat them as unverified.","src":["wscar","dirb","zapno"],"t":"Dead tools in this chapter","ungrounded":true,"w":"Do not install a 2011 tool because the book names it."}],"lv":"foundation","s":"Find every page and function you can reach by normal use, with a browser, a spider, or both.","t":"Enumerating visible content"},{"id":"d2","k":[{"id":"d2a","lv":"foundation","s":"Test and debug functions, backup copies, old versions, config and include files, comments and logs. 2026: the same classes still appear. Add .git folders and API docs.","src":["b8081"],"t":"What hides, and why","ungrounded":true,"w":"The hidden part is often the weak part."},{"c":["H2"],"id":"d2b","lv":"core","s":"Request many guessed names and read the responses. Burp Intruder did it in the book. 2026: DirBuster is archived. Use ffuf -w words.txt -u https://t/FUZZ -ac.","src":["b81","dirb","ffuf"],"t":"Brute-force names","w":"Guessing is how you find what no link shows."},{"c":["H2","Q5"],"id":"d2c","lv":"core","s":"A 200 does not mean it exists. A 404 does not mean it does not. 2026: custom 200 pages still lie. ffuf -ac calibrates, and -fc and -fs filter by code and size.","src":["b8485","ffuf","bq"],"t":"Reading status codes","w":"Raw hit lists are noise until you filter the app's own not-found page."},{"c":["H3","Q2"],"id":"d2d","lv":"core","s":"Apps follow naming schemes: AddDocument suggests EditDocument. Numbers, dates and backup extensions help. 2026: ffuf -e .bak,.old extends each word. Assetnote lists are built per technology.","src":["b85","b8688","ffuf","assetnote","seclists","bq"],"t":"Inferring names","w":"One real name gives you five guesses."},{"id":"d2e","lv":"core","s":"Burp Content Discovery combined lists, spidering and name extrapolation. 2026: feroxbuster -u https://t -x php,html scans for files with those extensions.","src":["b8688","ferox"],"t":"Automated discovery tools","w":"Automation covers the volume. You still read the results."},{"c":["H4"],"id":"d2f","lv":"core","s":"Google site:, link:, related: and cache: found old and partner content. 2026: Google's own operator page lists none of link:, related:, cache:. The cache: operator died in September 2024.","src":["b90","gsearch","serc"],"t":"Search engines","w":"Old tricks fail silently. You get an empty result, not an error."},{"c":["H4"],"id":"d2g","lv":"core","s":"Archives hold snapshots of content no longer linked. 2026: gau --subs example.com merges Wayback, Common Crawl, OTX and URLScan. waybackurls and the Wayback CDX API do the same.","src":["b89","gau","wburls","cdx","ccrawl"],"t":"Archives and URL history","w":"Removed does not mean gone."},{"c":["H5"],"id":"d2h","lv":"dive","s":"Developer names and emails lead to forum questions that leak technologies, config and source. 2026: the method holds. Public repos are the new forum.","src":["b91"],"t":"Names and forum posts","ungrounded":true,"w":"People leak what the app hides."},{"c":["H6"],"id":"d2i","lv":"dive","s":"Servers ship sample scripts and known third-party apps. Nikto and Wikto check for them, with many false results. 2026: nuclei -u https://t -as picks templates from detected technology.","src":["b9193","nuclei"],"t":"Web server defaults","w":"A default install is a known target."}],"lv":"core","s":"Find content the app never links: backups, old versions, test pages, logs, defaults.","t":"Discovering hidden content"},{"id":"d3","k":[{"c":["H7"],"id":"d3a","lv":"core","s":"When every request goes to one URL, parameters name the servlet and method. Map those paths and their dependencies. 2026: this is the normal case. GraphQL uses one endpoint, and introspection lists its types.","src":["b93","b96","gql"],"t":"Pages vs functional paths","w":"Directory brute force finds nothing on a one-URL app."},{"id":"d3b","lv":"core","s":"Not in the book. An OpenAPI description formally describes an API's surface. 2026: fetch it if the app publishes one, then read the routes.","src":["oas"],"t":"API descriptions as the map","w":"It replaces guessing with reading."},{"id":"d3c","lv":"core","s":"The book says review client code for hints. 2026: katana -jc parses endpoints in JS files. jsluice pulls URLs and secrets. LinkFinder: python linkfinder.py -i URL -o cli.","src":["b8688","katana","jsluice","lfinder"],"t":"Mining JavaScript","w":"Bundles name routes the UI never shows."},{"c":["H8"],"id":"d3d","lv":"core","s":"Guess names like debug, test, hide with values true, yes, 1, using Intruder cluster bomb. 2026: arjun -u URL -m GET tests a 25,890-name list. Param Miner tests up to 65,000 names per request.","src":["b96","b97","arjun","pminer"],"t":"Hidden parameters","w":"One debug flag can turn validation off."}],"lv":"core","s":"A URL is not always a page. One URL can hold many functions, and a parameter can switch logic on.","t":"Pages, functional paths, hidden parameters"},{"id":"d4","k":[{"id":"d4a","lv":"foundation","s":"URL path, query parameters, POST fields, cookies, and some headers: User-Agent, Referer, Accept, Accept-Language, Host. 2026: add JSON keys and nested fields.","src":["b98"],"t":"The entry-point list","ungrounded":true,"w":"You cannot test an input you did not list."},{"id":"d4b","lv":"core","s":"In /shop/browse/electronics/iPhone3G/ the path parts are data. 2026: API routes are the modern form. An OpenAPI description lists them as paths.","src":["b98","oas"],"t":"REST-style path parameters","w":"Path segments get injected like query values."},{"id":"d4c","lv":"dive","s":"Parameters can sit after a semicolon, in a path, or as URL-encoded XML in one value. Dissect the format or you miss the fields inside. 2026: JSON bodies are the common case.","src":["b99"],"t":"Odd parameter formats","ungrounded":true,"w":"Treating a blob as one parameter hides the bug."},{"id":"d4d","lv":"core","s":"Referer, User-Agent and X-Forwarded-For get logged and trusted. A mobile User-Agent can reach less-tested code. 2026: Param Miner guesses headers. HTTP/2 changes the wire format (RFC 9113), not what the app reads.","src":["b100","pminer","rfc9113"],"t":"Headers as input","w":"Developers treat headers as clean."},{"id":"d4e","lv":"core","s":"Data can arrive by SMTP mail, a server-side fetch, or a mobile API. 2026: interactsh-client prints the DNS, HTTP and SMTP hits on your payload domain.","src":["b101","oast"],"t":"Out-of-band channels","w":"The response may show nothing. The side channel proves the bug."}],"lv":"core","s":"List every place the app reads data from you. Each one is a test target.","t":"Entry points for user input"},{"id":"d5","k":[{"c":["H9","Q4"],"id":"d5a","lv":"foundation","s":"The Server header can give name and version. Versions also leak in templates and custom headers. 2026: httpx -l hosts.txt -web-server -td. Banners are often trimmed or generic (not verified).","src":["b101","httpx","bq"],"t":"Banner grabbing","ungrounded":true,"w":"The version decides which known bugs apply."},{"c":["H9"],"id":"d5b","lv":"dive","s":"Servers differ in optional parts of the spec, so tools like httprecon rank likely servers. 2026: httpx -td uses the Wappalyzer dataset. The status of httprecon and httprint is not verified.","src":["b102","httpx"],"t":"HTTP fingerprinting","ungrounded":true,"w":"Use it when the banner lies."},{"c":["H9","Q1","Q3"],"id":"d5c","lv":"core","s":"asp, aspx, jsp, php and dll point to a platform. A request for a missing .aspx shows an ASP.NET error. 2026: many routes carry no extension, so these clues are rarer (not verified).","src":["b102","b105","bq"],"t":"Extensions and error pages","ungrounded":true,"w":"Cheap clue, and Q1 and Q3 use it."},{"c":["H9"],"id":"d5d","lv":"core","s":"JSESSIONID, ASPSESSIONID, PHPSESSID and paths like /servlet or /cfdocs name the stack. 2026: cookie names are often renamed or generic (not verified). nuclei -as and httpx -td read more signals.","src":["b105","nuclei"],"t":"Directories and session cookies","ungrounded":true,"w":"One cookie name can settle it."},{"c":["H9"],"id":"d5e","lv":"core","s":"Carts, forums and logins appear in many apps. Find the version, then research known flaws. 2026: query OSV.dev with POST /v1/query, or run its scanner.","src":["b105","b106","osv"],"t":"Third-party components","w":"You study a deployment you can install yourself."}],"lv":"core","s":"Name the stack. The name gives you known bugs and a guess about the code.","t":"Fingerprinting server-side technology"},{"id":"d6","k":[{"c":["H10","Q3"],"id":"d6a","lv":"core","s":"From calendar.jsp?isExpired=0&OrderBy=name you infer Java, a database, ORDER BY, and a flag to flip. 2026: do the same on JSON fields. GraphQL introspection lists fields.","src":["b107","gql","bq"],"t":"Dissecting requests","w":"Each name hints at a bug class and a next test."},{"c":["H10"],"id":"d6b","lv":"core","s":"/pub/media/117/view probably maps to manager?schema=pub&type=media&id=117&action=view. Try edit and add, other collections, higher ids. 2026: ffuf -w ids.txt -u https://t/pub/media/FUZZ/view.","src":["b109","ffuf"],"t":"REST URL to internal call","w":"You guess the hidden call behind a clean URL."},{"c":["H10"],"id":"d6c","lv":"dive","s":"Parts of one app act alike. An echo function shows the global filter. A decode function decodes your cookie. 2026: a WAF may block you, so a block can mean the WAF, not the app (not verified).","src":["b109"],"t":"Extrapolating behavior","ungrounded":true,"w":"One open area explains the closed ones."},{"c":["H11"],"id":"d6d","lv":"dive","s":"Hunt the bolted-on parts: different style, comments, CAPTCHA, tracking, third-party code. They often skip the standard defenses. 2026: many are third-party scripts. Crawl them with katana -jc.","src":["b110","katana"],"t":"Unique behavior","ungrounded":true,"w":"The odd part got the least testing."}],"lv":"core","s":"Read parameter names and URLs like a programmer. Guess the code behind them.","t":"Server-side functionality and unique behavior"},{"id":"d7","k":[{"id":"d7a","lv":"foundation","s":"Mapping comes before attack. No tool maps an app fully and safely, so mix manual work with controlled automation. 2026: Burp's Chromium crawl and login handling help, but they do not finish the job.","src":["b73","b114","burpcrawl"],"t":"Map first, probe later","w":"Skipping this step is how you miss whole areas."},{"c":["H12"],"id":"d7b","lv":"core","s":"Know the core features, session state, access control, authentication and the support flows like recovery. 2026: the same, plus the API behind each screen.","src":["b97"],"t":"Core functions and mechanisms","w":"These carry the serious bugs."},{"c":["H12"],"id":"d7c","lv":"core","s":"Map each feature to its usual bug: file upload to path traversal, login to enumeration, redirect to open redirect, email to injection. 2026: add the API classes (not verified).","src":["b110"],"t":"Feature to bug class","ungrounded":true,"w":"It turns a map into test cases."},{"c":["H12"],"id":"d7d","lv":"core","s":"Look up each third-party part in a public vulnerability database. 2026: OSVDB shut down in 2016. Use OSV.dev, and nuclei -as for known exposures.","src":["b113","reg","osv","nuclei"],"t":"Check third-party code","w":"The book names a dead database."},{"c":["H12"],"id":"d7e","lv":"core","s":"Rank the most interesting functions and the worst bug classes. 2026: first probe all hosts: httpx -l hosts.txt -sc -title -td.","src":["b113","httpx"],"t":"Plan of attack","w":"You have limited time. Aim it."},{"id":"d7f","lv":"dive","s":"The book walks one app: /auth, /core/sitestats, /gb, /home, /pub, /shop. Each path gets its likely bug. 2026: practice the same walk on PortSwigger Web Security Academy or HTB labs.","src":["b110"],"t":"The EIS example","ungrounded":true,"w":"It shows the pattern on a whole app."}],"lv":"core","s":"Turn the map into a ranked plan of attack.","t":"Mapping the attack surface"}],"s":"Map an unknown web app, then say for each 2011 technique what still holds, what broke, and what you run in 2026.","t":"WAHH 2e chapter 4"},"ui":{"anchor":"Hack step","anchors":"Chapter hack steps","context":"chapter 4 of WAHH 2e, mapping a web application, where I must say what still holds, what broke, and the 2026 command for each 2011 technique","critical":"Hack-step critical","feeds":"It feeds these hack steps and questions","labels":{"challenge":"Quiz me","deeper":"Go deeper","evidence":"Try it (lab)","explain":"Explain"},"learner":"I am reading The Web Application Hacker's Handbook, 2nd edition (2011), chapter 4. I know HTTP basics and have used the Burp proxy. The book is from 2011, so I need the 2026 way for each technique.","prompts":{"challenge":"Quiz me one question at a time on this topic. Start with the 2011 method, then ask what broke and what I run in 2026. Give a hint before the answer. After five questions list my gaps and the book pages to reread.","deeper":"Go one level deeper: why the old method fails on modern apps (SPAs, CDN or WAF, HTTP/2, generic banners), what a defender sees when I run the 2026 tool, and which tool flags change the result. Cite official docs and say where you are unsure. Then link it to the next idea in the chapter.","evidence":"Give me a safe, legal lab exercise for this, only on my own machine or on PortSwigger Web Security Academy or Hack The Box labs. Do not target any site I do not own or have written permission to test. Show the exact tool command, what output means the technique worked, and what output means the 2011 method failed on a modern target.","explain":"Explain this chapter 4 idea in plain, short sentences. Define each term at first use. Then give three parts: what the 2011 book says, what is outdated or changed, and the 2026 way with one exact command. Say which parts of your answer you could not verify from official docs."},"why":"Why it matters for mapping"}}</script>
+<script>
+(()=>{
+const D = JSON.parse(document.getElementById('data').textContent);
+const KEY = 'mindmap:' + D.slug;
+const U = Object.assign({
+  anchors:'Audit controls', anchor:'Control', critical:'Audit-critical', why:'Why it matters in the audit', feeds:'It feeds these audit controls',
+  learner:'I have basic computer literacy and no background in this topic.', context:D.title,
+  labels:{explain:'Explain',evidence:'Evidence',challenge:'Quiz me',deeper:'Go deeper'},
+  prompts:{
+    explain:'Explain it in plain language, one idea at a time. Define every term the first time you use it. Give one concrete example with real-looking values. Then tell me the two most common mistakes people make. Cite official documentation and say if anything may have changed recently.',
+    evidence:'Show me how to collect audit evidence for this: the exact console path and command. Give an example of a PASSING result and a FAILING result, and a one-paragraph finding I could write for the failing one. Do not assume I can build anything; I only review.',
+    challenge:'Teach me by asking. Ask me one question at a time, start easy, and wait for my answer before continuing. When I am wrong, do not just give the answer: hint first. After five questions, tell me what I still have a gap in and what to read.',
+    deeper:'I understand the basics already. Go one level deeper: how does it actually work inside, what are the edge cases, and how would a misconfiguration or an attacker abuse it? Then tell me how to transfer this to a different case.'
+  }
+}, D.ui||{});
+const PK = ['explain','evidence','challenge','deeper'].filter(k=>U.prompts[k]).concat(Object.keys(U.prompts).filter(k=>!['explain','evidence','challenge','deeper'].includes(k)).sort());
+const HAS_ANCHORS = Object.keys(D.controls||{}).length>0;
+const $ = s => document.querySelector(s);
+const NS = 'http://www.w3.org/2000/svg';
+const el = (n, a={}, p) => { const e=document.createElementNS(NS,n); for(const k in a) e.setAttribute(k,a[k]); if(p)p.appendChild(e); return e; };
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- state ---------- */
+let saved = {}; try{ saved = JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
+const S = {
+  status: saved.status||{}, notes: saved.notes||{}, theme: saved.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'),
+  collapsed: new Set(saved.collapsed||[]), first: saved.first===undefined,
+  sel: null, q:'', filter:'all', control:null, view:'map', aiMode:'explain'
+};
+const persist = ()=>localStorage.setItem(KEY, JSON.stringify({status:S.status,notes:S.notes,theme:S.theme,collapsed:[...S.collapsed],first:false}));
+
+/* ---------- tree ---------- */
+const N = {}; const order = [];
+const HUES = [222,160,32,280,350,190,96,18,250,322];
+(function walk(n, parent, depth, dom){
+  n.parent=parent; n.depth=depth; n.kids=n.k||[]; N[n.id]=n; order.push(n);
+  if(depth===1){ dom = HUES[(order.filter(x=>x.depth===1).length-1)%HUES.length]; n.num=order.filter(x=>x.depth===1).length; }
+  n.hue = depth===0?232:dom;
+  n.kids.forEach(c=>walk(c,n,depth+1,dom));
+  n.dom = depth===0?null:(depth===1?n:parent.dom);
+})(D.tree,null,0,0);
+const root = D.tree;
+if(S.first){ order.forEach(n=>{ if(n.depth===1 && n.id!=='d1') S.collapsed.add(n.id); }); }
+const leafish = order.filter(n=>n.depth>0);
+const crit = n => (n.c||[]).length>0;
+
+/* ---------- theme / header ---------- */
+function applyTheme(){ document.documentElement.dataset.theme=S.theme; }
+applyTheme();
+$('#title').textContent = D.title; $('#subtitle').textContent = D.subtitle; document.title = D.title+' | mind map';
+$('#theme').onclick=()=>{S.theme=S.theme==='dark'?'light':'dark';applyTheme();persist();renderAll();};
+function progress(){
+  const done = leafish.filter(n=>S.status[n.id]===2).length, tot = leafish.length;
+  const p = Math.round(done/tot*100);
+  $('#pct').textContent = p+'%'; $('#cnt').textContent = done+' of '+tot+' topics';
+  $('#ring').style.strokeDashoffset = 94.2*(1-done/tot);
+}
+function domProgress(n){
+  const d=[]; (function g(x){ x.kids.forEach(c=>{d.push(c);g(c)}) })(n);
+  const done=d.filter(c=>S.status[c.id]===2).length; return {done,tot:d.length};
+}
+
+/* ---------- matching ---------- */
+function matches(n){
+  if(S.q){ const t=(n.t+' '+(n.s||'')+' '+(n.w||'')+' '+(n.c||[]).join(' ')).toLowerCase(); if(!S.q.split(/\s+/).every(w=>t.includes(w))) return false; }
+  if(S.control && !(n.c||[]).includes(S.control)) return false;
+  switch(S.filter){
+    case 'crit': return crit(n);
+    case 'foundation': case 'core': case 'dive': return n.lv===S.filter;
+    case 'todo': return S.status[n.id]!==2;
+  }
+  return true;
+}
+const filtering = ()=> !!S.q || !!S.control || S.filter!=='all';
+function hasMatchBelow(n){ return n.kids.some(c=>matches(c)||hasMatchBelow(c)); }
+function litSet(){
+  const s=new Set(); if(!filtering()) return null;
+  order.forEach(n=>{ if(n.depth>0 && matches(n)){ s.add(n.id); let p=n.parent; while(p){s.add(p.id);p=p.parent;} } });
+  return s;
+}
+
+/* ---------- map ---------- */
+const svg=$('#map'), view=$('#view'), gL=$('#links'), gN=$('#nodes');
+const cx=document.createElement('canvas').getContext('2d');
+let T={k:1,x:40,y:0};
+const ROW=50, GAP=84, H=36;
+const pos={}, tgt={}, els={}, linkEls={};
+function textW(n){ cx.font = (n.depth<=1?'700 14px ':'600 13px ')+'Segoe UI, system-ui, sans-serif'; return cx.measureText(n.t).width; }
+function width(n){ const extra = (n.kids.length?34:0) + (crit(n)?26:0) + 38; return Math.min(300, Math.max(n.depth===0?170:110, textW(n)+extra)); }
+function visibleKids(n){ return S.collapsed.has(n.id)?[]:n.kids; }
+
+function layout(){
+  const cols=[]; let leaf=0; const vis=[];
+  (function pass(n){
+    vis.push(n); n.bw=width(n); cols[n.depth]=Math.max(cols[n.depth]||0,n.bw);
+    const k=visibleKids(n);
+    if(!k.length){ n.ty=leaf*ROW; leaf++; }
+    else { k.forEach(pass); n.ty=(k[0].ty+k[k.length-1].ty)/2; }
+  })(root);
+  const xs=[0]; for(let i=1;i<cols.length;i++) xs[i]=xs[i-1]+cols[i-1]+GAP;
+  vis.forEach(n=>{ n.tx=xs[n.depth]; tgt[n.id]={x:n.tx,y:n.ty}; });
+  return vis;
+}
+
+function makeNode(n){
+  const g=el('g',{class:'node'},gN);
+  const w=n.bw, h=H+(n.depth===0?10:0);
+  el('rect',{class:'ring',x:-5,y:-5,width:w+10,height:h+10,rx:16},g);
+  const body=el('rect',{class:'body',width:w,height:h,rx:13},g);
+  const dom = n.depth<=1;
+  const hue=n.hue;
+  const dark=S.theme==='dark';
+  if(n.depth===0){
+    const id='grad';
+    body.setAttribute('fill','url(#rootgrad)'); body.setAttribute('stroke','none');
+  } else if(dom){
+    body.setAttribute('fill',`hsl(${hue} 70% ${dark?42:50}%)`); body.setAttribute('stroke','none');
+  } else {
+    body.setAttribute('fill',dark?`hsl(${hue} 28% 18%)`:`hsl(${hue} 90% 97%)`);
+    body.setAttribute('stroke',`hsl(${hue} 65% ${dark?55:58}%)`); body.setAttribute('stroke-width',2);
+    if(n.lv==='dive') body.setAttribute('stroke-dasharray','5 4');
+  }
+  const col = dom?'#fff':(dark?'#eef0ff':'#1b2040');
+  const tx = n.depth===0?18:(dom?(n.num?38:16):32);
+  if(n.depth===1){ el('circle',{cx:20,cy:h/2,r:11,fill:'rgba(255,255,255,.25)'},g); const t=el('text',{x:20,y:h/2+4.5,'text-anchor':'middle',fill:'#fff','font-size':12,'font-weight':700},g); t.textContent=n.num; }
+  const t=el('text',{x:tx,y:h/2+5,fill:col,'font-size':n.depth<=1?14:13,'font-weight':n.depth<=1?700:600},g); t.textContent=n.t;
+  if(n.depth>1){ n.sdot = el('g',{transform:`translate(16 ${h/2})`},g); }
+  // badge
+  let bx=w-(n.kids.length?30:12);
+  if(crit(n)){ const b=el('g',{transform:`translate(${bx-10} ${h/2})`},g); el('circle',{r:9,fill:'var(--gold)'},b); const bt=el('text',{y:4,'text-anchor':'middle','font-size':10.5,'font-weight':800,fill:'#222'},b); bt.textContent=n.c.length; }
+  if(n.kids.length){
+    const tg=el('g',{class:'tog',transform:`translate(${w} ${h/2})`},g);
+    el('circle',{r:11,fill:'var(--panel)',stroke:dom||n.depth===0?`hsl(${hue} 65% 55%)`:`hsl(${hue} 60% 55%)`,'stroke-width':2},tg);
+    n.tgl=el('text',{y:4.5,'text-anchor':'middle','font-size':14,'font-weight':700,fill:'var(--ink)'},tg);
+    tg.addEventListener('click',e=>{e.stopPropagation();toggle(n);});
+    tg.addEventListener('pointerdown',e=>e.stopPropagation());
+  }
+  g.addEventListener('click',()=>select(n.id,true));
+  g.addEventListener('pointerdown',e=>e.stopPropagation());
+  g.addEventListener('dblclick',e=>{ if(n.kids.length) toggle(n); });
+  const title=el('title',{},g); title.textContent=n.t;
+  return g;
+}
+function statusDot(n){
+  if(!n.sdot) return; n.sdot.innerHTML='';
+  const s=S.status[n.id]||0;
+  if(s===2){ el('circle',{r:8,fill:'var(--ok)'},n.sdot); const p=el('path',{d:'M-4 0.5l3 3 5-6',stroke:'#fff','stroke-width':2.2,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'},n.sdot); }
+  else if(s===1){ el('circle',{r:7,fill:'none',stroke:'var(--warn)','stroke-width':2},n.sdot); el('path',{d:'M0 -7A7 7 0 0 1 0 7Z',fill:'var(--warn)'},n.sdot); }
+  else el('circle',{r:7,fill:'none',stroke:'var(--muted)','stroke-width':1.8,opacity:.7},n.sdot);
+}
+function linkPath(a,b,aw){
+  const x1=a.x+aw, y1=a.y+H/2+(0), x2=b.x, y2=b.y+H/2, mx=(x1+x2)/2;
+  return `M${x1+11} ${y1} C${mx} ${y1},${mx} ${y2},${x2} ${y2}`;
+}
+
+let anim=null;
+function render(init){
+  const vis=layout(); const lit=litSet();
+  const visIds=new Set(vis.map(n=>n.id));
+  svg.querySelector('defs')||(()=>{ const d=el('defs',{},svg); const lg=el('linearGradient',{id:'rootgrad',x1:0,y1:0,x2:1,y2:1},d); el('stop',{offset:0,'stop-color':'#5b6cff'},lg); el('stop',{offset:1,'stop-color':'#b25bff'},lg); })();
+  // remove old
+  for(const id in els){ if(!visIds.has(id)){ els[id].remove(); delete els[id]; delete pos[id]; } }
+  for(const id in linkEls){ if(!visIds.has(id)){ linkEls[id].remove(); delete linkEls[id]; } }
+  vis.forEach(n=>{
+    if(!els[n.id]){ els[n.id]=makeNode(n); const p=n.parent&&pos[n.parent.id]; pos[n.id]=p?{x:p.x,y:p.y}:{x:tgt[n.id].x,y:tgt[n.id].y}; }
+    else if(init||n._theme!==S.theme){ els[n.id].remove(); els[n.id]=makeNode(n); }
+    n._theme=S.theme;
+    const g=els[n.id];
+    g.classList.toggle('sel',S.sel===n.id);
+    g.classList.toggle('dim',!!lit && !lit.has(n.id));
+    g.classList.toggle('hit',!!lit && n.depth>0 && matches(n));
+    if(n.tgl) n.tgl.textContent = S.collapsed.has(n.id)? '+' : '−';
+    statusDot(n);
+    if(n.parent && !linkEls[n.id]){ linkEls[n.id]=el('path',{class:'link'},gL); }
+    if(n.parent){ const l=linkEls[n.id]; const dark=S.theme==='dark'; l.setAttribute('stroke',`hsl(${n.hue} 60% ${dark?55:62}%)`); l.setAttribute('stroke-width',n.depth===1?3.2:2); l.setAttribute('stroke-dasharray',n.lv==='dive'?'6 5':'none'); l.classList.toggle('dim',!!lit && !lit.has(n.id)); l.style.opacity=lit&&!lit.has(n.id)?'':'.75'; }
+  });
+  // domain progress label
+  vis.filter(n=>n.depth===1).forEach(n=>{ const g=els[n.id]; g.querySelector('title').textContent=n.t+'  ('+domProgress(n).done+'/'+domProgress(n).tot+' done)'; });
+  progress();
+  start(vis);
+}
+function start(vis){
+  const t0=performance.now(), from={}; vis.forEach(n=>from[n.id]={x:pos[n.id].x,y:pos[n.id].y});
+  cancelAnimationFrame(anim);
+  const step=now=>{
+    const k=Math.min(1,(now-t0)/320), e=1-Math.pow(1-k,3);
+    vis.forEach(n=>{ const f=from[n.id],t=tgt[n.id]; pos[n.id]={x:f.x+(t.x-f.x)*e,y:f.y+(t.y-f.y)*e}; els[n.id].setAttribute('transform',`translate(${pos[n.id].x} ${pos[n.id].y-(n.depth===0?5:0)})`); });
+    vis.forEach(n=>{ if(n.parent){ linkEls[n.id].setAttribute('d',linkPath(pos[n.parent.id],pos[n.id],n.parent.bw)); } });
+    if(k<1) anim=requestAnimationFrame(step);
+  };
+  anim=requestAnimationFrame(step);
+}
+function toggle(n){ if(S.collapsed.has(n.id)) S.collapsed.delete(n.id); else S.collapsed.add(n.id); persist(); render(); }
+function expandTo(n){ let p=n.parent; let ch=false; while(p){ if(S.collapsed.delete(p.id)) ch=true; p=p.parent; } return ch; }
+
+/* ---------- pan / zoom ---------- */
+function applyT(smooth){ view.style.transition=smooth?'transform .45s cubic-bezier(.2,.8,.2,1)':'none'; view.setAttribute('style',view.getAttribute('style')); view.style.transform=`translate(${T.x}px,${T.y}px) scale(${T.k})`; view.style.transformOrigin='0 0'; }
+function fit(smooth=true){
+  const vis=order.filter(n=>tgt[n.id]&&els[n.id]); if(!vis.length) return;
+  let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9; vis.forEach(n=>{ x0=Math.min(x0,tgt[n.id].x); y0=Math.min(y0,tgt[n.id].y); x1=Math.max(x1,tgt[n.id].x+n.bw+14); y1=Math.max(y1,tgt[n.id].y+H+8); });
+  const r=svg.getBoundingClientRect(), pad=60;
+  const k=Math.max(.35,Math.min(1.15,(r.width-pad*2)/(x1-x0),(r.height-pad*2)/(y1-y0)));
+  T={k,x:(r.width-(x1-x0)*k)/2-x0*k,y:(r.height-(y1-y0)*k)/2-y0*k}; applyT(smooth);
+}
+function focusNode(id){
+  const n=N[id]; if(!tgt[id]) return; const r=svg.getBoundingClientRect();
+  T.x=r.width*0.38-(tgt[id].x+n.bw/2)*T.k; T.y=r.height/2-(tgt[id].y+H/2)*T.k; applyT(true);
+}
+let drag=null;
+svg.addEventListener('pointerdown',e=>{ drag={x:e.clientX,y:e.clientY,tx:T.x,ty:T.y}; svg.classList.add('drag'); svg.setPointerCapture(e.pointerId); $('#hint').style.opacity=0; });
+svg.addEventListener('pointermove',e=>{ if(!drag) return; T.x=drag.tx+e.clientX-drag.x; T.y=drag.ty+e.clientY-drag.y; applyT(false); });
+const endDrag=()=>{ drag=null; svg.classList.remove('drag'); };
+svg.addEventListener('pointerup',endDrag); svg.addEventListener('pointercancel',endDrag);
+svg.addEventListener('wheel',e=>{
+  e.preventDefault(); const r=svg.getBoundingClientRect(); const mx=e.clientX-r.left,my=e.clientY-r.top;
+  const k2=Math.max(.25,Math.min(2.5,T.k*Math.exp(-e.deltaY*0.0016)));
+  T.x=mx-(mx-T.x)*(k2/T.k); T.y=my-(my-T.y)*(k2/T.k); T.k=k2; applyT(false);
+},{passive:false});
+function zoom(f){ const r=svg.getBoundingClientRect(); const mx=r.width/2,my=r.height/2; const k2=Math.max(.25,Math.min(2.5,T.k*f)); T.x=mx-(mx-T.x)*(k2/T.k); T.y=my-(my-T.y)*(k2/T.k); T.k=k2; applyT(true); }
+$('#zin').onclick=()=>zoom(1.25); $('#zout').onclick=()=>zoom(.8); $('#fit').onclick=()=>fit();
+
+/* ---------- drawer ---------- */
+const drawer=$('#drawer'), dr=$('#dr');
+function prompts(n){
+  const cs = (n.c||[]).length ? ` ${U.feeds}: ${n.c.map(c=>c+' - '+D.controls[c]).join(' | ')}` : '';
+  const base = `${U.learner} Topic: "${n.t}" in the context of ${U.context}.\nWhat I already read: ${n.s||''}${cs}\n`;
+  const o={}; for(const k of PK) o[k]=base+'\n'+U.prompts[k]; return o;
+}
+function crumb(n){ const a=[]; let p=n.parent; while(p){a.unshift(p);p=p.parent} return a.map(x=>`<a data-id="${x.id}">${esc(x.t)}</a>`).join(' › '); }
+function openDrawer(n){
+  const lv={foundation:['f','Foundation'],core:['c','Core'],dive:['d','Deep dive']}[n.lv]||['c','Core'];
+  const P=prompts(n);
+  const srcs=(n.src||[]).map(k=>D.sources[k]).filter(Boolean);
+  const st=S.status[n.id]||0;
+  dr.innerHTML=`
+   <button class="icon-btn close" id="x" title="Close (Esc)">✕</button>
+   <div class="crumb">${crumb(n)||'Start here'}</div>
+   <h2>${esc(n.t)}</h2>
+   <div class="badges">
+     <span class="badge ${lv[0]}">${lv[1]}</span>
+     ${n.ungrounded?'<span class="badge u">Not verified yet</span>':''}
+     ${(n.c||[]).map(c=>`<span class="badge ctl" data-c="${c}" title="${esc(D.controls[c])}">${esc(U.anchor)} ${c}</span>`).join('')}
+   </div>
+   <div class="callout">${esc(n.s||'')}</div>
+   ${n.w?`<div class="sec">${esc(U.why)}</div><p>${esc(n.w)}</p>`:''}
+   <div class="sec">Your progress</div>
+   <div class="seg" id="seg"><button data-s="0">To learn</button><button data-s="1">Learning</button><button data-s="2">Got it ✓</button></div>
+   <div class="sec">Learn it yourself</div>
+   <div class="links">${srcs.length?srcs.map(s=>!s.u?`<div class="item" style="margin-bottom:6px;cursor:default"><span>\ud83d\udcd6</span><span>${esc(s.t)}<small>${esc(s.ref)}</small></span></div>`:`<a href="${s.u}" target="_blank" rel="noopener"><span>📖</span><span>${esc(s.t)}<small>${esc(s.u.replace(/^https?:\/\//,'').slice(0,60))}</small></span></a>`).join(''):`<p style="color:var(--muted)">${n.ungrounded?'No opened source yet. Use the AI prompt, then ask the architect to confirm.':'Built from the case documents and your own judgment. Use the AI prompt to go deeper.'}</p>`}</div>
+   <div class="sec">Learn with AI</div>
+   <div class="ai">
+     <div class="tb" id="tb">
+       ${PK.map(k=>`<button data-m="${k}">${esc(U.labels[k]||k)}</button>`).join('')}
+     </div>
+     <textarea id="ta" readonly></textarea>
+     <div class="ft"><small style="color:var(--muted)">Paste into any AI chat</small><button class="btn" id="copy">Copy prompt</button></div>
+   </div>
+   <div class="sec">My notes</div>
+   <textarea class="notes" id="notes" placeholder="What clicked, what did not, what to ask the architect...">${esc(S.notes[n.id]||'')}</textarea>
+   ${n.kids.length?`<div class="sec">Inside this topic</div><div class="kids">${n.kids.map(k=>`<button data-id="${k.id}">${esc(k.t)}</button>`).join('')}</div>`:''}
+   <div class="nav"><button class="btn ghost" id="prev">← Previous</button><button class="btn" id="next">Next topic →</button></div>`;
+  const ta=$('#ta'); const setMode=m=>{ S.aiMode=m; ta.value=P[m]; $('#tb').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.m===m)); };
+  setMode(S.aiMode);
+  $('#tb').onclick=e=>{ if(e.target.dataset.m) setMode(e.target.dataset.m); };
+  $('#copy').onclick=async()=>{ try{ await navigator.clipboard.writeText(ta.value);}catch(e){ ta.select(); document.execCommand('copy'); } $('#copy').textContent='Copied ✓'; setTimeout(()=>$('#copy').textContent='Copy prompt',1400); };
+  const segs=$('#seg'); segs.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.s===st));
+  segs.onclick=e=>{ const s=e.target.dataset.s; if(s===undefined) return; S.status[n.id]=+s; persist(); segs.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.s===s)); renderAll(); };
+  $('#notes').oninput=e=>{ S.notes[n.id]=e.target.value; persist(); };
+  $('#x').onclick=closeDrawer;
+  dr.querySelectorAll('[data-id]').forEach(a=>a.onclick=()=>select(a.dataset.id,true));
+  dr.querySelectorAll('[data-c]').forEach(a=>a.onclick=()=>setControl(a.dataset.c));
+  const i=order.indexOf(n);
+  $('#prev').onclick=()=>select(order[Math.max(0,i-1)].id,true); $('#next').onclick=()=>select(order[Math.min(order.length-1,i+1)].id,true);
+  drawer.classList.add('open');
+}
+function closeDrawer(){ drawer.classList.remove('open'); S.sel=null; renderAll(); }
+function select(id,focus){
+  const n=N[id]; S.sel=id;
+  if(S.view!=='map') setView('map');
+  const ch=expandTo(n); if(ch) persist();
+  openDrawer(n); renderAll();
+  if(focus) setTimeout(()=>focusNode(id),30);
+}
+
+/* ---------- views ---------- */
+function setView(v){
+  S.view=v; document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  $('#pathv').classList.toggle('on',v==='path'); $('#ctlv').classList.toggle('on',v==='controls');
+  $('.legend').style.display=$('.tools').style.display=v==='map'?'':'none'; $('#filters').style.display=v==='map'||v==='path'?'':'none';
+  if(v==='map'){ setTimeout(()=>{ if(!T._set){fit(false);T._set=1;} },0); }
+  renderAll();
+}
+function renderPath(){
+  const v=$('#pathv'); const lit=litSet();
+  v.innerHTML=`<h3>Your learning path</h3><p class="lead">Go top to bottom. Foundation topics first inside each branch. Click any topic to open it. Your progress is saved in this browser.</p>`+
+  root.kids.map(d=>{ const p=domProgress(d); const k=[]; (function g(x){x.kids.forEach(c=>{k.push(c);g(c)})})(d);
+    const items=k.filter(c=>!lit||lit.has(c.id));
+    if(lit && !lit.has(d.id)) return '';
+    return `<section class="dom"><div class="h" data-id="${d.id}"><div class="num" style="background:hsl(${d.hue} 68% 50%)">${d.num}</div><div style="flex:1"><b>${esc(d.t)}</b><div style="color:var(--muted);font-size:12.5px">${esc(d.s||'')}</div></div><span style="color:var(--muted);font-size:12px">${p.done}/${p.tot}</span><div class="bar"><i style="width:${p.tot?p.done/p.tot*100:0}%;background:hsl(${d.hue} 68% 50%)"></i></div></div>
+    <div class="items">${items.map(c=>{const s=S.status[c.id]||0;return `<div class="item" data-id="${c.id}"><span class="dot s${s}">${s===2?'✓':''}</span><div><b>${esc(c.t)}</b><small>${{foundation:'Foundation',core:'Core',dive:'Deep dive'}[c.lv]}${crit(c)?' · '+c.c.join(' ')+' ★':''}</small></div></div>`}).join('')}</div></section>`; }).join('')+
+  `<p style="margin-top:24px"><button class="btn ghost" id="reset">Reset my progress</button></p>`;
+  v.querySelectorAll('[data-id]').forEach(a=>a.onclick=()=>select(a.dataset.id,true));
+  const r=$('#reset'); if(r) r.onclick=()=>{ if(confirm('Clear all progress and notes in this browser?')){ S.status={};S.notes={};persist();renderAll(); } };
+}
+function renderControls(){
+  const v=$('#ctlv');
+  v.innerHTML=`<h3>The ${Object.keys(D.controls).length} ${esc(U.anchors.toLowerCase())}</h3><p class="lead">Click one to light up every topic behind it.</p><div class="cgrid">`+
+  Object.entries(D.controls).map(([id,t])=>{ const ns=order.filter(n=>(n.c||[]).includes(id)); const done=ns.filter(n=>S.status[n.id]===2).length;
+    return `<div class="ccard" data-c="${id}"><b>${id}</b><div>${esc(t)}</div><small>${ns.length} topics · ${done} done</small></div>`; }).join('')+`</div>`;
+  v.querySelectorAll('[data-c]').forEach(a=>a.onclick=()=>setControl(a.dataset.c));
+}
+function setControl(c){
+  S.control = S.control===c?null:c;
+  if(S.control){ order.forEach(n=>{ if((n.c||[]).includes(c)) expandTo(n); }); persist(); }
+  $('#ctlchip').classList.toggle('show',!!S.control); $('#ctlchip').textContent=S.control?`${U.anchor} ${S.control} ✕`:'';
+  if(S.view!=='map') setView('map');
+  renderAll(); setTimeout(()=>fit(),340);
+}
+$('#ctlchip').onclick=()=>setControl(S.control);
+
+function renderAll(){ render(); renderPath(); renderControls(); if(S.sel && drawer.classList.contains('open')){ /* keep drawer */ } }
+
+/* ---------- wiring ---------- */
+$('#tabs').onclick=e=>{ if(e.target.dataset.v) setView(e.target.dataset.v); };
+$('#filters').onclick=e=>{ const f=e.target.closest('[data-f]'); if(!f) return;
+  S.filter=f.dataset.f; document.querySelectorAll('#filters [data-f]').forEach(b=>b.classList.toggle('on',b===f));
+  if(S.filter!=='all'){ order.forEach(n=>{ if(n.depth>0&&matches(n)) expandTo(n); }); }
+  renderAll(); setTimeout(()=>fit(),340); };
+$('#q').oninput=e=>{ S.q=e.target.value.trim().toLowerCase(); if(S.q){ order.forEach(n=>{ if(n.depth>0&&matches(n)) expandTo(n); }); } renderAll(); setTimeout(()=>fit(),340); };
+$('#expand').onclick=()=>{ S.collapsed.clear(); persist(); render(); setTimeout(()=>fit(),340); };
+$('#collapse').onclick=()=>{ order.forEach(n=>{ if(n.depth===1) S.collapsed.add(n.id); }); persist(); render(); setTimeout(()=>fit(),340); };
+addEventListener('keydown',e=>{
+  if(e.key==='/' && document.activeElement.tagName!=='INPUT' && document.activeElement.tagName!=='TEXTAREA'){ e.preventDefault(); $('#q').focus(); }
+  else if(e.key==='Escape'){ if(S.q||document.activeElement===$('#q')){ $('#q').value='';S.q='';$('#q').blur();renderAll(); } else if(drawer.classList.contains('open')) closeDrawer(); }
+  else if((e.key==='f'||e.key==='F') && document.activeElement.tagName!=='INPUT' && document.activeElement.tagName!=='TEXTAREA') fit();
+});
+addEventListener('resize',()=>{});
+$('#tabctl').textContent=U.anchors; $('#critlbl').textContent=U.critical; $('#goldlbl').textContent='Gold badge: '+U.anchors.toLowerCase()+' it feeds';
+if(!HAS_ANCHORS){ $('#tabctl').style.display='none'; document.querySelector('[data-f=crit]').style.display='none'; }
+if(S.aiMode && !U.prompts[S.aiMode]) S.aiMode=PK[0];
+render(true); setView('map'); setTimeout(()=>{fit(false);T._set=1;},60);
+setTimeout(()=>{ $('#hint').style.opacity=0; },9000);
+const h=location.hash.match(/n=(\w+)/); if(h&&N[h[1]]) select(h[1],true);
+if(/view=(path|controls)/.test(location.hash)) setView(location.hash.match(/view=(\w+)/)[1]);
+})();
+</script>
+</body>
+</html>

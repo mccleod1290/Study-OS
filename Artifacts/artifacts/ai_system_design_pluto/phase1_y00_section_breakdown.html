@@ -1,0 +1,53 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pluto system design: section breakdown</title><style>
+:root{--bg:#fff;--fg:#1b1f24;--mut:#59636e;--line:#d8dee4;--card:#f6f8fa;--acc:#0b6bcb;
+--g5:#1a7f37;--g4:#0e7c86;--g3:#9a6700;--g2:#c2410c;--g1:#cf222e}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1318;--fg:#e6edf3;--mut:#9aa6b2;--line:#2d3640;--card:#161c23;--acc:#58a6ff;
+--g5:#3fb950;--g4:#39c5cf;--g3:#d29922;--g2:#f0883e;--g1:#ff7b72}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,Segoe UI,sans-serif}
+main{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.6rem;margin:.2em 0}h2{font-size:1.2rem;margin:1.6em 0 .4em;border-bottom:1px solid var(--line);padding-bottom:.2em}
+h3{font-size:1.02rem;margin:1.1em 0 .2em}p{margin:.4em 0}.mut{color:var(--mut)}
+.bar{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:.85rem;color:var(--mut)}
+table{border-collapse:collapse;width:100%;font-size:.92rem;margin:.6em 0}th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}th{background:var(--card)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:.7em 0}
+.g{display:inline-block;min-width:1.4em;text-align:center;border-radius:4px;color:#fff;font-size:.72rem;font-weight:700;padding:0 4px;margin-left:3px;vertical-align:middle;cursor:help}
+.g5{background:var(--g5)}.g4{background:var(--g4)}.g3{background:var(--g3)}.g2{background:var(--g2)}.g1{background:var(--g1)}
+.tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:0 8px;font-size:.78rem;margin-right:4px}
+details{border:1px solid var(--line);border-radius:8px;padding:6px 12px;margin:.5em 0;background:var(--card)}summary{cursor:pointer;font-weight:600}
+textarea{width:100%;min-height:90px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:8px;font:inherit}
+button{background:var(--acc);color:#fff;border:0;border-radius:6px;padding:6px 12px;font:inherit;cursor:pointer}
+code{background:var(--card);padding:0 4px;border-radius:4px}a{color:var(--acc)}
+@media print{details{display:block}details>*{display:block}.noprint{display:none}body{background:#fff;color:#000}}
+</style></head><body><main><h1>Pluto system design: section breakdown</h1><p class="mut">Stage 00 of the extraction pipeline. Talk by Ras Mic, 30 minutes.</p><div class="bar">Confidence tally 5: 0 | 4: 0 | 3: 13 | 2: 1 | 1: 0 &middot; about 864 words, 2 page(s) &middot; source: [1], read 2026-10-12</div><p class="mut" style="font-size:.8rem">Grades: <span class="g g5" title="verified">5</span>verified <span class="g g4" title="sourced">4</span>sourced <span class="g g3" title="secondary">3</span>secondary <span class="g g2" title="unverified">2</span>unverified <span class="g g1" title="conflict or unknown">1</span>conflict or unknown. Rubric: Study-OS <code>.rules/grounding-and-confidence.md</code>. 3 = the speaker says it, source [1] only. 2 = my inference or memory, not verified.</p>
+<h2>Content header</h2>
+<table><tr><th>Type</th><td>Solo talk, one product walk-through</td></tr>
+<tr><th>Speaker</th><td>Ras Mic, builder of the Pluto agent app, runs the agency Hey Fabrica <span class="g g3" title="secondary">3</span> [1]</td></tr>
+<tr><th>Domain</th><td>Technical learning: system design for apps built with AI agents. Not security. Web security shows up only as the "client never touches the DB" rule.</td></tr>
+<tr><th>Signal density</th><td>Medium. About 4 of 30 minutes carry new ideas. The rest is a tool tour and basics.</td></tr>
+<tr><th>Core claim</th><td>An AI-built app stays up when the human fixes its shape first: one repo, all-code infrastructure, data reached only through server code. <span class="g g3" title="secondary">3</span></td></tr></table>
+<h2>Section map</h2>
+<p class="mut">Positions follow the chapter list on the video page [1]. Density: Low, Medium, High, Exceptional.</p>
+<table><tr><th>#</th><th>Section</th><th>Time</th><th>Density</th><th>What happens, and the buried insight</th><th>Verdict</th></tr><tr><td>1</td><td>Intro: why vibe-coded apps crash</td><td>0:00-1:00</td><td>Low<span class="g g3" title="secondary">3</span></td><td>He says apps built by non-designers die at 10 users. No evidence shown.</td><td>Skip</td></tr><tr><td>2</td><td>System design basics</td><td>1:00-3:02</td><td>Low<span class="g g3" title="secondary">3</span></td><td>Design is trade-offs. Four things to weigh: scalability, reliability, performance, cost.</td><td>Skim</td></tr><tr><td>3</td><td>The abstraction ladder</td><td>3:02-7:10</td><td>Medium<span class="g g3" title="secondary">3</span></td><td>Own metal, then AWS/GCP/Azure, then Vercel/Convex/Supabase that wrap them. He picks the top layer.</td><td>Skim</td></tr><tr><td>4</td><td>Sponsor: Greptile</td><td>7:10-8:23</td><td>Low<span class="g g3" title="secondary">3</span></td><td>An ad. The confidence-score gate (under 4 of 5, do not review) is the only tip.</td><td>Skip</td></tr><tr><td>5</td><td>Pluto's requirements and clients</td><td>8:23-12:11</td><td>High<span class="g g3" title="secondary">3</span></td><td>Four client surfaces in one monorepo, so the agent sees the whole system.</td><td>Do not skip</td></tr><tr><td>6</td><td>Backend and database</td><td>12:11-17:30</td><td>High<span class="g g3" title="secondary">3</span></td><td>Client never reaches the DB directly. Convex joins server and DB. Durable processes keep agent work alive.</td><td>Do not skip</td></tr><tr><td>7</td><td>Orchestration and scale</td><td>17:30-20:16</td><td>High<span class="g g3" title="secondary">3</span></td><td>Queues and work pools as components. Everything is code, so the agent can build it. Integrations install from a link.</td><td>Do not skip</td></tr><tr><td>8</td><td>Service split</td><td>20:16-24:35</td><td>Exceptional<span class="g g3" title="secondary">3</span></td><td>Split a block out when it touches one surface and has no foothold elsewhere. He says this is vibes, not a formula.</td><td>Do not skip</td></tr><tr><td>9</td><td>Analytics, sandbox, auth</td><td>24:35-27:04</td><td>Medium<span class="g g3" title="secondary">3</span></td><td>Sentry and PostHog for errors. Daytona sandbox per agent. WorkOS for company login.</td><td>Skim</td></tr><tr><td>10</td><td>Trade-offs and close</td><td>27:04-30:20</td><td>High<span class="g g3" title="secondary">3</span></td><td>He accepts cost on purpose. Over $100 spent on a $20 plan. Claims scale is solved by plan upgrades.</td><td>Do not skip</td></tr></table>
+<h2>The 20% that holds 80%</h2>
+<table><tr><th>Where</th><th>Why it is worth the time</th></tr>
+<tr><td>10:46-12:30</td><td>Monorepo argued for the agent's context, not for code reuse.</td></tr>
+<tr><td>16:25-19:10</td><td>The failure of vibe-coded chat: the user leaves, the work dies. Durable processes fix it. "Everything is code" is why the agent can build it.</td></tr>
+<tr><td>20:16-22:30</td><td>The service-split rule and his honest "vibes" label.</td></tr>
+<tr><td>27:04-28:10</td><td>He names the trade-off he took (cost) and the number ($100 on $20).</td></tr></table>
+<h2>Surgical skip list</h2>
+<p>0:00-3:02 (basics). 7:10-8:23 (ad). 24:35-25:30 (Sentry and PostHog name-drop). You lose nothing you need.</p>
+<h2>Prerequisite stack</h2>
+<ol><li>Client, server, database: what each one does and who may call whom.</li><li>What a monorepo is. One git repo, many apps.</li><li>Auth basics: OAuth login, what a session is.</li><li>Queue and background job: work that runs after the request ends.</li><li>What "serverless" means: you rent run time, not machines.</li></ol>
+<h2>Open threads</h2>
+<ul><li>Where is the authorization check in his stack? He never says.</li><li>What does one user cost him? He says he did not look.</li><li>"Every tool can handle scale." Which load test shows it?</li><li>What is the exit plan if Convex or Vercel changes price or dies?</li><li>How does a workflow stay safe on retry, so a user is not charged twice?</li></ul>
+<h2>Honest verdict</h2>
+<ul><li><b>Go deeper?</b> Yes, in a short form: stages 01, 03, 04, 07. Not the full extraction. The talk is one design walk-through, and 02 would repeat 00 and 03.</li>
+<li><b>Practitioner or theorist?</b> Practitioner. He shows his deploy dashboard and his spend, and he names what he did not optimise. <span class="g g3" title="secondary">3</span></li>
+<li><b>What a first viewer misses:</b> the tool list is not the lesson. The lesson is the rule behind each pick: all-code, agent-fluent, one context.</li>
+<li><b>What a first viewer overvalues:</b> "no reason the app goes down" (29:40). It is a belief, not a test. <span class="g g2" title="unverified">2</span> not verified</li></ul>
+<h2>Pipeline used</h2>
+<p>Run: 00, 01, 03, 04, 07. Skipped: 02 (repeats 00 and 03), 05 (the talk has one abstract hint, the vibes rule, handled in 03), 06 (the mind map covers the visual).</p>
+<h2>References</h2><ol>
+<li>Ras Mic, "If you're building with AI, watch this (System Design Overview)", YouTube, 2026-07-03. https://www.youtube.com/watch?v=4jy0T98dYoI. Chapter list read from the page, text from the transcript he pasted. Accessed 2026-10-12. Source type: secondary (a practitioner's talk about his own build).</li>
+<li>Supabase, "Row Level Security", section "What a policy does" and "Bypassing Row Level Security". https://supabase.com/docs/guides/database/postgres/row-level-security. Accessed 2026-10-12. Source type: official.</li>
+<li>Convex, "Best practices", section "Access Control for Public Functions". https://docs.convex.dev/understanding/best-practices/. Accessed 2026-10-12. Source type: official.</li></ol></main></body></html>

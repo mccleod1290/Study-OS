@@ -1,0 +1,49 @@
+<style>
+.widget[data-node="d4d"] .rq{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px;font:13px/2 var(--mono)}
+.widget[data-node="d4d"] .ln{display:block;white-space:pre-wrap}
+.widget[data-node="d4d"] .pt{font:inherit;color:var(--ink);background:transparent;border:0;border-bottom:2px solid var(--client);border-radius:0;padding:0 2px;cursor:pointer}
+.widget[data-node="d4d"] .pt.nv{border-bottom:2px dashed var(--muted);color:var(--muted)}
+.widget[data-node="d4d"] .pt:hover,.widget[data-node="d4d"] .pt:focus-visible,.widget[data-node="d4d"] .pt[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent);outline:none}
+.widget[data-node="d4d"] .info{margin-top:8px;color:var(--muted);font-size:14px;min-height:3em}
+.widget[data-node="d4d"] .info b{color:var(--ink)}
+.widget[data-node="d4d"] .all{display:none;margin:8px 0 0;padding-left:1.2em;font-size:14px}
+@media print{.widget[data-node="d4d"] .info{display:none}.widget[data-node="d4d"] .all{display:block}.widget[data-node="d4d"] .pt{border-bottom:1px solid #000;color:#000}}
+</style>
+<div class="rq" role="group" aria-label="entry points in one request">
+<span class="ln">POST <button class="pt" aria-pressed="false" data-p="path">/shop/browse/electronics/iPhone3G/</button><button class="pt" aria-pressed="false" data-p="query">?FUZZ=test_value</button></span>
+<span class="ln"><button class="pt" aria-pressed="false" data-p="host">Host: $TARGET</button></span>
+<span class="ln"><button class="pt" aria-pressed="false" data-p="ua">User-Agent: ...</button></span>
+<span class="ln"><button class="pt" aria-pressed="false" data-p="ref">Referer: ...</button></span>
+<span class="ln"><button class="pt" aria-pressed="false" data-p="xff">X-Forwarded-For: ...</button></span>
+<span class="ln"><button class="pt" aria-pressed="false" data-p="cookie">Cookie: ...</button></span>
+<span class="ln"><button class="pt" aria-pressed="false" data-p="post">[POST fields]</button></span>
+<span class="ln"><button class="pt nv" aria-pressed="false" data-p="json">[JSON keys and nested fields]</button></span>
+</div>
+<div class="info" aria-live="polite"></div>
+<ul class="all">
+<li data-i="path"><b>URL path</b> (d4b, g5): the path parts are data, injected like query values.</li>
+<li data-i="query"><b>query parameters</b> (d4c, g5): fuzz each name; a different size is a live name.</li>
+<li data-i="host"><b>Host</b> (d4a, g2): one of the headers that is an entry point.</li>
+<li data-i="ua"><b>User-Agent</b> (d4d, g5): trusted; a mobile User-Agent reaches less-tested code.</li>
+<li data-i="ref"><b>Referer</b> (d4d, g5): trusted.</li>
+<li data-i="xff"><b>X-Forwarded-For</b> (d4d, g5): trusted.</li>
+<li data-i="cookie"><b>cookies</b> (d4a, g2): an entry point.</li>
+<li data-i="post"><b>POST fields</b> (d4a, g2): an entry point.</li>
+<li data-i="json"><b>JSON keys and nested fields</b> (d4a, g2): not verified.</li>
+</ul>
+<script>
+(function(){
+var w=document.querySelector('.widget[data-node="d4d"]'),info=w.querySelector('.info'),bs=[].slice.call(w.querySelectorAll('.pt'));
+function pick(b){
+ bs.forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});
+ var li=w.querySelector('.all li[data-i="'+b.dataset.p+'"]');
+ info.textContent=li.textContent;
+}
+bs.forEach(function(b){
+ b.addEventListener('click',function(){pick(b)});
+ b.addEventListener('mouseenter',function(){pick(b)});
+ b.addEventListener('focus',function(){pick(b)});
+});
+info.textContent='';
+})();
+</script>

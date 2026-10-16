@@ -22,9 +22,12 @@ Read this first. It says where everything is. Regenerate with `python skills/scr
 | `madhura-extraction-system` | `skills/phase_1/skills/madhura-extraction-system-v1/skills/madhura-extraction-system/SKILL.md` | Madhura's complete knowledge extraction system for ANY content she wants to process into structured notes. |
 | `map_maker` | `skills/phase_1/skills/map_maker/SKILL.md` | phase 1 map maker. maps parts, dependencies, and stuck points from the target and CONTEXT.md. |
 | `brevity_is_the_soul` | `skills/phase_2/skills/brevity_is_the_soul/SKILL.md` | phase 2 length pass on PAGE.md. NEVER CONFUSE EXPLANATION WITH FLUFF. a new term gets two or three sentences, what it is and how it works. |
+| `diagrammer` | `skills/phase_2/skills/diagrammer/SKILL.md` | phase 2 visual pass, step 1. turns a judged phase 2 page into hand-drawn inline svg diagrams, one per domain and more where the order or the shape is the point, and writes phase2_visuals.json for web_... |
+| `explainer_video` | `skills/phase_2/skills/explainer_video/SKILL.md` | phase 2 visual pass, step 3. turns the judged phase 2 page and the diagrammer's diagrams into a narrated explainer film in the 3Blue1Brown manner: one manim scene per domain, ElevenLabs narration in A... |
 | `frugal_judge` | `skills/phase_2/skills/frugal_judge/SKILL.md` | phase 2 judge. reads RULES.md and CRITERIA.md and writes EVAL.md. checks the page for assimilation, not for a quiz. |
 | `ideas_skill` | `skills/phase_2/skills/ideas_skill/SKILL.md` | phase 2 order for a study page. first principles by default. second-order only when the next event is the lesson. |
 | `reduce_ambiguity` | `skills/phase_2/skills/reduce_ambiguity/SKILL.md` | phase 2 ambiguity pass. finds where a new learner will stumble and adds examples, diagrams, flowcharts, svg, sourced images, code, and a reference blog. |
+| `web_builder` | `skills/phase_2/skills/web_builder/SKILL.md` | phase 2 visual pass, step 2. fuses the judged phase 2 page and the diagrammer's svgs into one interactive, self-contained web page, phase2_explorer.html: section nav, step-through diagrams, an applies... |
 | `writer_skill` | `skills/phase_2/skills/writer_skill/SKILL.md` | phase 2 sentences for PAGE.md, in mccleod1290's voice. wording only. does not choose the order. |
 | `academic_paper` | `skills/phase_3/skills/academic_paper/SKILL.md` | phase 3 academic papers. topics come from the phase 1 map. the phase 2 page has to support the question. |
 | `examiner` | `skills/phase_3/skills/examiner/SKILL.md` | phase 3 examiner. topics come from the phase 1 map, cited from the phase 2 page. three academic papers, one build brief, emails them, and starts a spar only in the live session. |
@@ -47,16 +50,19 @@ Read this first. It says where everything is. Regenerate with `python skills/scr
 
 - `skills/misc/` skills: karpathy_agents_md, learn_from_sessions, skill_creator
 - `skills/phase_1/` skills: context_clerk, interviewer, madhura-extraction-system-v1, map_maker. files: CHECK.md, PACKET.md, PATHS.md, README.md, RULES.md
-- `skills/phase_2/` skills: brevity_is_the_soul, frugal_judge, ideas_skill, reduce_ambiguity, writer_skill. files: CRITERIA.md, PATHS.md, README.md, RULES.md
+- `skills/phase_2/` skills: brevity_is_the_soul, diagrammer, explainer_video, frugal_judge, ideas_skill, reduce_ambiguity, web_builder, writer_skill. files: CRITERIA.md, PATHS.md, README.md, RULES.md, VISUALS.md
 - `skills/phase_3/` skills: academic_paper, examiner, practical_build, socratic_spar. files: PATHS.md, README.md, RULES.md
 - `skills/phase_4/` skills: diagnostician, harness_clerk. files: CHECK.md, PATHS.md, README.md, RULES.md
-- `skills/scripts/`. files: build_mindmap.py, learn_due.py, md_to_pdf.py, mindmap_template.html, repo_map.py, send_notes_email.py, tidy.py, validate_skill.py
+- `skills/scripts/`. files: build_explorer.py, build_mindmap.py, check_coverage.py, check_visuals.py, learn_due.py, md_to_pdf.py, mindmap_template.html, repo_map.py, send_notes_email.py, tidy.py, validate_skill.py
 
 ## Scripts
 
 | script | path | what it does |
 |---|---|---|
+| `build_explorer.py` | `skills/scripts/build_explorer.py` | build_explorer.py: phase2_page.md + diagrams + widgets -> phase2_explorer.html, one self-contained file. |
 | `build_mindmap.py` | `skills/scripts/build_mindmap.py` |  |
+| `check_coverage.py` | `skills/scripts/check_coverage.py` | check_coverage.py: does phase2_page.md cover every node of phase1_mindmap.json? |
+| `check_visuals.py` | `skills/scripts/check_visuals.py` | check_visuals.py: is the phase 2 visual pass sound? |
 | `best_highlights.py` | `skills/scripts/hooks/best_highlights.py` | Write `best highlights.txt` inside a session folder. The name does not change. |
 | `log_deliverables.py` | `skills/scripts/hooks/log_deliverables.py` | Hook: log each deliverable delivered per run (a run = one session). |
 | `log_user_inputs.py` | `skills/scripts/hooks/log_user_inputs.py` | Hook: log every user input, verbatim, in one place. |
@@ -75,17 +81,24 @@ Read this first. It says where everything is. Regenerate with `python skills/scr
 - hooks config `.github/hooks/study-os.json`
 - rule `.rules/artifacts-and-sessions.md`
 - rule `.rules/brevity.md`
+- rule `.rules/context-isolation.md`
 - rule `.rules/grounding-and-confidence.md`
 - rule `.rules/html-deliverables.md`
+- rule `.rules/offsec-agent-architecture.md`
+- rule `.rules/phase-order-and-coverage.md`
 - rule `.rules/skill-authoring.md`
 - rule `.rules/writing-and-web.md`
 
 ## Where deliverables are
 
+- `Artifacts/artifacts/ai_901/`
+- `Artifacts/artifacts/ai_system_design_pluto/`
+- `Artifacts/artifacts/app_exploration/` group of: runs, source
 - `Artifacts/artifacts/aws-acn-2026-31070/` group of: aws_oidc_flow, identity_and_credentials
-- `Artifacts/artifacts/aws_oidc_flow/`
-- `Artifacts/artifacts/demo_topic/`
-- `Artifacts/artifacts/identity_and_credentials/`
+- `Artifacts/artifacts/hackbots/` group of: course_s03_hackbot_basics
+- `Artifacts/artifacts/idor-param-patterns/` group of: .git, __pycache__, plugins
+- `Artifacts/artifacts/study-os-architecture/`
+- `Artifacts/artifacts/wahh-2e/` group of: wahh_ch04_mapping_the_application
 - session logs: `Artifacts/sessions/<YYYY>/<DD-MM>/<HH-MM-SS>_<id>/`
 
 ## Common jobs

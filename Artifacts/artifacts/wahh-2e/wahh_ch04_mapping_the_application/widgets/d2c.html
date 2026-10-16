@@ -1,0 +1,38 @@
+<style>
+.widget[data-node="d2c"] .tabs{display:flex;gap:6px;margin-bottom:8px}
+.widget[data-node="d2c"] pre{margin:0 0 8px}
+.widget[data-node="d2c"] .card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.widget[data-node="d2c"] .card[hidden]{display:none}
+.widget[data-node="d2c"] .v{font-weight:700}
+.widget[data-node="d2c"] .v.absent{color:var(--danger)}
+.widget[data-node="d2c"] .v.exists{color:var(--server)}
+.widget[data-node="d2c"] .row{margin:4px 0;font-size:14px}
+.widget[data-node="d2c"] .row i{font-style:normal;color:var(--muted);font:12px var(--mono);margin-right:6px}
+@media print{.widget[data-node="d2c"] .tabs{display:none}.widget[data-node="d2c"] .card[hidden]{display:block}}
+</style>
+<div class="tabs" role="group" aria-label="which app answered">
+<button data-a="A" aria-pressed="true">app A</button>
+<button data-a="B" aria-pressed="false">app B</button>
+</div>
+<div class="card" data-c="A">
+<pre>curl -s -o /dev/null -w '%{http_code} %{size_download}\n' $TARGET/admin.cpf
+200 4321</pre>
+<div class="row"><i>reply</i>200 with a not-found body on IIS (custom 404: size matches)</div>
+<div class="row"><i>verdict</i><span class="v absent">absent</span></div>
+<div class="row"><i>filter</i>the fake size with -fs</div>
+</div>
+<div class="card" data-c="B" hidden>
+<pre>curl -s -o /dev/null -w '%{http_code} %{size_download}\n' $TARGET/admin.cpf
+401 1250</pre>
+<div class="row"><i>reply</i>401 with a Basic realm on Apache-Coyote (exists, wants creds)</div>
+<div class="row"><i>verdict</i><span class="v exists">exists</span></div>
+</div>
+<script>
+(function(){
+var w=document.querySelector('.widget[data-node="d2c"]'),bs=[].slice.call(w.querySelectorAll('.tabs button')),cs=[].slice.call(w.querySelectorAll('.card'));
+bs.forEach(function(b){b.addEventListener('click',function(){
+ bs.forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});
+ cs.forEach(function(c){c.hidden=c.dataset.c!==b.dataset.a});
+})});
+})();
+</script>

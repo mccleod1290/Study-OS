@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WAHH ch.4: Mapping the Application — 2026 way</title>
+<style>
+  :root {
+    --bg: #faf9f6;
+    --fg: #1d1d1f;
+    --muted: #5b5b5e;
+    --card-bg: #ffffff;
+    --border: #e3e1db;
+    --accent: #8a3b2b;
+    --code-bg: #f1efe9;
+    --code-fg: #2b2b2b;
+    --callout-bg: #fff6e8;
+    --callout-border: #e0b24a;
+    --link: #8a3b2b;
+    --g5: #1e7e4a; --g4: #0f766e; --g3: #b8860b; --g2: #c2541a; --g1: #b4232a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17161a;
+      --fg: #e9e7e2;
+      --muted: #a7a4a0;
+      --card-bg: #211f24;
+      --border: #38353c;
+      --accent: #e0a07a;
+      --code-bg: #121116;
+      --code-fg: #e9e7e2;
+      --callout-bg: #2a2416;
+      --callout-border: #a67a2d;
+      --link: #e0a07a;
+      --g5: #4fbf84; --g4: #42b3a9; --g3: #d9a62a; --g2: #e08a4f; --g1: #e2585f;
+    }
+  }
+  :root[data-theme="dark"] {
+      --bg: #17161a;
+      --fg: #e9e7e2;
+      --muted: #a7a4a0;
+      --card-bg: #211f24;
+      --border: #38353c;
+      --accent: #e0a07a;
+      --code-bg: #121116;
+      --code-fg: #e9e7e2;
+      --callout-bg: #2a2416;
+      --callout-border: #a67a2d;
+      --link: #e0a07a;
+      --g5: #4fbf84; --g4: #42b3a9; --g3: #d9a62a; --g2: #e08a4f; --g1: #e2585f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+  }
+  .layout {
+    display: flex;
+    max-width: 1100px;
+    margin: 0 auto;
+    align-items: flex-start;
+  }
+  nav.toc {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    width: 220px;
+    flex-shrink: 0;
+    padding: 18px 12px;
+    max-height: 100vh;
+    overflow-y: auto;
+    font-size: 0.85rem;
+    border-right: 1px solid var(--border);
+  }
+  nav.toc h3 { margin: 0 0 8px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  nav.toc ul { list-style: none; margin: 0; padding: 0; }
+  nav.toc li { margin: 4px 0; }
+  nav.toc a { color: var(--fg); text-decoration: none; }
+  nav.toc a:hover { color: var(--accent); text-decoration: underline; }
+  main {
+    flex: 1;
+    min-width: 0;
+    padding: 24px 28px 64px;
+  }
+  h1 { font-size: 1.6rem; margin: 0 0 6px; }
+  h2.section-head {
+    margin-top: 2.2em;
+    padding-top: 0.4em;
+    border-top: 2px solid var(--border);
+    font-size: 1.2rem;
+  }
+  p { margin: 0.7em 0; }
+  strong { color: var(--fg); }
+  code {
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    font-size: 0.92em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    word-break: break-word;
+  }
+  .codewrap {
+    position: relative;
+    margin: 0.8em 0 1.1em;
+  }
+  .codewrap pre {
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 14px 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 0;
+    border: 1px solid var(--border);
+  }
+  .codewrap pre code {
+    background: none;
+    padding: 0;
+    font-size: 0.88rem;
+  }
+  .copybtn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--card-bg);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.72rem;
+    padding: 3px 8px;
+    cursor: pointer;
+  }
+  .copybtn:hover { border-color: var(--accent); }
+  .callout {
+    background: var(--callout-bg);
+    border: 1px solid var(--callout-border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin: 0.6em 0;
+    font-size: 0.92rem;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.3em;
+    height: 1.3em;
+    padding: 0 0.3em;
+    border-radius: 999px;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-left: 0.2em;
+    cursor: default;
+  }
+  .badge.g5 { background: var(--g5); }
+  .badge.g4 { background: var(--g4); }
+  .badge.g3 { background: var(--g3); }
+  .badge.g2 { background: var(--g2); }
+  .badge.g1 { background: var(--g1); }
+  .ref { font-size: 0.88rem; color: var(--muted); }
+  .ref-key { color: var(--accent); font-weight: 600; margin-right: 0.3em; }
+  a { color: var(--link); }
+  .top-stats {
+    font-size: 0.82rem;
+    color: var(--muted);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 1em;
+  }
+  footer.pagefooter {
+    margin-top: 3em;
+    font-size: 0.78rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+  }
+  @media (max-width: 760px) {
+    .layout { flex-direction: column; }
+    nav.toc {
+      position: static;
+      width: 100%;
+      max-height: none;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+    main { padding: 16px 16px 48px; }
+  }
+  @media print {
+    nav.toc { display: none; }
+    .copybtn { display: none; }
+    .layout { display: block; }
+    body { background: #fff; color: #000; }
+    a { color: #000; text-decoration: underline; }
+    .codewrap pre { border: 1px solid #999; }
+  }
+  .chip { display:inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:0.68rem; background:var(--code-bg); color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0 0.32em; margin-left:0.18em; vertical-align:middle; }
+  @media print { .chip { border-color:#999; } }
+  .chip { display:inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:0.68rem; background:var(--code-bg); color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0 0.32em; margin-left:0.18em; vertical-align:middle; }
+  @media print { .chip { border-color:#999; } }
+  .chip { display:inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:0.68rem; background:var(--code-bg); color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0 0.32em; margin-left:0.18em; vertical-align:middle; }
+  @media print { .chip { border-color:#999; } }
+  .chip { display:inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:0.68rem; background:var(--code-bg); color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0 0.32em; margin-left:0.18em; vertical-align:middle; }
+  @media print { .chip { border-color:#999; } }
+  .chip { display:inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:0.68rem; background:var(--code-bg); color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0 0.32em; margin-left:0.18em; vertical-align:middle; }
+  @media print { .chip { border-color:#999; } }
+  .chip { display:inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:0.68rem; background:var(--code-bg); color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0 0.32em; margin-left:0.18em; vertical-align:middle; }
+  @media print { .chip { border-color:#999; } }
+  .chip { display:inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:0.68rem; background:var(--code-bg); color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0 0.32em; margin-left:0.18em; vertical-align:middle; }
+  @media print { .chip { border-color:#999; } }
+  .chip { display:inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:0.68rem; background:var(--code-bg); color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0 0.32em; margin-left:0.18em; vertical-align:middle; }
+  @media print { .chip { border-color:#999; } }
+  .chip { display:inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:0.68rem; background:var(--code-bg); color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0 0.32em; margin-left:0.18em; vertical-align:middle; }
+  @media print { .chip { border-color:#999; } }
+  .chip { display:inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:0.68rem; background:var(--code-bg); color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0 0.32em; margin-left:0.18em; vertical-align:middle; }
+  @media print { .chip { border-color:#999; } }
+  .chip { display:inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:0.68rem; background:var(--code-bg); color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0 0.32em; margin-left:0.18em; vertical-align:middle; }
+  @media print { .chip { border-color:#999; } }
+  .chip { display:inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:0.68rem; background:var(--code-bg); color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0 0.32em; margin-left:0.18em; vertical-align:middle; }
+  @media print { .chip { border-color:#999; } }
+  .chip { display:inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:0.68rem; background:var(--code-bg); color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0 0.32em; margin-left:0.18em; vertical-align:middle; }
+  @media print { .chip { border-color:#999; } }
+  .chip { display:inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:0.68rem; background:var(--code-bg); color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:0 0.32em; margin-left:0.18em; vertical-align:middle; }
+  @media print { .chip { border-color:#999; } }
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc">
+  <h3>Sections</h3>
+  <ul>
+<li><a href="#1-enumerating-visible-content">1. Enumerating visible content {d1}</a></li>
+<li><a href="#2-discovering-hidden-content">2. Discovering hidden content {d2}</a></li>
+<li><a href="#3-pages-functional-paths-hidden-parameters">3. Pages, functional paths, hidden parameters {d3}</a></li>
+<li><a href="#4-entry-points-for-user-input">4. Entry points for user input {d4}</a></li>
+<li><a href="#5-fingerprinting-server-side-technology">5. Fingerprinting server-side technology {d5}</a></li>
+<li><a href="#6-server-side-functionality-and-unique-behavior">6. Server-side functionality and unique behavior {d6}</a></li>
+<li><a href="#7-mapping-the-attack-surface">7. Mapping the attack surface {d7}</a></li>
+<li><a href="#references">references</a></li>
+  </ul>
+</nav>
+<main>
+<div class="top-stats">
+  tally: g5 <strong>26</strong> · g4 <strong>7</strong> · g3 <strong>2</strong> · g2 <strong>8</strong> · g1 <strong>0</strong> &middot; words <strong>2076</strong> &middot; pages (500/page) <strong>4.2</strong><br>
+  badge key: <span class="badge g5" title="verified">5</span> verified
+  <span class="badge g4" title="sourced">4</span> sourced
+  <span class="badge g3" title="secondary">3</span> secondary
+  <span class="badge g2" title="unverified">2</span> unverified
+  <span class="badge g1" title="conflict or unknown">1</span> conflict/unknown &middot; chip = node id
+</div>
+<h1>WAHH 2e ch.4: Mapping the Application, the 2026 way</h1>
+<div class="callout"><strong>authorized scope only</strong>: PortSwigger Academy, HTB, your own machine, or an in-scope bounty. <code>$TARGET</code> is a lab URL or <code>http://127.0.0.1:8080</code>; <code>$TARGET_DOMAIN</code> is its host. Keep the rate flags.</div>
+<p>Mapping comes first [book p.73]. The order holds; many tools died. Each node is a trio: 2011 (book), broke, 2026 way with a command.</p>
+<h2 id="1-enumerating-visible-content" class="section-head">1. Enumerating visible content <span class="chip">d1</span></h2>
+<p><strong>Parts:</strong> a recording proxy, a crawler. <strong>Condition:</strong> links and forms exist. <strong>When not:</strong> a client-routed page, or links inside dead compiled objects.</p>
+<p><strong>Manual browsing <span class="chip">d1a</span>.</strong> Follow every link, finish every multistage form. Still the base; Burp&#x27;s crawler drives a built-in Chromium [burpcrawl]. <span class="badge g5" title="verified">5</span></p>
+<p><strong>Spiders <span class="chip">d1b</span>.</strong> 2011: Burp Spider, WebScarab follow HTML links. Broke: an HTML-only spider sees a JavaScript app as empty. 2026: <code>katana -u $TARGET -jc -d 3 -rl 50</code> parses JS endpoints and caps requests/second [katana]. <span class="badge g5" title="verified">5</span></p>
+<p><strong>robots.txt and comments <span class="chip">d1c</span>.</strong> The owner names hidden paths; comments leak more. 2026: <code>katana -kf robotstxt,sitemapxml</code> reads the known files (needs depth 3) [katana]. <span class="badge g5" title="verified">5</span></p>
+<p><strong>User-directed spidering <span class="chip">d1d</span> <span class="chip">H1</span>.</strong> Browse through a proxy that parses every response; you pick the data, so validation passes and delete links stay unused; open what the spider found but you skipped (Burp &quot;Linked From&quot;). 2026: Burp replays recorded logins, including single sign-on (SSO) [burpcrawl]. H1: browse all, review the site map, access the rest by hand, repeat. <span class="badge g5" title="verified">5</span></p>
+<p><strong>Limits and danger <span class="chip">d1e</span>.</strong> Spiders miss script menus, break sessions, and can call delete or admin functions; the authors defaced a live site this way. 2026: exclude first, <code>katana -cos &#x27;logout|delete|admin&#x27; -rl 20</code> [katana]. <span class="badge g5" title="verified">5</span></p>
+<p><strong>Flash, applets, ActiveX <span class="chip">d1f</span>.</strong> Links inside compiled objects are invisible to a spider. Adobe blocked Flash on 12 January 2021 [flash]; the gap now sits in JavaScript, read with <code>katana -jsl</code> or <code>jsluice urls app.js</code> [katana][jsluice]. <span class="badge g5" title="verified">5</span></p>
+<p><strong>Dead tools in the chapter <span class="chip">d1g</span>.</strong> WebScarab archived 2024, ZAP replaced it [wscar] <span class="badge g3" title="secondary">3</span>; ZAP left OWASP in 2023 [zapno] <span class="badge g5" title="verified">5</span>; DirBuster inactive, now a ZAP add-on, use <code>ffuf</code> [dirb] <span class="badge g5" title="verified">5</span>. CAT, Wikto, IEWatch, httprint, httprecon: no source opened, not verified. <span class="badge g2" title="unverified">2</span></p>
+<h2 id="2-discovering-hidden-content" class="section-head">2. Discovering hidden content <span class="chip">d2</span></h2>
+<p><strong>Parts:</strong> a wordlist, a test that tells a real hit from the app&#x27;s own error page, a source of removed pages. <strong>Condition:</strong> unlinked paths exist. <strong>When not:</strong> one URL picks its function by parameter (section 3).</p>
+<p><strong>What hides, and why <span class="chip">d2a</span>.</strong> Test and debug functions, backups, old versions, config and include files, comments, logs. 2026: the same, plus <code>.git</code> folders and API docs (not verified). <span class="badge g2" title="unverified">2</span></p>
+<p><strong>Brute-force names <span class="chip">d2b</span> <span class="chip">H2</span>.</strong> 2011: Intruder guesses names, sort by status and length. Broke: DirBuster is dead. 2026: <code>ffuf -w words.txt -u $TARGET/FUZZ -ac -rate 20</code>; <code>-ac</code> calibrates the fake-404 filter [ffuf]. <span class="badge g5" title="verified">5</span></p>
+<p><strong>Reading status codes <span class="chip">d2c</span> <span class="chip">H2</span> <span class="chip">Q5</span>.</strong> A 200 can be a custom not-found page; 401 or 403 means closed but present.</p>
+<div class="codewrap"><button class="copybtn" onclick="copyCode(this)" aria-label="Copy command">Copy</button><pre><code id="code-1">curl -s -o /dev/null -w &#x27;%{http_code} %{size_download}\n&#x27; $TARGET/admin.cpf
+# 200 4321  (custom 404: size matches)   401 1250  (exists, wants creds)</code></pre></div>
+<p>Q5: app A answers 200 with a not-found body on IIS, so it is absent; app B answers 401 with a Basic realm on Apache-Coyote, so it exists. Filter the fake size with <code>-fs</code> [ffuf][curl]. <span class="badge g5" title="verified">5</span></p>
+<p><strong>Inferring names <span class="chip">d2d</span> <span class="chip">H3</span> <span class="chip">Q2</span>.</strong> <code>AddDocument</code> implies <code>EditDocument</code>; numbers, dates, backups (<code>.bak .old .src</code>), editor leftovers widen the list. 2026: <code>ffuf ... -e .bak,.old,.tmp</code>; per-technology lists built monthly [assetnote][seclists]. Q2: <code>ucp.php?mode=register</code> suggests phpBB, whose member pages take numeric ids, so fuzz <code>memberlist.php?...&amp;u=FUZZ</code> (paths not verified). <span class="badge g4" title="sourced">4</span></p>
+<p><strong>Automated discovery tools <span class="chip">d2e</span>.</strong> Burp Content Discovery combined lists, spidering, extrapolation. 2026: <code>feroxbuster -u $TARGET -x php,html --rate-limit 20</code> scans recursively; <code>--rate-limit</code> caps requests per second per directory [ferox]. <span class="badge g4" title="primary">4</span></p>
+<p><strong>Search engines <span class="chip">d2f</span> <span class="chip">H4</span>.</strong> 2011: <code>site:</code>, <code>link:</code>, <code>related:</code>, <code>cache:</code>. Broke: the operator page lists none of <code>link:</code>, <code>related:</code>, <code>cache:</code> [gsearch]; <code>cache:</code> died 24 September 2024 [serc]. 2026: <code>site:</code>, quotes, <code>-</code> still work; dead ones fail silently. <span class="badge g4" title="sourced">4</span></p>
+<p><strong>Archives and URL history <span class="chip">d2g</span> <span class="chip">H4</span>.</strong> 2011: Google cache, Wayback. 2026: <code>gau --subs $TARGET_DOMAIN</code> merges Wayback, Common Crawl, OTX, URLScan [gau]; <code>echo $TARGET_DOMAIN | waybackurls</code> [wburls]; the CDX API with <code>matchType=prefix&amp;collapse=timestamp:10</code> returns paths [cdx]. A path archived but 404 live is a route the app once served. <span class="badge g5" title="verified">5</span></p>
+<p><strong>Names and forum posts <span class="chip">d2h</span> <span class="chip">H5</span>.</strong> List developer names and emails, then search each for posts leaking stack, config, logs. 2026: public code repositories are the new forum (not verified); Google still supports quotes, <code>-</code>, <code>site:</code> [gsearch]. <span class="badge g2" title="unverified">2</span></p>
+<p><strong>Web server defaults <span class="chip">d2i</span> <span class="chip">H6</span>.</strong> Nikto and Wikto test default files, with many false positives; verify by hand. Broke: the book&#x27;s <code>-404</code> is now <code>-404string</code>/<code>-404code</code> [nikto]. 2026: <code>nikto -host $TARGET -404string &quot;Not Found&quot; -Pause 1</code>, then <code>nuclei -u $TARGET -as -rl 50</code>, which picks templates from detected technology [nuclei]. <span class="badge g5" title="verified">5</span></p>
+<h2 id="3-pages-functional-paths-hidden-parameters" class="section-head">3. Pages, functional paths, hidden parameters <span class="chip">d3</span></h2>
+<p><strong>Parts:</strong> one URL carries the function in a parameter, or a published API description. <strong>Condition:</strong> routing by value, not path. <strong>When not:</strong> a plain file tree (section 2).</p>
+<p><strong>Pages vs functional paths <span class="chip">d3a</span> <span class="chip">H7</span>.</strong> 2011: <code>POST /bank.jsp?servlet=TransferFunds&amp;method=confirmTransfer</code>; parameters name the servlet and method; map in two stages, since directory brute force finds nothing here. 2026: GraphQL puts all calls on one URL; introspection asks the server for its schema.</p>
+<div class="codewrap"><button class="copybtn" onclick="copyCode(this)" aria-label="Copy command">Copy</button><pre><code id="code-2">curl -s -X POST $TARGET/graphql -H &#x27;Content-Type: application/json&#x27; \
+  -d &#x27;{&quot;query&quot;:&quot;{ __schema { queryType { name } } }&quot;}&#x27;</code></pre></div>
+<p><code>__schema</code> is always on the query root; many servers disable it in production [gql]. <span class="badge g4" title="sourced">4</span></p>
+<p><strong>API descriptions as the map <span class="chip">d3b</span>.</strong> Not in the book. An OpenAPI Description (OAD) describes an API&#x27;s surface, served as <code>openapi.json</code> or <code>openapi.yaml</code> [oas]. 2026: <code>curl -s $TARGET/openapi.json</code>, then read the routes. <span class="badge g5" title="verified">5</span></p>
+<p><strong>Mining JavaScript <span class="chip">d3c</span>.</strong> 2011: review client code for hints. 2026: <code>katana -jc</code> parses JS endpoints; <code>jsluice urls app.js</code> prints JSON per URL with <code>url</code>, <code>queryParams</code>, <code>method</code> [jsluice]. Bundles name routes the UI never shows. <span class="badge g5" title="verified">5</span></p>
+<p><strong>Hidden parameters <span class="chip">d3d</span> <span class="chip">H8</span>.</strong> 2011: Intruder cluster-bomb over <code>debug test hide</code> and <code>true yes 1</code>. 2026: <code>arjun -u $TARGET/search --stable</code> (one thread, 6 to 12 second delay) [arjun]; Param Miner tests up to 65,000 names per request and also guesses headers and cookies [pminer]. <span class="badge g5" title="verified">5</span></p>
+<h2 id="4-entry-points-for-user-input" class="section-head">4. Entry points for user input <span class="chip">d4</span></h2>
+<p><strong>Parts:</strong> URL path, query, body, cookies, trusted headers. <strong>Condition:</strong> input reaches server logic. <strong>When not:</strong> a client-side-only field.</p>
+<p><strong>The entry-point list <span class="chip">d4a</span>.</strong> URL path, query parameters, POST fields, cookies, and some headers (User-Agent, Referer, Host). 2026: add JSON keys and nested fields (not verified). <span class="badge g2" title="unverified">2</span></p>
+<p><strong>REST-style path parameters <span class="chip">d4b</span>.</strong> In <code>/shop/browse/electronics/iPhone3G/</code> the path parts are data, injected like query values. 2026: API routes are the modern form; an OAD lists them [oas]. <span class="badge g5" title="verified">5</span></p>
+<p><strong>Odd parameter formats <span class="chip">d4c</span>.</strong> Parameters can sit after a semicolon, in a path, or as URL-encoded XML in one value; dissect the format or miss its fields. 2026: JSON bodies are the common case (not verified). Fuzz each name: <code>ffuf -w paramnames.txt -u &quot;$TARGET/script.php?FUZZ=test_value&quot; -fs 4242 -rate 10</code>; a different size is a live name [ffuf]. <span class="badge g5" title="verified">5</span></p>
+<p><strong>Headers as input <span class="chip">d4d</span>.</strong> <code>Referer</code>, <code>User-Agent</code>, <code>X-Forwarded-For</code> are trusted; a mobile User-Agent reaches less-tested code. 2026: Param Miner guesses headers [pminer]; HTTP/2 moves to binary framing but keeps HTTP semantics (RFC 9113) [rfc9113], so it changes the format, not what the app reads. <span class="badge g5" title="verified">5</span></p>
+<p><strong>Out-of-band channels <span class="chip">d4e</span>.</strong> Data can arrive by SMTP mail, a server-side fetch, or a mobile API. 2026: OAST (out-of-band application testing) means a server you control logs lookups the target makes.</p>
+<div class="codewrap"><button class="copybtn" onclick="copyCode(this)" aria-label="Copy command">Copy</button><pre><code id="code-3">interactsh-client                       # prints c23b2...oast.pro
+curl -s -H &quot;X-Forwarded-For: c23b2...oast.pro&quot; $TARGET
+# [c23b2...] Received DNS interaction (A) from ...</code></pre></div>
+<p>The client prints each DNS, HTTP, or SMTP hit [oast]. A DNS hit proves the server resolved your value though the page shows nothing. <span class="badge g5" title="verified">5</span></p>
+<h2 id="5-fingerprinting-server-side-technology" class="section-head">5. Fingerprinting server-side technology <span class="chip">d5</span></h2>
+<p><strong>Parts:</strong> <code>Server</code> header, error pages, cookie and directory names. <strong>Condition:</strong> at least one is not stripped. <strong>When not:</strong> a CDN normalizes them (not verified).</p>
+<p><strong>Banner grabbing <span class="chip">d5a</span> <span class="chip">H9</span> <span class="chip">Q4</span>.</strong> <code>Server: Apache/1.3.31</code> names stack and version. Broke: banners are often trimmed (not verified). 2026: <code>httpx -l hosts.txt -sc -title -td -rl 50</code> [httpx]; <code>curl -sI $TARGET</code> fetches headers only [curl]. Q4: Coyote is Tomcat&#x27;s connector package, so <code>Apache-Coyote</code> names a Java servlet container (Tomcat) [tomcat]. <span class="badge g5" title="verified">5</span></p>
+<p><strong>HTTP fingerprinting <span class="chip">d5b</span> <span class="chip">H9</span>.</strong> <code>httprecon</code> ranked likely servers by their optional spec differences. 2026: <code>httpx -td</code> uses the Wappalyzer dataset [httpx]; the status of httprecon and httprint is not verified. <span class="badge g2" title="unverified">2</span></p>
+<p><strong>Extensions and error pages <span class="chip">d5c</span> <span class="chip">H9</span> <span class="chip">Q1</span> <span class="chip">Q3</span>.</strong> <code>.asp</code>, <code>.aspx</code>, <code>.jsp</code>, <code>.php</code>, <code>.dll</code> name a platform; a missing <code>.aspx</code> returns an ASP.NET error. Broke: many routes carry no extension now (not verified). 2026: <code>curl -sI $TARGET/CookieAuth.dll</code>. Q1: <code>CookieAuth.dll</code> is native code on IIS, a cookie-auth filter; Q3: <code>Address.asp</code> is classic ASP. <span class="badge g4" title="sourced">4</span></p>
+<p><strong>Directories and session cookies <span class="chip">d5d</span> <span class="chip">H9</span>.</strong> <code>JSESSIONID</code>, <code>ASPSESSIONID</code>, <code>PHPSESSID</code> and paths like <code>/servlet</code> name the stack. Broke: cookie names are often renamed or generic (not verified). 2026: <code>nuclei -as</code> and <code>httpx -td</code> read more signals [nuclei][httpx]. <span class="badge g2" title="unverified">2</span></p>
+<p><strong>Third-party components <span class="chip">d5e</span> <span class="chip">H9</span>.</strong> Find component and version, then research known flaws. 2026: OSV.dev takes a package, ecosystem and version, a commit, or a purl (package URL).</p>
+<div class="codewrap"><button class="copybtn" onclick="copyCode(this)" aria-label="Copy command">Copy</button><pre><code id="code-4">curl -d &#x27;{&quot;package&quot;:{&quot;name&quot;:&quot;nokogiri&quot;,&quot;ecosystem&quot;:&quot;RubyGems&quot;},&quot;version&quot;:&quot;1.18.2&quot;}&#x27; https://api.osv.dev/v1/query</code></pre></div>
+<p>An empty answer means no known entry, not no flaw [osv]. <span class="badge g5" title="verified">5</span></p>
+<h2 id="6-server-side-functionality-and-unique-behavior" class="section-head">6. Server-side functionality and unique behavior <span class="chip">d6</span></h2>
+<p><strong>Parts:</strong> parameter names read like a programmer, consistent across the app. <strong>Condition:</strong> names carry meaning. <strong>When not:</strong> opaque tokens.</p>
+<p><strong>Dissecting requests <span class="chip">d6a</span> <span class="chip">H10</span> <span class="chip">Q3</span>.</strong> <code>calendar.jsp?isExpired=0&amp;OrderBy=name</code> means Java, a database <code>ORDER BY</code>, and a flag to flip. 2026: the same on JSON and GraphQL fields. Q3: read <code>action=view</code> like <code>isExpired</code>, try <code>edit</code>. <span class="badge g4" title="sourced">4</span></p>
+<p><strong>REST to internal call <span class="chip">d6b</span> <span class="chip">H10</span>.</strong> <code>/pub/media/117/view</code> maps to a hidden call like <code>manager?schema=pub&amp;id=117&amp;action=view</code>; try <code>edit</code>, <code>add</code>, higher ids. 2026: <code>ffuf -w ids.txt -u $TARGET/pub/media/FUZZ/view -mc 200 -rate 10</code> [ffuf]. <span class="badge g5" title="verified">5</span></p>
+<p><strong>Extrapolating behavior <span class="chip">d6c</span> <span class="chip">H10</span>.</strong> Parts of one app act alike; an echo function shows the global filter; a decode function reveals your cookie scheme. 2026: a block may be a CDN or WAF, not the app (not verified). <span class="badge g2" title="unverified">2</span></p>
+<p><strong>Unique behavior <span class="chip">d6d</span> <span class="chip">H11</span>.</strong> Hunt bolted-on parts (different style, comments, CAPTCHA, tracking, third-party code); they skip standard defenses. 2026: many are third-party scripts from other hosts (not verified); list them with <code>katana -jc -rl 50 -em js,json</code> [katana]. <span class="badge g5" title="verified">5</span></p>
+<h2 id="7-mapping-the-attack-surface" class="section-head">7. Mapping the attack surface <span class="chip">d7</span></h2>
+<p><strong>Parts:</strong> the content map, the functional map, features matched to bug classes. <strong>Condition:</strong> mapping ends before probing. <strong>When not:</strong> never; no tool maps an app safely alone [book p.114].</p>
+<p><strong>Map first, probe later <span class="chip">d7a</span>.</strong> Mapping comes before attack; no tool maps fully and safely, so mix manual work with controlled automation. 2026: Burp&#x27;s Chromium crawl and login handling help but do not finish it [burpcrawl]. <span class="badge g5" title="verified">5</span></p>
+<p><strong>Core functions and mechanisms <span class="chip">d7b</span> <span class="chip">H12</span>.</strong> Know the core features, session state, access control, authentication, and support flows like recovery. 2026: the same, plus the API behind each screen. <span class="badge g4" title="sourced">4</span></p>
+<p><strong>Feature to bug class <span class="chip">d7c</span> <span class="chip">H12</span>.</strong> Map each feature to its usual bug: upload to path traversal, login to enumeration, redirect to open redirect, email to injection. 2026: add the API classes (not verified). <span class="badge g2" title="unverified">2</span></p>
+<p><strong>Check third-party code <span class="chip">d7d</span> <span class="chip">H12</span>.</strong> Look up each third-party part in a public vulnerability database. Broke: OSVDB closed 2016 [reg]. 2026: use OSV.dev and <code>nuclei -as</code> for known exposures [osv][nuclei]. <span class="badge g5" title="verified">5</span></p>
+<p><strong>Plan of attack <span class="chip">d7e</span> <span class="chip">H12</span>.</strong> Rank the most interesting functions and the worst bug classes. 2026: first probe all hosts, <code>httpx -l hosts.txt -sc -title -td -rl 50</code> [httpx]. <span class="badge g5" title="verified">5</span></p>
+<p><strong>The EIS example <span class="chip">d7f</span>.</strong> The book walks one app, <code>/auth</code>, <code>/core/sitestats</code>, <code>/gb</code>, <code>/home</code>, <code>/pub</code>, <code>/shop</code>, each with its likely bug [book p.110]. 2026: practice the same walk on PortSwigger Academy or HTB labs (lab choice not verified). <span class="badge g3" title="secondary">3</span></p>
+<h2 id="references" class="section-head">references</h2>
+<p class="ref">All URLs opened 2026-10-16. Each item: title, URL, source type, what it settles.</p>
+<p class="ref"><span class="ref-key">[book]</span>WAHH 2e, Stuttard, Pinto, Wiley 2011, ch.4 pp.73-115, https://portswigger.net/web-security/web-application-hackers-handbook, his copy,  case. 2011 claims.</p>
+<p class="ref"><span class="ref-key">[burpcrawl]</span>Burp full crawl and audit, https://portswigger.net/burp/documentation/desktop/automated-scanning/webapp-scans/full-crawl-and-audit,  official. Chromium crawl, SSO.</p>
+<p class="ref"><span class="ref-key">[katana]</span>katana, https://github.com/projectdiscovery/katana,  primary. Crawl flags.</p>
+<p class="ref"><span class="ref-key">[httpx]</span>httpx, https://github.com/projectdiscovery/httpx,  primary. Probe flags.</p>
+<p class="ref"><span class="ref-key">[nuclei]</span>nuclei, https://github.com/projectdiscovery/nuclei,  primary. <code>-as</code>.</p>
+<p class="ref"><span class="ref-key">[nikto]</span>Nikto, https://github.com/sullo/nikto,  primary. <code>-404string</code>.</p>
+<p class="ref"><span class="ref-key">[ffuf]</span>ffuf, https://github.com/ffuf/ffuf,  primary. Fuzz flags.</p>
+<p class="ref"><span class="ref-key">[ferox]</span>feroxbuster, https://github.com/epi052/feroxbuster,  primary. <code>-x</code>, recursive.</p>
+<p class="ref"><span class="ref-key">[arjun]</span>Arjun Usage, https://github.com/s0md3v/Arjun/wiki/Usage,  primary. <code>--stable</code>.</p>
+<p class="ref"><span class="ref-key">[pminer]</span>Param Miner, https://github.com/PortSwigger/param-miner,  primary. 65,000 names.</p>
+<p class="ref"><span class="ref-key">[jsluice]</span>jsluice, https://github.com/BishopFox/jsluice/tree/main/cmd/jsluice,  primary. <code>urls</code>.</p>
+<p class="ref"><span class="ref-key">[gau]</span>gau, https://github.com/lc/gau,  primary. URL sources.</p>
+<p class="ref"><span class="ref-key">[wburls]</span>waybackurls, https://github.com/tomnomnom/waybackurls,  primary. stdin domains.</p>
+<p class="ref"><span class="ref-key">[cdx]</span>Wayback CDX, https://github.com/internetarchive/wayback/tree/master/wayback-cdx-server,  official. <code>prefix</code>, <code>collapse</code>.</p>
+<p class="ref"><span class="ref-key">[oast]</span>interactsh, https://github.com/projectdiscovery/interactsh,  primary. Client output.</p>
+<p class="ref"><span class="ref-key">[osv]</span>OSV.dev query, https://google.github.io/osv.dev/post-v1-query/,  official. Query body.</p>
+<p class="ref"><span class="ref-key">[curl]</span>curl manual, https://curl.se/docs/manpage.html,  official. <code>-I -w -s</code>.</p>
+<p class="ref"><span class="ref-key">[gql]</span>GraphQL introspection, https://graphql.org/learn/introspection/,  official. <code>__schema</code>.</p>
+<p class="ref"><span class="ref-key">[oas]</span>OpenAPI spec, https://spec.openapis.org/oas/latest.html,  official. OAD, filenames.</p>
+<p class="ref"><span class="ref-key">[gsearch]</span>Google operators, https://support.google.com/websearch/answer/2466433,  official. No <code>cache:</code>.</p>
+<p class="ref"><span class="ref-key">[serc]</span>SE Roundtable, https://seroundtable.com/google-cache-dead-38112.html,  secondary. <code>cache:</code> dead 2024.</p>
+<p class="ref"><span class="ref-key">[flash]</span>Adobe Flash EOL, https://www.adobe.com/products/flashplayer/end-of-life.html,  official. 12 Jan 2021.</p>
+<p class="ref"><span class="ref-key">[dirb]</span>OWASP DirBuster, https://wiki.owasp.org/index.php/DirBuster,  official. Inactive.</p>
+<p class="ref"><span class="ref-key">[wscar]</span>WebScarab, https://en.wikipedia.org/wiki/WebScarab,  secondary. Archived 2024.</p>
+<p class="ref"><span class="ref-key">[zapno]</span>ZAP status, https://www.zaproxy.org/docs/nowaspzap/,  official. Left OWASP 2023.</p>
+<p class="ref"><span class="ref-key">[reg]</span>The Register, https://www.theregister.com/2016/04/06/open_source_vuln_database_closes/,  secondary. OSVDB closed 2016.</p>
+<p class="ref"><span class="ref-key">[rfc9113]</span>RFC 9113, https://www.rfc-editor.org/rfc/rfc9113.html,  official. HTTP/2 semantics.</p>
+<p class="ref"><span class="ref-key">[tomcat]</span>Tomcat 9 connector, https://tomcat.apache.org/tomcat-9.0-doc/config/http.html,  official. Coyote.</p>
+<p class="ref"><span class="ref-key">[assetnote]</span>Assetnote lists, https://wordlists.assetnote.io/,  primary. Monthly lists.</p>
+<p class="ref"><span class="ref-key">[seclists]</span>SecLists, https://github.com/danielmiessler/SecLists,  primary. Fuzzing lists.</p>
+<footer class="pagefooter">Phase 2 study page. Covers every node of phase1_mindmap.json (check_coverage.py: OK).</footer>
+</main>
+</div>
+<script>
+function copyCode(b){var c=b.parentElement.querySelector('code');navigator.clipboard&&navigator.clipboard.writeText(c.innerText).then(function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy';},1200);});}
+</script>
+</body>
+</html>

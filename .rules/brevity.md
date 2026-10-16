@@ -11,3 +11,4 @@ HTML is allowed to be rich. It is not allowed to be long.
 7. The mind map is the exception on node count, not on words: each node's text stays short (a title plus at most 40 words).
 8. Every deliverable shows its word count and page estimate at the top, next to the confidence tally. Over budget needs a one-line reason, and he decides.
 9. The paradox is the point: rich medium, small content. When in doubt, cut.
+10. Per sub heading, not per topic (set by him on 2026-10-12). A study page has sub headings (the domains of the map). Each sub heading has 5 to 9 sub topics. The ceiling in rule 2 (2500 words, 5 pages, code at half) applies to each sub heading on its own. The whole page, with all its sub headings together, has no ceiling. A sub topic has no ceiling of its own: it lives inside its sub heading's budget. Show the word count per sub heading at the top, next to the confidence tally. A single lesson with no sub headings still has the 2500 word ceiling.

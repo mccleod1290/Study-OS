@@ -1,0 +1,15 @@
+# phase 2 page length, ai_901. 1 page = 500 words outside fenced code. Chips, badges and cites count as words.
+# rule: .rules/brevity.md rule 10 (ceiling 2500 words per sub heading, none for the whole page)
+section 1 d1 words: 1229  prose words (no chips, badges, cites): 1153  pages: 2.5
+section 2 d2 words: 737  prose words (no chips, badges, cites): 692  pages: 1.5
+section 3 d3 words: 1188  prose words (no chips, badges, cites): 1111  pages: 2.4
+section 4 d4 words: 2016  prose words (no chips, badges, cites): 1916  pages: 4.0
+section 5 d5 words: 2173  prose words (no chips, badges, cites): 2026  pages: 4.3
+section 6 d6 words: 1314  prose words (no chips, badges, cites): 1238  pages: 2.6
+section 7 d7 words: 993  prose words (no chips, badges, cites): 924  pages: 2.0
+section 8 d8 words: 895  prose words (no chips, badges, cites): 855  pages: 1.8
+section 9 d9 words: 1026  prose words (no chips, badges, cites): 959  pages: 2.1
+section 10 d10 words: 1081  prose words (no chips, badges, cites): 1018  pages: 2.2
+total words: 12652
+total pages (500 words per page): 25.3
+largest section: 2173 of 2500
